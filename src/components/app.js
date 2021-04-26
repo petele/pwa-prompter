@@ -27,14 +27,21 @@ class App extends Component {
         this.setState(scriptObj);
       });
     } else {
-      this.setState({currentUrl: e.url});
+      this.setState({
+        scriptID: null,
+        currentUrl: e.url,
+        title: null,
+      });
     }
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   console.log('app should update', nextProps, nextState);
-  //   // return false;
-  // }
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextState?.title) {
+      document.title = `${nextState.title} - MyPrompter`;
+    } else {
+      document.title = `MyPrompter`;
+    }
+  }
 
   onChange = (newVal) => {
     console.log('onChange', newVal);
