@@ -40,9 +40,7 @@
   border-right: 1px solid var(--app-background-third);
   border-top: none;
   border-bottom: none;
-  display: inline-block;
   height: 56px;
-  line-height: 56px;
   padding: 0 8px;
   min-width: 64px;
   text-align: center;
@@ -51,4 +49,15 @@
   text-decoration: none;
   will-change: background-color;
   font-size: x-small;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer nav button img {
+  display: block;
+  width: 24px;
+  height: 24px;
+  margin-bottom: 4px;
 }

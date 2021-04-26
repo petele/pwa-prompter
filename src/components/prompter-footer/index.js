@@ -5,7 +5,7 @@ class PrompterFooter extends Component {
   footerRef = null;
   state = {
     playButtonText: 'Play',
-    playButtonIcon: 'play',
+    playButtonIcon: '/images/play_48dp.svg',
   };
 
   componentWillUnmount() {
@@ -19,12 +19,18 @@ class PrompterFooter extends Component {
   playClick = () => {
     if (this.scrollingRAF) {
       this.scrollStop();
-      this.setState({playButtonText: 'Play'});
+      this.setState({
+        playButtonText: 'Play',
+        playButtonIcon: '/images/play_48dp.svg',
+      });
       this.footerShow();
       return;
     }
     this.scrollStart();
-    this.setState({playButtonText: 'Pause'});
+    this.setState({
+      playButtonText: 'Pause',
+      playButtonIcon: '/images/pause_48dp.svg',
+    });
     setTimeout(() => {
       if (this.scrollingRAF) {
         this.footerHide();
@@ -112,30 +118,37 @@ class PrompterFooter extends Component {
       <footer class={style.footer} ref={el => { this.footerRef = el }}>
         <div class={style.toggle}>
           <button onClick={this.toggleFooterClick} type="button">
-            ***
+            &bull;&bull;&bull;
           </button>
         </div>
         <nav>
           <button id="reset" onClick={this.resetClick} type="button">
-            Reset
+            <img src="/images/replay_48dp.svg" />
+            <div>Reset</div>
           </button>
           <button id="skipBack" type="button">
-            Previous
+            <img src="/images/skip_previous_48dp.svg" />
+            <div>Previous</div>
           </button>
           <button id="rw" onClick={this.backClick} type="button">
-            Back
+            <img src="/images/fast_rewind_48dp.svg" />
+            <div>Back</div>
           </button>
           <button id="pause" onClick={this.playClick} type="button">
-            {this.state.playButtonText}
+            <img src={this.state.playButtonIcon} />
+            <div>{this.state.playButtonText}</div>
           </button>
           <button id="ff" onClick={this.forwardClick} type="button">
-            Forward
+            <img src="/images/fast_forward_48dp.svg" />
+            <div>Forward</div>
           </button>
           <button id="skipForward" type="button">
-            Next
+            <img src="/images/skip_next_48dp.svg" />
+            <div>Next</div>
           </button>
           <button id="settings" type="button">
-            Settings
+            <img src="/images/settings_48dp.svg" />
+            <div>Settings</div>
           </button>
         </nav>
       </footer>

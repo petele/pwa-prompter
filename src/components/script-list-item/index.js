@@ -37,8 +37,12 @@ const ScriptListItem = ({ scriptID, title, snippet, lastUpdated, hasStar, onDele
 
   return (
     <div class={style.item} href={editorURL}>
-      <button class={style.delete} type="button" onClick={clickDelete}>X</button>
-      <button class={getStarButtonStyle()} type="button" onClick={clickStar}>*</button>
+      <button class={style.delete} type="button" onClick={clickDelete}>
+        <img src="/images/delete_48dp.svg" />
+      </button>
+      <button class={getStarButtonStyle()} type="button" onClick={clickStar}>
+        <img src="/images/star_filled_48dp.svg" />
+      </button>
       <a href={editorURL}>
         <div class={style.title}>{title}</div>
         <div class={style.snippet}>{snippet}...</div>

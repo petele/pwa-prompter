@@ -28,6 +28,10 @@
   background-color: var(--app-background-secondary);
 }
 
+.item button img {
+  width: 18px;
+}
+
 .item button:first-of-type {
   margin-right: -16px;
 }
