@@ -1,0 +1,12 @@
+dialog {
+  position: fixed;
+  top: 50%;
+  transform: translate(0, -50%);
+}
+
+dialog::backdrop {
+  background-color: green;
+}
+dialog + .backdrop { /* polyfill */
+  background-color: green;
+}
