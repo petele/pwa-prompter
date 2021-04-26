@@ -1,10 +1,7 @@
 import { h, Component } from 'preact';
 
 import Quill from 'quill';
-// import 'quill/dist/quill.core.css';
 import 'quill/dist/quill.snow.css';
-
-import { updateScript } from '../data-layer';
 
 class MyQuill extends Component {
   editorRef = null;
@@ -32,26 +29,45 @@ class MyQuill extends Component {
       },
     });
 
-    this.editor.on('text-change', () => {
-      if (this.initialUpdate) {
-        this.initialUpdate = false;
-        return;
-      }
-      const scriptData = {
-        asHTML: this.editor.root.innerHTML,
-        asQuill: this.editor.getContents(),
-        snippet: this.editor.getText(0, 250),
-        lastUpdated: Date.now(),
-      }
-      updateScript(this.props.scriptID, scriptData);
-    });
+    if (this.props.asQuill) {
+      this.editor.setContents(this.props.asQuill);
+    }
+
+    // this.editor.on('text-change', () => {
+    //   const scriptData = {
+    //     asHTML: this.editor.root.innerHTML,
+    //     asQuill: this.editor.getContents(),
+    //     snippet: this.editor.getText(0, 250),
+    //     lastUpdated: Date.now(),
+    //   }
+    //   if (this?.props?.onChange) {
+    //     this.props.onChange(scriptData);
+    //   }
+    // });
+    this.editor.on('text-change', this.onTextChange);
+  }
+
+  componentWillUnmount() {
+    this.editor.off('text-change', this.onTextChange);
+  }
+
+  onTextChange = () => {
+    const scriptData = {
+      asHTML: this.editor.root.innerHTML,
+      asQuill: this.editor.getContents(),
+      snippet: this.editor.getText(0, 250),
+      lastUpdated: Date.now(),
+    }
+    if (this?.props?.onChange) {
+      this.props.onChange(scriptData);
+    }
   }
 
   shouldComponentUpdate(nextProps) {
-    if (nextProps?.scriptQuill) {
-      this.initialUpdate = true;
-      this.editor.setContents(nextProps.scriptQuill);
-    }
+    console.log('here', nextProps)
+    // if (nextProps.asQuill) {
+    //   this.editor.setContents(nextProps.asQuill);
+    // }
     return false;
   }
 

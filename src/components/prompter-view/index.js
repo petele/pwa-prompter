@@ -2,22 +2,15 @@
 import { h, Component } from 'preact';
 import style from './style.css';
 
-import { getScript } from '../data-layer';
-
 class PrompterView extends Component {
   state = {};
 
-  // Lifecycle: Called whenever our component is created
   componentDidMount() {
-    getScript(this.props.scriptID).then((val) => {
-      this.setState(val);
-    });
-    // this.updateStyles();
+    this.updateStyles();
   }
 
   shouldComponentUpdate() {
     this.updateStyles();
-    // return false;
   }
 
   updateStyles() {
@@ -46,7 +39,7 @@ class PrompterView extends Component {
         <div id="pwapStart" class={style.boundary}>
           Start
         </div>
-        <div class={style.view} dangerouslySetInnerHTML={{__html: this.state.asHTML}} />
+        <div class={style.view} dangerouslySetInnerHTML={{__html: this.props.asHTML}} />
         <div id="pwapEnd" class={style.boundary}>
           End
         </div>

@@ -3,7 +3,7 @@ import { h, Component } from 'preact';
 import dialogPolyfill from 'dialog-polyfill';
 import 'dialog-polyfill/dist/dialog-polyfill.css';
 
-import style from './style.css';
+import './style.css';
 
 /* https://github.com/GoogleChrome/dialog-polyfill */
 
@@ -19,14 +19,14 @@ class PrompterSettingsDialog extends Component {
     dialogPolyfill.registerDialog(this.settingsDialogRef);
   }
 
-  shouldComponentUpdate(nextProps) {
-    console.log('dialog', nextProps);
-    // if (nextProps?.scriptQuill) {
-    //   this.initialUpdate = true;
-    //   this.editor.setContents(nextProps.scriptQuill);
-    // }
-    // return false;
-  }
+  // shouldComponentUpdate(nextProps) {
+  //   console.log('dialog', nextProps);
+  //   // if (nextProps?.scriptQuill) {
+  //   //   this.initialUpdate = true;
+  //   //   this.editor.setContents(nextProps.scriptQuill);
+  //   // }
+  //   // return false;
+  // }
 
   render(props) {
     return (

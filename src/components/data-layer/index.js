@@ -14,21 +14,24 @@ const SCRIPT_TEMPLATE = {
 };
 
 const cachedScript = {
-  scriptID: null,
-  scriptData: null,
+  id: null,
+  script: null,
 };
 
 let scriptList = {};
 
 export async function getScript(scriptID) {
-  if (cachedScript.scriptID === scriptID) {
+
+  if (cachedScript.id === scriptID) {
     console.log('getScript [cached]', scriptID);
-    return cachedScript.scriptData;
+    return cachedScript.script;
   }
   console.log('getScript', scriptID);
   const idbKey = `script.${scriptID}`;
   const scriptObj = await get(idbKey);
   if (scriptObj) {
+    cachedScript.id = scriptID;
+    cachedScript.script = scriptObj;
     return scriptObj;
   }
   return Object.assign({}, SCRIPT_TEMPLATE);
@@ -42,8 +45,8 @@ export async function updateScript(scriptID, scriptObj) {
       dbScriptObj = Object.assign({}, SCRIPT_TEMPLATE);
     }
     Object.assign(dbScriptObj, scriptObj);
-    cachedScript.scriptID = scriptID;
-    cachedScript.scriptData = dbScriptObj;
+    cachedScript.id = scriptID;
+    cachedScript.script = dbScriptObj;
     return dbScriptObj;
   });
 }
@@ -52,8 +55,8 @@ export async function saveScript(scriptID, scriptObj) {
   console.log('saveScript', scriptID, scriptObj);
   const idbKey = `script.${scriptID}`;
   scriptObj.scriptID = scriptID;
-  cachedScript.scriptID = scriptID;
-  cachedScript.scriptData = scriptObj;
+  cachedScript.id = scriptID;
+  cachedScript.script = scriptObj;
   await set(idbKey, scriptObj);
   updateScriptListItem(scriptID, scriptObj);
 }
@@ -62,9 +65,9 @@ export async function deleteScript(scriptID) {
   console.log('deleteScript', scriptID);
   const idbKey = `script.${scriptID}`;
   await del(idbKey);
-  if (cachedScript.scriptID === scriptID) {
-    cachedScript.scriptID = null;
-    cachedScript.scriptData = null;
+  if (cachedScript.id === scriptID) {
+    cachedScript.id = null;
+    cachedScript.script = null;
   }
   delete scriptList[scriptID];
 }

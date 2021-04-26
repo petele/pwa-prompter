@@ -14,29 +14,49 @@ import NotFound from '../routes/404';
 import RedirectToHome from '../components/redir-to-home';
 import PrompterSettingsDialog from '../components/prompter-settings-dialog';
 
-// import DataLayer from '../components/data-layer';
+import { getScript, updateScript } from './data-layer';
 
 class App extends Component {
 
   handleRoute = async (e) => {
-    const newState = {
-      currentUrl: e.url,
-      scriptID: e.current?.props?.scriptID,
+    const scriptID = e.current?.props?.scriptID;
+    if (scriptID) {
+      getScript(scriptID).then((scriptObj) => {
+        scriptObj.scriptID = scriptID;
+        scriptObj.currentUrl = e.url;
+        this.setState(scriptObj);
+      });
+    } else {
+      this.setState({currentUrl: e.url});
     }
-    this.setState(newState);
+  }
+
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   console.log('app should update', nextProps, nextState);
+  //   // return false;
+  // }
+
+  onChange = (newVal) => {
+    console.log('onChange', newVal);
+    if (!this.state.scriptID) {
+      console.error('NO SCRIPT ID!', newVal);
+      return;
+    }
+    updateScript(this.state.scriptID, newVal);
+    this.setState(newVal);
   }
 
   render() {
     return (
       <div id="app">
-        <PrompterSettingsDialog open />
+        <PrompterSettingsDialog />
         <Header selectedRoute={this.state.currentUrl} scriptID={this.state.scriptID} />
         <Router onChange={this.handleRoute}>
           <Home path="/" />
           <Profile path="/profile/:user" />
-          <Editor path="/editor/:scriptID" />
+          <Editor path="/editor/:scriptID" onChange={this.onChange} title={this.state.title} asQuill={this.state.asQuill} />
           <RedirectToHome path="/editor/" />
-          <Prompter path="/prompter/:scriptID" />
+          <Prompter path="/prompter/:scriptID" onChange={this.onChange} asHTML={this.state.asHTML}  />
           <RedirectToHome path="/prompter/" />
           <About path="/about" />
           <NotFound default />
