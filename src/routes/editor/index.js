@@ -4,6 +4,7 @@ import { route } from 'preact-router';
 // import {useEffect, useState} from "preact/hooks";
 import style from './style.css';
 
+import { format } from 'date-fns';
 import MyQuill from '../../components/my-quill';
 import InputTitle from '../../components/input-title';
 
@@ -15,6 +16,13 @@ class Editor extends Component {
       route(`/`, true);
       return;
     }
+  }
+
+  formatDate = (lastUpdated) => {
+    if (lastUpdated) {
+      return format(lastUpdated, `PPP 'at' h:mm aaa`);
+    }
+    return '';
   }
 
   onValueChange = (newVal) => {
@@ -29,6 +37,9 @@ class Editor extends Component {
         <InputTitle title={props.title} onChange={this.onValueChange} />
         <div class={style.quill}>
           <MyQuill asQuill={props.asQuill} onChange={this.onValueChange} />
+        </div>
+        <div class={style.lastSaved}>
+          <b>Last saved:</b> {this.formatDate(props.lastUpdated)}
         </div>
       </div>
     );

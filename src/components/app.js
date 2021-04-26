@@ -61,7 +61,7 @@ class App extends Component {
         <Router onChange={this.handleRoute}>
           <Home path="/" />
           <Profile path="/profile/:user" />
-          <Editor path="/editor/:scriptID" onChange={this.onChange} title={this.state.title} asQuill={this.state.asQuill} />
+          <Editor path="/editor/:scriptID" onChange={this.onChange} title={this.state.title} asQuill={this.state.asQuill} lastUpdated={this.state.lastUpdated} />
           <RedirectToHome path="/editor/" />
           <Prompter path="/prompter/:scriptID" onChange={this.onChange} asHTML={this.state.asHTML}  />
           <RedirectToHome path="/prompter/" />

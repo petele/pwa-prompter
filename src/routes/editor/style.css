@@ -9,5 +9,10 @@
 .quill {
   width: 100%;
   height: 100%;
-  padding-bottom: 56px;
+  /* padding-bottom: 76px; */
+  padding-bottom: 48px;
+}
+
+.lastSaved {
+  font-size: small;
 }
