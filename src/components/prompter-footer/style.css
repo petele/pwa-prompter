@@ -1,0 +1,54 @@
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 76px;
+  padding: 0;
+  background: var(--app-background-secondary);
+  color: var(--app-color-secondary);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  z-index: 50;
+  flex-wrap: nowrap;
+  transition: transform 0.3s ease-in-out;
+}
+
+.footer.minimized {
+  transform: translateY(56px);
+}
+
+.footer .toggle {
+  height: 20px;
+  background-color: var(--app-background-third);
+  color: var(--app-color-third);
+}
+
+.footer .toggle button {
+  width: 100%;
+  background-color: var(--app-background-third);
+  color: var(--app-color-third);
+  border: none;
+}
+
+.footer nav {
+  display: flex;
+  justify-content: center;
+}
+
+.footer nav button {
+  border-left: 1px solid var(--app-background-third);
+  border-right: 1px solid var(--app-background-third);
+  border-top: none;
+  border-bottom: none;
+  display: inline-block;
+  height: 56px;
+  line-height: 56px;
+  padding: 0 8px;
+  min-width: 64px;
+  text-align: center;
+  background: var(--app-background-primary);
+  color: var(--app-color-primary);
+  text-decoration: none;
+  will-change: background-color;
+  font-size: x-small;
+}

@@ -1,0 +1,9 @@
+.inputTitle {
+  padding: 8px;
+  background-color: var(--app-background-secondary);
+  color: var(--app-color-secondary);
+  font-size: x-large;
+  width: 100%;
+  border: 1px solid var(--app-color-secondary);
+  border-bottom: none;
+}

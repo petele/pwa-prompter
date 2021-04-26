@@ -1,0 +1,22 @@
+.view p {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.boundary {
+  background-color: var(--app-background-secondary);
+  color: var(--app-color-primary);
+  text-transform:uppercase;
+  padding: 2em;
+  text-align: center;
+  font-size: xxx-large;
+}
+
+.boundary:first-of-type {
+  margin-bottom: 1em;
+}
+
+.boundary:last-of-type {
+  margin-top: 1em;
+  padding-bottom: 16em;
+}
