@@ -3,6 +3,6 @@
   padding: 20px;
 }
 
-.home :first-child {
+.home > :first-child {
   margin-top: 0;
 }

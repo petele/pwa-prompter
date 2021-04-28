@@ -9,6 +9,7 @@ import Profile from '../routes/profile';
 import Editor from '../routes/editor';
 import Prompter from '../routes/prompter';
 import About from '../routes/about';
+import Account from '../routes/account';
 import NotFound from '../routes/404';
 
 import RedirectToHome from '../components/redir-to-home';
@@ -66,6 +67,7 @@ class App extends Component {
           <Prompter path="/prompter/:scriptID" onChange={this.onChange} asHTML={this.state.asHTML}  />
           <RedirectToHome path="/prompter/" />
           <About path="/about" />
+          <Account path="/account" />
           <NotFound default />
         </Router>
       </div>

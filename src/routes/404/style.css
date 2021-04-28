@@ -3,6 +3,6 @@
   padding: 20px;
 }
 
-.notFound :first-child {
+.notFound > :first-child {
   margin-top: 0;
 }

@@ -28,8 +28,10 @@
   background-color: var(--app-background-secondary);
 }
 
-.item button img {
+.item button svg {
   width: 18px;
+  height: 18px;
+  fill: var(--app-color-primary);
 }
 
 .item button:first-of-type {
@@ -46,10 +48,14 @@
 }
 
 .item .snippet {
-  margin-bottom: 4px;
+  margin-bottom: 8px;
   color: var(--app-color-secondary);
 }
 
 .item .lastUpdated {
   font-size: smaller;
+}
+
+.hidden {
+  display: none !important;
 }

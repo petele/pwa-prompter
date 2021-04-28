@@ -55,9 +55,14 @@
   align-items: center;
 }
 
-.footer nav button img {
+.footer nav button svg {
   display: block;
   width: 24px;
   height: 24px;
   margin-bottom: 4px;
+  fill: var(--app-color-primary);
+}
+
+.hidden {
+  display: none !important;
 }

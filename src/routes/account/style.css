@@ -1,8 +1,8 @@
-.about {
+.account {
   overflow-y: auto;
   padding: 20px;
 }
 
-.about > :first-child {
+.account > :first-child {
   margin-top: 0;
 }

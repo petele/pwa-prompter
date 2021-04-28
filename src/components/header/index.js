@@ -12,6 +12,7 @@ class Header extends Component {
 
     this.isHome = selectedRoute === '/';
     this.isAbout = selectedRoute === '/about';
+    this.isAccount = selectedRoute === '/account';
     this.isEditor = selectedRoute.startsWith('/editor/');
     this.isPrompter = selectedRoute.startsWith('/prompter/');
 
@@ -19,11 +20,13 @@ class Header extends Component {
     this.prompterURL = `/prompter/${scriptID}`;
 
     this.homeClassName = this.isHome ? style.active : '';
-    if (this.isHome || this.isAbout) {
+    if (this.isHome || this.isAbout || this.isAccount) {
+      this.accountClassName = this.isAccount ? style.active : '';
       this.editorClassName = style.hidden;
       this.prompterClassName = style.hidden;
       return true;
     }
+    this.loginClassName = this.isLogin ? style.active : '';
     this.editorClassName = this.isEditor ? style.active : '';
     this.prompterClassName = this.isPrompter ? style.active : '';
     return true;
@@ -45,8 +48,8 @@ class Header extends Component {
           <Link className={this.prompterClassName} href={this.prompterURL}>
             Prompt
           </Link>
-          <Link className={style.login} href="/login">
-            Login
+          <Link className={this.accountClassName} href="/account">
+            Account
           </Link>
         </nav>
         {
