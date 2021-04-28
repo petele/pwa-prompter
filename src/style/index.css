@@ -57,3 +57,28 @@ html, body {
   display: flex;
   flex-direction: column;
 }
+
+hr.pause {
+  overflow: visible;
+  padding: 0;
+  border: none;
+  border-top: medium double var(--app-color-primary);
+  color: var(--app-color-primary);
+  text-align: center;
+}
+
+hr.pause:after {
+  content: "\2590\A0\258C";
+  display: inline-block;
+  position: relative;
+  top: -1.6em;
+  font-size: .5em;
+  padding: 0 0.25em;
+  background-color: var(--app-background-primary);
+}
+
+#docScroller hr.bookmark {
+  border: none;
+  border-top: 1px dotted yellow;
+  color: yellow;
+}

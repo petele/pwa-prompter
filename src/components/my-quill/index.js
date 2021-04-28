@@ -5,6 +5,19 @@ import Quill from 'quill';
 import '/style/quill.css';
 import style from './style.css';
 
+const BlockEmbed = Quill.import('blots/block/embed');
+class PauseBlot extends BlockEmbed {}
+PauseBlot.blotName = 'pause';
+PauseBlot.tagName = 'hr';
+PauseBlot.className = 'pause';
+Quill.register(PauseBlot);
+
+class BookmarkBlot extends BlockEmbed {}
+BookmarkBlot.blotName = 'bookmark';
+BookmarkBlot.tagName = 'hr';
+BookmarkBlot.className = 'bookmark';
+Quill.register(BookmarkBlot);
+
 class MyQuill extends Component {
   editorRef = null;
   toolbarRef = null;
@@ -51,15 +64,10 @@ class MyQuill extends Component {
   }
 
   addPrompterElement = (kind) => {
-    const position = this.editor.getSelection();
-    if (!position || position.range > 0) {
-      return;
-    }
-    const index = position.index;
-    const imgName = kind === 'bookmark' ? 'add_bookmark' : 'pause';
-    this.editor.insertEmbed(index, 'image', `/images/${imgName}_48dp.svg`);
-    this.editor.insertText(index + 1, '\n');
-    this.editor.setSelection(index + 2);
+    const range = this.editor.getSelection(true);
+    this.editor.insertText(range.index, '\n', Quill.sources.USER);
+    this.editor.insertEmbed(range.index + 1, kind, true, Quill.sources.USER);
+    this.editor.setSelection(range.index + 2, Quill.sources.SILENT);
   }
 
   onTextChange = () => {
