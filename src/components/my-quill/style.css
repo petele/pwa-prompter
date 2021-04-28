@@ -1,6 +1,10 @@
 .editorContainer {
   /* max-height: 250px; */
   /* 56 + 20 + 44 + 40 + 16 + 20 */
-  max-height: calc(100vh - 196px);
+  height: calc(100vh - 196px);
   overflow-y: auto;
+}
+
+.editorContainer img[src='/images/add_bookmark_48dp.svg'] {
+  background-color: red;
 }
