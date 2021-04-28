@@ -4,41 +4,117 @@ import style from './style.css';
 class PrompterFooter extends Component {
   footerRef = null;
   scrollerRef = null;
+  scrollingRAF = null;
   state = {
     playButtonText: 'Play',
     hidePlay: '',
     hidePause: style.hidden,
   };
 
-
   // Lifecycle: Called whenever our component is created
   componentDidMount() {
     if (this.scrollerRef) {
       return;
     }
+    this.setScrollSpeed(this.props.scrollSpeed);
     this.scrollerRef = document.getElementById('docScroller');
+    window.addEventListener('keydown', this.keyboardHandler);
   }
 
   componentWillUnmount() {
+    window.removeEventListener('keydown', this.keyboardHandler);
     if (this.scrollingRAF) {
       cancelAnimationFrame(this.scrollingRAF);
       this.scrollingRAF = null;
+    }
+    if (this.hideFooterTimer) {
+      clearTimeout(this.hideFooterTimer);
+      this.hideFooterTimer = null;
+    }
+  }
+
+  keyboardHandler = (e) => {
+    // e.preventDefault();
+    console.log('key', e.code, e.ctrlKey, e.metaKey, e.shiftKey, e.key);
+
+    const keyCode = e.code;
+
+    if (keyCode === 'Space') {
+      if (this.scrollingRAF) {
+        this.scrollStop();
+        return;
+      }
+      this.scrollStart();
+      return;
+    }
+    if (keyCode === 'ArrowUp') {
+      return this.backClick();
+    }
+    if (keyCode === 'ArrowDown') {
+      return this.forwardClick();
+    }
+    if (keyCode === 'Escape') {
+      return this.resetClick();
+    }
+    if (keyCode === 'ArrowLeft') {
+      const newSpeed = this.state.scrollSpeed - 10;
+      this.setScrollSpeed(newSpeed);
+      return;
+    }
+    if (keyCode === 'ArrowRight') {
+      const newSpeed = this.state.scrollSpeed + 10;
+      this.setScrollSpeed(newSpeed);
+      return;
+    }
+    if (keyCode === 'BracketLeft') {
+      console.log('previous');
+      return;
+    }
+    if (keyCode === 'BracketRight') {
+      console.log('next');
+      return;
+    }
+    if (keyCode === 'KeyF') {
+      console.log('full screen');
       return;
     }
   }
 
-  playClick = () => {
+  setScrollSpeed = (newSpeed) => {
+    this.setState((prevState) => {
+      if (prevState.scrollSpeedRaw === newSpeed) {
+        return null;
+      }
+      if (newSpeed < 1 || newSpeed > 1000) {
+        console.log('out of bounds', newSpeed);
+        return null;
+      }
+      console.log('setSpeed', newSpeed);
+      if (this.props.onScrollSpeedChange) {
+        this.props.onScrollSpeedChange(newSpeed);
+      }
+      return {
+        scrollSpeed: newSpeed,
+        scrollSpeedPercent: newSpeed / 100,
+      };
+    });
+  }
+
+  playClick = (e) => {
+    // TODO: Fix focus problem, if user clicks, then hits keyboard shortcut
+    // item is fired twice, once for the keyboard, once for the focused click.
+    if (e && e.x === 0 && e.y === 0) {
+      return;
+    }
     if (this.scrollingRAF) {
       this.scrollStop();
-      this.setState({
-        playButtonText: 'Play',
-        hidePlay: '',
-        hidePause: style.hidden,
-      });
-      this.setFooterVisibility(true);
       return;
     }
     this.scrollStart();
+  }
+
+  scrollStart = () => {
+    this.docScrollHeight = this.scrollerRef.scrollHeight;
     this.setState({
       playButtonText: 'Pause',
       hidePlay: style.hidden,
@@ -49,25 +125,27 @@ class PrompterFooter extends Component {
         this.setFooterVisibility(false);
       }
     }, 2500);
-  }
-
-  scrollStart = () => {
-    this.docScrollHeight = this.scrollerRef.scrollHeight;
     this.doScrollStep(0);
-    this.start = Date.now();
+    // TODO: Add timer
+    // this.start = Date.now();
   }
 
   scrollStop = () => {
     if (this.scrollingRAF) {
       cancelAnimationFrame(this.scrollingRAF);
       this.scrollingRAF = null;
-      return;
     }
+    this.setState({
+      playButtonText: 'Play',
+      hidePlay: '',
+      hidePause: style.hidden,
+    });
+    this.setFooterVisibility(true);
   }
 
   doScrollStep = (lastScrollAmount) => {
     const currentY = this.scrollerRef.scrollTop;
-    const scrollSpeed = this.props.scrollSpeed / 100;
+    const scrollSpeed = this.state.scrollSpeedPercent;
     const scrollAmount = scrollSpeed + (lastScrollAmount || 0);
     const scrollBy = Math.floor(scrollAmount);
     let scrollRemainder = scrollAmount;
@@ -76,7 +154,7 @@ class PrompterFooter extends Component {
       scrollRemainder -= scrollBy;
     }
     if (currentY + window.innerHeight >= this.docScrollHeight) {
-      this.playClick();
+      this.scrollStop();
       return;
     }
     this.scrollingRAF = window.requestAnimationFrame(() => {
@@ -86,7 +164,7 @@ class PrompterFooter extends Component {
 
   resetClick = () => {
     if (this.scrollingRAF) {
-      this.playClick();
+      this.scrollStop();
     }
     this.scrollerRef.scrollTo({top: 0, behavior: 'smooth'});
   }
