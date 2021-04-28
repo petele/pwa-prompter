@@ -3,7 +3,7 @@ import style from './style.css';
 import { route } from 'preact-router';
 
 
-import { map } from 'lodash';
+import map from 'lodash/map';
 import { customAlphabet, urlAlphabet } from 'nanoid';
 
 import { getScriptList, updateScriptList, updateScript } from '../../components/data-layer';
