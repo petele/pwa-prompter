@@ -57,7 +57,3 @@ html, body {
   display: flex;
   flex-direction: column;
 }
-
-#app .ql-container {
-  font-size: 16px;
-}

@@ -1,6 +1,11 @@
 .view {
   word-break: break-word;
   /* hyphens: auto; */
+  margin-bottom: 76px;
+}
+
+.footerHidden {
+  margin-bottom: 20px;
 }
 
 .view p {
@@ -22,6 +27,6 @@
 }
 
 .boundary:last-of-type {
-  margin-top: 1em;
-  padding-bottom: 16em;
+  margin-top: 2em;
+  padding-bottom: 8em;
 }

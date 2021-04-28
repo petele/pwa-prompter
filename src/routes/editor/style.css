@@ -1,16 +1,8 @@
 .editor {
-  padding: 72px 20px 56px 20px;
-  /* min-height: 100%; */
-  width: 100%;
-  height: 100%;
-  flex-grow: 1;
-}
-
-.quill {
-  width: 100%;
-  height: 100%;
-  /* padding-bottom: 76px; */
-  padding-bottom: 48px;
+  overflow-y: clip;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
 .lastSaved {

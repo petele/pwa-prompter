@@ -3,10 +3,20 @@ import style from './style.css';
 
 class PrompterFooter extends Component {
   footerRef = null;
+  scrollerRef = null;
   state = {
     playButtonText: 'Play',
     playButtonIcon: '/images/play_48dp.svg',
   };
+
+
+  // Lifecycle: Called whenever our component is created
+  componentDidMount() {
+    if (this.scrollerRef) {
+      return;
+    }
+    this.scrollerRef = document.getElementById('docScroller');
+  }
 
   componentWillUnmount() {
     if (this.scrollingRAF) {
@@ -23,7 +33,7 @@ class PrompterFooter extends Component {
         playButtonText: 'Play',
         playButtonIcon: '/images/play_48dp.svg',
       });
-      this.footerShow();
+      this.setFooterVisibility(true);
       return;
     }
     this.scrollStart();
@@ -31,15 +41,15 @@ class PrompterFooter extends Component {
       playButtonText: 'Pause',
       playButtonIcon: '/images/pause_48dp.svg',
     });
-    setTimeout(() => {
+    this.hideFooterTimer = setTimeout(() => {
       if (this.scrollingRAF) {
-        this.footerHide();
+        this.setFooterVisibility(false);
       }
     }, 2500);
   }
 
   scrollStart = () => {
-    this.docScrollHeight = document.body.scrollHeight;
+    this.docScrollHeight = this.scrollerRef.scrollHeight;
     this.doScrollStep(0);
     this.start = Date.now();
   }
@@ -53,13 +63,13 @@ class PrompterFooter extends Component {
   }
 
   doScrollStep = (lastScrollAmount) => {
-    const currentY = window.scrollY;
+    const currentY = this.scrollerRef.scrollTop;
     const scrollSpeed = this.props.scrollSpeed / 100;
     const scrollAmount = scrollSpeed + (lastScrollAmount || 0);
     const scrollBy = Math.floor(scrollAmount);
     let scrollRemainder = scrollAmount;
     if (scrollBy >= 1) {
-      window.scrollBy({top: scrollBy});
+      this.scrollerRef.scrollBy({top: scrollBy});
       scrollRemainder -= scrollBy;
     }
     if (currentY + window.innerHeight >= this.docScrollHeight) {
@@ -75,7 +85,7 @@ class PrompterFooter extends Component {
     if (this.scrollingRAF) {
       this.playClick();
     }
-    window.scrollTo({top: 0, behavior: 'smooth'});
+    this.scrollerRef.scrollTo({top: 0, behavior: 'smooth'});
   }
 
   backClick = () => {
@@ -83,7 +93,7 @@ class PrompterFooter extends Component {
     if (isScrolling) {
       this.scrollStop();
     }
-    window.scrollBy({top: -150, behavior: 'smooth'});
+    this.scrollerRef.scrollBy({top: -150, behavior: 'smooth'});
     if (isScrolling) {
       setTimeout(this.scrollStart, 400);
     }
@@ -94,22 +104,26 @@ class PrompterFooter extends Component {
     if (isScrolling) {
       this.scrollStop();
     }
-    window.scrollBy({top: 150, behavior: 'smooth'});
+    this.scrollerRef.scrollBy({top: 150, behavior: 'smooth'});
     if (isScrolling) {
       setTimeout(this.scrollStart, 400);
     }
   }
 
-  footerShow = () => {
-    this.footerRef.classList.toggle(style.minimized, false);
-  }
-
-  footerHide = () => {
-    this.footerRef.classList.toggle(style.minimized, true);
-  }
-
   toggleFooterClick = () => {
-    this.footerRef.classList.toggle(style.minimized);
+    const isVisible = this.footerRef.classList.contains(style.minimized);
+    this.setFooterVisibility(isVisible)
+  }
+
+  setFooterVisibility = (isVisible) => {
+    if (this.hideFooterTimer) {
+      clearTimeout(this.hideFooterTimer);
+      this.hideFooterTimer = null;
+    }
+    this.footerRef.classList.toggle(style.minimized, !isVisible);
+    if (this.props.onFooterVisibleChange) {
+      this.props.onFooterVisibleChange(isVisible);
+    }
   }
 
 

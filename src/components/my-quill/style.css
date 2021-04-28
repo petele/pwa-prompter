@@ -1,15 +1,6 @@
-.fullContainer {
-
-}
-
-.toolbarContainer {
-
-}
-
 .editorContainer {
-
-}
-
-.customQuillButtonImage {
-  width: 18px
+  /* max-height: 250px; */
+  /* 56 + 20 + 44 + 40 + 16 + 20 */
+  max-height: calc(100vh - 196px);
+  overflow-y: auto;
 }

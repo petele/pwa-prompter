@@ -1,5 +1,4 @@
 .header {
-  position: fixed;
   left: 0;
   top: 0;
   width: 100%;
@@ -24,10 +23,11 @@
 
 .header nav {
   font-size: 100%;
+  display: flex;
 }
 
 .header nav a {
-  display: inline-block;
+  display: block;
   height: 56px;
   line-height: 56px;
   padding: 0 15px;

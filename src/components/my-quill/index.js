@@ -2,49 +2,64 @@
 import { h, Component } from 'preact';
 
 import Quill from 'quill';
-import 'quill/dist/quill.snow.css';
+import '/style/quill.css';
 import style from './style.css';
 
 class MyQuill extends Component {
   editorRef = null;
   toolbarRef = null;
+  containerRef = null;
 
   // Lifecycle: Called whenever our component is created
   componentDidMount() {
     if (!this.editorRef) {
       return;
     }
-    const toolbarOptions = {
-      container: this.toolbarRef,
-      handlers: {
-        image: () => {
-          const position = this.editor.getSelection();
-          console.log(this.editor);
-          // TODO: Fix bookmark image
-          this.editor.insertEmbed(position.index, 'image', '/images/delete_48dp.svg')
-        },
-      },
-    }
     this.editor = new Quill(this.editorRef, {
       theme: 'snow',
       placeholder: 'Write your script here...',
       modules: {
-        toolbar: toolbarOptions,
+        toolbar: {
+          container: this.toolbarRef,
+        },
         history: {
           delay: 2000,
           maxStack: 250,
         },
       },
+      bounds: this.containerRef,
     });
 
     if (this.props.asQuill) {
       this.editor.setContents(this.props.asQuill);
     }
+    const butAddBookmark = this.toolbarRef.querySelector('#butBookmark');
+    butAddBookmark.addEventListener('click', () => {
+      this.addPrompterElement('bookmark');
+    });
+    const butAddPause = this.toolbarRef.querySelector('#butPause');
+    butAddPause.addEventListener('click', () => {
+      this.addPrompterElement('pause');
+    });
+
     this.editor.on('text-change', this.onTextChange);
   }
 
   componentWillUnmount() {
+    // TODO: Add check to make sure we've saved everything.
     this.editor.off('text-change', this.onTextChange);
+  }
+
+  addPrompterElement = (kind) => {
+    const position = this.editor.getSelection();
+    if (!position || position.range > 0) {
+      return;
+    }
+    const index = position.index;
+    const imgName = kind === 'bookmark' ? 'add_bookmark' : 'pause';
+    this.editor.insertEmbed(index, 'image', `/images/${imgName}_48dp.svg`);
+    this.editor.insertText(index + 1, '\n');
+    this.editor.setSelection(index + 2);
   }
 
   onTextChange = () => {
@@ -59,7 +74,7 @@ class MyQuill extends Component {
     }
   }
 
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate() {
     // console.log('here', nextProps)
     // if (nextProps.asQuill) {
     //   this.editor.setContents(nextProps.asQuill);
@@ -69,7 +84,7 @@ class MyQuill extends Component {
 
   render() {
     return (
-      <div class={style.fullContainer}>
+      <div class={style.fullContainer} ref={el => { this.containerRef = el }}>
         <div class={style.toolbarContainer} ref={el => { this.toolbarRef = el }}>
           <span class="ql-formats">
             {/* <!-- bold/italic/underline --> */}
@@ -163,11 +178,23 @@ class MyQuill extends Component {
             </select>
           </span>
           <span class="ql-formats">
-            <button class="ql-image" />
-          </span>
-          <span class="ql-formats">
             {/* <!-- clear formatting --> */}
             <button class="ql-clean" />
+          </span>
+          <span class="ql-formats">
+            {/* <!-- Pause/Bookmark --> */}
+            <button id="butBookmark">
+              <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="18px" viewBox="0 0 20 20" width="18px" class="ql-fill">
+                <rect fill="none" height="20" width="20" />
+                <path d="M13.5,9v5.78l-3.5-1.4l-3.5,1.4V4.5H11V3H6.5C5.67,3,5,3.67,5,4.5V17l5-2l5,2V9H13.5z M15.75,4.25v-1.5h-1.5v1.5h-1.5v1.5 h1.5v1.5h1.5v-1.5h1.5v-1.5H15.75z" />
+              </svg>
+            </button>
+            <button id="butPause">
+              <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px" class="ql-fill">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path d="M19 19h-6V5h6v14zm-4-2h2V7h-2v10zm-4 2H5V5h6v14zm-4-2h2V7H7v10z" />
+              </svg>
+            </button>
           </span>
         </div>
         <div class={style.editorContainer} ref={el => { this.editorRef = el }} />
