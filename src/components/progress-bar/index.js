@@ -2,8 +2,8 @@ import { Component } from 'preact';
 import style from './style.css';
 
 class ProgressBar extends Component {
+  scrollerRef = null;
 
-  // Lifecycle: Called whenever our component is created
   componentDidMount() {
     this.lastPercent;
     this.progressInterval = setInterval(() => {
@@ -22,17 +22,21 @@ class ProgressBar extends Component {
     this.progressInterval = null;
   }
 
-  shouldComponentUpdate(nextProps) {
-    const selectedRoute = nextProps.selectedRoute;
-    if (selectedRoute?.startsWith('/prompter/')) {
-      return true;
+  getScrollContainer() {
+    if (this.scrollerRef) {
+      return this.scrollerRef;
     }
-    return false;
+    this.scrollerRef = document.getElementById('docScroller');
+    return this.scrollerRef;
   }
 
   getPercentScrolled = () => {
-    const currentY = window.scrollY;
-    const maxScroll = document.body.scrollHeight - window.innerHeight;
+    const scrollContainer = this.getScrollContainer();
+    if (!scrollContainer) {
+      return 0;
+    }
+    const currentY = scrollContainer.scrollTop;
+    const maxScroll = scrollContainer.scrollHeight - window.innerHeight;
     return Math.round((currentY / maxScroll) * 100);
   }
 

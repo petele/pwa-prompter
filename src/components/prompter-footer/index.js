@@ -12,14 +12,13 @@ class PrompterFooter extends Component {
     fullScreenStyle: '',
   };
 
-  // Lifecycle: Called whenever our component is created
   componentDidMount() {
     if (this.scrollerRef) {
       return;
     }
     this.setScrollSpeed(this.props.scrollSpeed);
     this.scrollerRef = document.getElementById('docScroller');
-    window.addEventListener('keydown', this.keyboardHandler);
+    document.addEventListener('keydown', this.keyboardHandler);
     document.addEventListener('fullscreenchange', this.fullScreenChanged);
   }
 
@@ -42,27 +41,22 @@ class PrompterFooter extends Component {
   }
 
   keyboardHandler = (e) => {
-    // e.preventDefault();
     console.log('key', e.code, e.ctrlKey, e.metaKey, e.shiftKey, e.key);
 
     const keyCode = e.code;
 
     if (keyCode === 'Space') {
-      if (this.scrollingRAF) {
-        this.scrollStop();
-        return;
-      }
-      this.scrollStart();
-      return;
+      e.preventDefault();
+      return this.toggleScroller();
     }
     if (keyCode === 'ArrowUp') {
-      return this.backClick();
+      return this.skipBackward();
     }
     if (keyCode === 'ArrowDown') {
-      return this.forwardClick();
+      return this.skipForward();
     }
     if (keyCode === 'Escape') {
-      return this.resetClick();
+      return this.resetScroller();
     }
     if (keyCode === 'ArrowLeft') {
       const newSpeed = this.state.scrollSpeed - 10;
@@ -75,15 +69,35 @@ class PrompterFooter extends Component {
       return;
     }
     if (keyCode === 'BracketLeft') {
-      console.log('previous');
+      this.gotoPrevMarker();
       return;
     }
     if (keyCode === 'BracketRight') {
-      console.log('next');
+      this.gotoNextMarker();
       return;
     }
     if (keyCode === 'KeyF') {
-      this.fullscreenClick();
+      this.toggleFullScreen();
+      return;
+    }
+
+    if (keyCode === 'Home') {
+      e.preventDefault();
+      this.resetScroller();
+      return;
+    }
+    if (keyCode === 'End') {
+      e.preventDefault();
+      const elem = document.getElementById('pwapEnd');
+      this.scrollPage(elem);
+      return;
+    }
+    if (keyCode === 'PageDown') {
+      this.scrollPage(window.innerHeight);
+      return;
+    }
+    if (keyCode === 'PageUp') {
+      this.scrollPage(window.innerHeight * -1);
       return;
     }
   }
@@ -97,7 +111,6 @@ class PrompterFooter extends Component {
         console.log('out of bounds', newSpeed);
         return null;
       }
-      console.log('setSpeed', newSpeed);
       if (this.props.onScrollSpeedChange) {
         this.props.onScrollSpeedChange(newSpeed);
       }
@@ -108,27 +121,6 @@ class PrompterFooter extends Component {
     });
   }
 
-  fullscreenClick = () => {
-    if (document.fullscreenElement) {
-      document.exitFullscreen();
-      return;
-    }
-    this.scrollerRef.requestFullscreen();
-  }
-
-  playClick = (e) => {
-    // TODO: Fix focus problem, if user clicks, then hits keyboard shortcut
-    // item is fired twice, once for the keyboard, once for the focused click.
-    if (e && e.x === 0 && e.y === 0) {
-      return;
-    }
-    if (this.scrollingRAF) {
-      this.scrollStop();
-      return;
-    }
-    this.scrollStart();
-  }
-
   scrollStart = () => {
     this.docScrollHeight = this.scrollerRef.scrollHeight;
     this.setState({
@@ -137,15 +129,6 @@ class PrompterFooter extends Component {
       hidePause: '',
     });
     this.doScrollStep(0);
-    if (this.props.autoHideFooter) {
-      this.hideFooterTimer = setTimeout(() => {
-        if (this.scrollingRAF) {
-          this.setFooterVisibility(false);
-        }
-      }, 2500);
-    }
-    // TODO: Add timer
-    // this.start = Date.now();
   }
 
   scrollStop = () => {
@@ -180,41 +163,41 @@ class PrompterFooter extends Component {
     });
   }
 
-  resetClick = () => {
-    if (this.scrollingRAF) {
-      this.scrollStop();
-    }
-    this.scrollerRef.scrollTo({top: 0, behavior: 'smooth'});
+  promisedSleep() {
+    return new Promise((resolve) => {
+      setTimeout(resolve, 50);
+    });
   }
 
-  backClick = () => {
-    const isScrolling = this.scrollingRAF;
-    if (isScrolling) {
-      this.scrollStop();
+  waitWhileScrolling(prevY) {
+    const currentY = this.scrollerRef.scrollTop;
+    if (currentY === prevY) {
+      return Promise.resolve();
     }
-    this.scrollerRef.scrollBy({top: -150, behavior: 'smooth'});
+    return this.promisedSleep().then(() => {
+      return this.waitWhileScrolling(currentY);
+    });
+  }
+
+  // scrollPage = async (val) => {
+  async scrollPage(val) {
+    const isScrolling = !!this.scrollingRAF;
     if (isScrolling) {
-      setTimeout(this.scrollStart, 400);
+      cancelAnimationFrame(this.scrollingRAF);
+      this.scrollingRAF = null;
+    }
+    if (typeof val === 'object') {
+      val.scrollIntoView({behavior: 'smooth'});
+    } else{
+      this.scrollerRef.scrollBy({top: val, behavior: 'smooth'});
+    }
+    await this.waitWhileScrolling();
+    if (isScrolling) {
+      this.scrollStart();
     }
   }
 
-  forwardClick = () => {
-    const isScrolling = this.scrollingRAF;
-    if (isScrolling) {
-      this.scrollStop();
-    }
-    this.scrollerRef.scrollBy({top: 150, behavior: 'smooth'});
-    if (isScrolling) {
-      setTimeout(this.scrollStart, 400);
-    }
-  }
-
-  toggleFooterClick = () => {
-    const isVisible = this.footerRef.classList.contains(style.minimized);
-    this.setFooterVisibility(isVisible)
-  }
-
-  setFooterVisibility = (isVisible) => {
+  setFooterVisibility(isVisible) {
     if (this.hideFooterTimer) {
       clearTimeout(this.hideFooterTimer);
       this.hideFooterTimer = null;
@@ -225,11 +208,82 @@ class PrompterFooter extends Component {
     }
   }
 
+  toggleFooterVisibility = () => {
+    const isVisible = this.footerRef.classList.contains(style.minimized);
+    this.setFooterVisibility(isVisible)
+  }
+
+  resetScroller = () => {
+    this.scrollStop();
+    this.scrollerRef.scrollTo({top: 0, behavior: 'smooth'});
+  }
+
+  gotoPrevMarker = () => {
+    const currentY = this.scrollerRef.scrollTop;
+    const markers = this.scrollerRef.querySelectorAll('hr.bookmark');
+    const len = markers.length;
+    // eslint-disable-next-line for-direction
+    for (let i = len - 1; i >= 0; i--) {
+      const marker = markers[i];
+      if (currentY > marker.offsetTop) {
+        this.scrollPage(marker);
+        break;
+      }
+    }
+  }
+
+  skipBackward = () => {
+    this.scrollPage(-150);
+  }
+
+  toggleScroller = (e) => {
+    // TODO: Fix focus problem, if user clicks, then hits keyboard shortcut
+    // item is fired twice, once for the keyboard, once for the focused click.
+    if (e && e.x === 0 && e.y === 0) {
+      return;
+    }
+    if (this.scrollingRAF) {
+      this.scrollStop();
+      return;
+    }
+    this.scrollStart();
+    if (this.props.autoHideFooter) {
+      this.hideFooterTimer = setTimeout(() => {
+        if (this.scrollingRAF) {
+          this.setFooterVisibility(false);
+        }
+      }, 2500);
+    }
+  }
+
+  gotoNextMarker = () => {
+    const currentY = this.scrollerRef.scrollTop + 60;
+    const markers = this.scrollerRef.querySelectorAll('hr.bookmark');
+    for (const marker of markers) {
+      if (marker.offsetTop > currentY) {
+        this.scrollPage(marker);
+        break;
+      }
+    }
+  }
+
+  skipForward = () => {
+    this.scrollPage(150);
+  }
+
+  toggleFullScreen = () => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+      return;
+    }
+    this.scrollerRef.requestFullscreen();
+  }
+
   render() {
     return (
       <footer class={style.footer} ref={el => { this.footerRef = el }}>
         <div class={style.toggle}>
-          <button onClick={this.toggleFooterClick} type="button">
+          <button onClick={this.toggleFooterVisibility} type="button">
             &bull;&bull;&bull;
           </button>
         </div>
@@ -237,28 +291,28 @@ class PrompterFooter extends Component {
           settings
         </div>
         <nav>
-          <button id="reset" onClick={this.resetClick} type="button">
+          <button onClick={this.resetScroller} type="button">
             <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 0 24 24" width="48px" fill="#ffffff">
               <path d="M12 4c-.21 0-.42.02-.62.04l1.83-1.83L11.8.8 7.59 5l4.21 4.21 1.41-1.41-1.75-1.75c.18-.02.35-.05.54-.05 3.86 0 7 3.14 7 7s-3.14 7-7 7-7-3.14-7-7H3c0 4.97 4.03 9 9 9s9-4.03 9-9-4.03-9-9-9z" />
               <path d="M0 0h24v24H0zm0 0h24v24H0zm0 0h24v24H0z" fill="none" />
             </svg>
             <div>Reset</div>
           </button>
-          <button id="skipBack" type="button">
+          <button onClick={this.gotoPrevMarker} type="button">
             <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 0 24 24" width="48px" fill="#ffffff">
               <path d="M0 0h24v24H0V0z" fill="none" />
               <path d="M6 6h2v12H6zm3.5 6l8.5 6V6l-8.5 6zm6.5 2.14L12.97 12 16 9.86v4.28z" />
             </svg>
             <div>Previous</div>
           </button>
-          <button id="rw" onClick={this.backClick} type="button">
+          <button onClick={this.skipBackward} type="button">
             <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 0 24 24" width="48px" fill="#ffffff">
               <path d="M0 0h24v24H0V0z" fill="none" />
               <path d="M18 9.86v4.28L14.97 12 18 9.86m-9 0v4.28L5.97 12 9 9.86M20 6l-8.5 6 8.5 6V6zm-9 0l-8.5 6 8.5 6V6z" />
             </svg>
             <div>Back</div>
           </button>
-          <button id="pause" onClick={this.playClick} type="button">
+          <button onClick={this.toggleScroller} type="button">
             {/* PLAY */}
             <svg class={this.state.hidePlay} xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 0 24 24" width="48px" fill="#ffffff">
               <path d="M0 0h24v24H0V0z" fill="none" />
@@ -271,21 +325,21 @@ class PrompterFooter extends Component {
             </svg>
             <div>{this.state.playButtonText}</div>
           </button>
-          <button id="ff" onClick={this.forwardClick} type="button">
+          <button onClick={this.skipForward} type="button">
             <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 0 24 24" width="48px" fill="#ffffff">
               <path d="M15 9.86L18.03 12 15 14.14V9.86m-9 0L9.03 12 6 14.14V9.86M13 6v12l8.5-6L13 6zM4 6v12l8.5-6L4 6z" />
               <path d="M0 0h24v24H0zm0 0h24v24H0zm0 0h24v24H0z" fill="none" />
             </svg>
             <div>Forward</div>
           </button>
-          <button id="skipForward" type="button">
+          <button id="skipForward" onClick={this.gotoNextMarker} type="button">
             <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 0 24 24" width="48px" fill="#ffffff">
               <path d="M0 0h24v24H0V0z" fill="none" />
               <path d="M6 18l8.5-6L6 6v12zm2-8.14L11.03 12 8 14.14V9.86zM16 6h2v12h-2z" />
             </svg>
             <div>Next</div>
           </button>
-          <button id="fullScreen" class={this.state.fullScreenStyle}  onClick={this.fullscreenClick} type="button">
+          <button id="fullScreen" class={this.state.fullScreenStyle}  onClick={this.toggleFullScreen} type="button">
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#ffffff">
               <path d="M0 0h24v24H0V0z" fill="none" />
               <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
@@ -308,7 +362,7 @@ class PrompterFooter extends Component {
 
 PrompterFooter.defaultProps = {
   scrollSpeed: 175,
-  autoHideFooter: false,
+  autoHideFooter: true,
 };
 
 export default PrompterFooter;

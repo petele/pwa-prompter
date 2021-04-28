@@ -68,7 +68,7 @@
 }
 
 .footer nav button.enabled {
-  background: blue;
+  background: var(--app-background-third);
 }
 
 .hidden {

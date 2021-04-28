@@ -2,7 +2,7 @@ import { h, Component } from 'preact';
 import style from './style.css';
 
 import PrompterFooter from '../../components/prompter-footer';
-
+import ProgressBar from '../../components/progress-bar';
 import PrompterView from '../../components/prompter-view';
 
 class Prompter extends Component {
@@ -20,6 +20,7 @@ class Prompter extends Component {
   render() {
     return (
       <div id="docScroller" class={this.state.class}>
+        <ProgressBar />
         <PrompterView asHTML={this.props.asHTML}  />
         <PrompterFooter onFooterVisibleChange={this.footerVisibleChange} />
       </div>

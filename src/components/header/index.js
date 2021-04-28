@@ -2,8 +2,6 @@ import { Component } from 'preact';
 import { Link } from 'preact-router';
 import style from './style.css';
 
-import ProgressBar from '../progress-bar';
-
 class Header extends Component {
 
   shouldComponentUpdate(nextProps) {
@@ -52,10 +50,6 @@ class Header extends Component {
             Account
           </Link>
         </nav>
-        {
-          this.isPrompter &&
-          <ProgressBar selectedRoute={this.props.selectedRoute} />
-        }
       </header>
     );
   }
