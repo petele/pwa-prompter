@@ -3,17 +3,26 @@ import { h, Component } from 'preact';
 import style from './style.css';
 
 class PrompterView extends Component {
-  state = {};
+  state = {
+    markup: this.props.asHTML,
+    styles: this.getStyles(),
+  };
 
-  componentDidMount() {
-    this.updateStyles();
-  }
+  // componentDidMount() {
+  // }
 
   shouldComponentUpdate() {
-    this.updateStyles();
+    // console.log('shouldComponentUpdate');
+    const styles = this.getStyles();
+    const markup = this.props.asHTML;
+    this.setState({markup, styles});
   }
 
-  updateStyles() {
+  // componentDidUpdate(prevProps, prevState, snapshot) {
+  //   console.log('componentDidUpdate', prevProps, prevState, snapshot);
+  // }
+
+  getStyles() {
     const style = [];
     style.push(`font-size: ${this.props.fontSize}em`);
     style.push(`margin-left: ${this.props.margin}%`);
@@ -28,18 +37,16 @@ class PrompterView extends Component {
     if (this.props.flipVertical) {
       style.push('transform: scaleY(-1)');
     }
-
-    const styleStr = style.join(';');
-    this.setState({style: styleStr});
+    return style.join(';');
   }
 
   render() {
     return (
-      <div style={this.state.style}>
+      <div style={this.state.styles}>
         <div id="pwapStart" class={style.boundary}>
           Start
         </div>
-        <div class={style.view} dangerouslySetInnerHTML={{__html: this.props.asHTML}} />
+        <div class={style.view} dangerouslySetInnerHTML={{__html: this.state.markup}} />
         <div id="pwapEnd" class={style.boundary}>
           End
         </div>

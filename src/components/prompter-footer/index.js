@@ -9,6 +9,7 @@ class PrompterFooter extends Component {
     playButtonText: 'Play',
     hidePlay: '',
     hidePause: style.hidden,
+    fullScreenStyle: '',
   };
 
   // Lifecycle: Called whenever our component is created
@@ -19,10 +20,12 @@ class PrompterFooter extends Component {
     this.setScrollSpeed(this.props.scrollSpeed);
     this.scrollerRef = document.getElementById('docScroller');
     window.addEventListener('keydown', this.keyboardHandler);
+    document.addEventListener('fullscreenchange', this.fullScreenChanged);
   }
 
   componentWillUnmount() {
     window.removeEventListener('keydown', this.keyboardHandler);
+    document.removeEventListener('fullscreenchange', this.fullScreenChanged);
     if (this.scrollingRAF) {
       cancelAnimationFrame(this.scrollingRAF);
       this.scrollingRAF = null;
@@ -31,6 +34,11 @@ class PrompterFooter extends Component {
       clearTimeout(this.hideFooterTimer);
       this.hideFooterTimer = null;
     }
+  }
+
+  fullScreenChanged = () => {
+    const value = document.fullscreenElement ? style.enabled : '';
+    this.setState({fullScreenStyle: value});
   }
 
   keyboardHandler = (e) => {
@@ -75,7 +83,7 @@ class PrompterFooter extends Component {
       return;
     }
     if (keyCode === 'KeyF') {
-      console.log('full screen');
+      this.fullscreenClick();
       return;
     }
   }
@@ -100,6 +108,14 @@ class PrompterFooter extends Component {
     });
   }
 
+  fullscreenClick = () => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+      return;
+    }
+    this.scrollerRef.requestFullscreen();
+  }
+
   playClick = (e) => {
     // TODO: Fix focus problem, if user clicks, then hits keyboard shortcut
     // item is fired twice, once for the keyboard, once for the focused click.
@@ -120,12 +136,14 @@ class PrompterFooter extends Component {
       hidePlay: style.hidden,
       hidePause: '',
     });
-    this.hideFooterTimer = setTimeout(() => {
-      if (this.scrollingRAF) {
-        this.setFooterVisibility(false);
-      }
-    }, 2500);
     this.doScrollStep(0);
+    if (this.props.autoHideFooter) {
+      this.hideFooterTimer = setTimeout(() => {
+        if (this.scrollingRAF) {
+          this.setFooterVisibility(false);
+        }
+      }, 2500);
+    }
     // TODO: Add timer
     // this.start = Date.now();
   }
@@ -215,6 +233,9 @@ class PrompterFooter extends Component {
             &bull;&bull;&bull;
           </button>
         </div>
+        <div class={style.settingsContainer}>
+          settings
+        </div>
         <nav>
           <button id="reset" onClick={this.resetClick} type="button">
             <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 0 24 24" width="48px" fill="#ffffff">
@@ -264,7 +285,14 @@ class PrompterFooter extends Component {
             </svg>
             <div>Next</div>
           </button>
-          <button id="settings" type="button">
+          <button id="fullScreen" class={this.state.fullScreenStyle}  onClick={this.fullscreenClick} type="button">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#ffffff">
+              <path d="M0 0h24v24H0V0z" fill="none" />
+              <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
+            </svg>
+            <div>Full Screen</div>
+          </button>
+          <button id="settings" type="button" style="display:none;">
             <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 0 24 24" width="48px" fill="#ffffff">
               <path d="M0 0h24v24H0V0z" fill="none" />
               <path d="M13.85 22.25h-3.7c-.74 0-1.36-.54-1.45-1.27l-.27-1.89c-.27-.14-.53-.29-.79-.46l-1.8.72c-.7.26-1.47-.03-1.81-.65L2.2 15.53c-.35-.66-.2-1.44.36-1.88l1.53-1.19c-.01-.15-.02-.3-.02-.46 0-.15.01-.31.02-.46l-1.52-1.19c-.59-.45-.74-1.26-.37-1.88l1.85-3.19c.34-.62 1.11-.9 1.79-.63l1.81.73c.26-.17.52-.32.78-.46l.27-1.91c.09-.7.71-1.25 1.44-1.25h3.7c.74 0 1.36.54 1.45 1.27l.27 1.89c.27.14.53.29.79.46l1.8-.72c.71-.26 1.48.03 1.82.65l1.84 3.18c.36.66.2 1.44-.36 1.88l-1.52 1.19c.01.15.02.3.02.46s-.01.31-.02.46l1.52 1.19c.56.45.72 1.23.37 1.86l-1.86 3.22c-.34.62-1.11.9-1.8.63l-1.8-.72c-.26.17-.52.32-.78.46l-.27 1.91c-.1.68-.72 1.22-1.46 1.22zm-3.23-2h2.76l.37-2.55.53-.22c.44-.18.88-.44 1.34-.78l.45-.34 2.38.96 1.38-2.4-2.03-1.58.07-.56c.03-.26.06-.51.06-.78s-.03-.53-.06-.78l-.07-.56 2.03-1.58-1.39-2.4-2.39.96-.45-.35c-.42-.32-.87-.58-1.33-.77l-.52-.22-.37-2.55h-2.76l-.37 2.55-.53.21c-.44.19-.88.44-1.34.79l-.45.33-2.38-.95-1.39 2.39 2.03 1.58-.07.56c-.03.26-.06.53-.06.79s.02.53.06.78l.07.56-2.03 1.58 1.38 2.4 2.39-.96.45.35c.43.33.86.58 1.33.77l.53.22.38 2.55z" />
@@ -280,6 +308,7 @@ class PrompterFooter extends Component {
 
 PrompterFooter.defaultProps = {
   scrollSpeed: 175,
+  autoHideFooter: false,
 };
 
 export default PrompterFooter;
