@@ -18,7 +18,7 @@ class PrompterFooter extends Component {
     }
     this.setScrollSpeed(this.props.scrollSpeed);
     this.scrollerRef = document.getElementById('docScroller');
-    document.addEventListener('keydown', this.keyboardHandler);
+    window.addEventListener('keydown', this.keyboardHandler);
     document.addEventListener('fullscreenchange', this.fullScreenChanged);
   }
 
