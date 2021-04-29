@@ -1,26 +1,17 @@
-/* eslint-disable prefer-template */
 import { h, Component } from 'preact';
 import style from './style.css';
 
+import Eyeline from '../eyeline';
+
 class PrompterView extends Component {
   state = {
-    markup: this.props.asHTML,
     styles: this.getStyles(),
   };
 
-  // componentDidMount() {
-  // }
-
   shouldComponentUpdate() {
-    // console.log('shouldComponentUpdate');
     const styles = this.getStyles();
-    const markup = this.props.asHTML;
-    this.setState({markup, styles});
+    this.setState({styles});
   }
-
-  // componentDidUpdate(prevProps, prevState, snapshot) {
-  //   console.log('componentDidUpdate', prevProps, prevState, snapshot);
-  // }
 
   getStyles() {
     const style = [];
@@ -40,13 +31,18 @@ class PrompterView extends Component {
     return style.join(';');
   }
 
-  render() {
+  eyelineChange = (value) => {
+    console.log('eyeline changed', value);
+  }
+
+  render(props) {
     return (
       <div style={this.state.styles}>
+        <Eyeline value={props.eyelineHeight} onChange={this.eyelineChange} />
         <div id="pwapStart" class={style.boundary}>
           Start
         </div>
-        <div class={style.view} dangerouslySetInnerHTML={{__html: this.state.markup}} />
+        <div class={style.view} dangerouslySetInnerHTML={{__html: props.asHTML}} />
         <div id="pwapEnd" class={style.boundary}>
           End
         </div>
@@ -56,6 +52,7 @@ class PrompterView extends Component {
 }
 
 PrompterView.defaultProps = {
+  eyelineHeight: 40,
   fontSize: 4,
   margin: 15,
   lineHeight: 120,

@@ -1,0 +1,29 @@
+.eyeline {
+  appearance: none;
+  transform: rotate(90deg);
+  transform-origin: 0 0;
+  width: 100vh;
+  position: fixed;
+  top: 0;
+}
+
+.eyeline::-webkit-slider-runnable-track {
+  /* height: 1px; */
+  height: 0;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.eyeline::-webkit-slider-thumb {
+  appearance: none;
+  width: 125px;
+  height: 50px;
+  cursor: pointer;
+  background-image: url('/assets/eyeline-arrow.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  left: 0px;
+  bottom: 50px;
+  position: relative;
+}
