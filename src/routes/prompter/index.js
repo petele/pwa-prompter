@@ -17,12 +17,12 @@ class Prompter extends Component {
     this.setState({class: `${style.prompter} ${style.footerHidden}`});
   }
 
-  render() {
+  render(props) {
     return (
       <div id="docScroller" class={this.state.class}>
         <ProgressBar />
-        <PrompterView asHTML={this.props.asHTML}  />
-        <PrompterFooter onFooterVisibleChange={this.footerVisibleChange} />
+        <PrompterView asHTML={props.asHTML} {...props.prompterOptions}  />
+        <PrompterFooter onFooterVisibleChange={this.footerVisibleChange} {...props.prompterOptions} />
       </div>
     );
   }

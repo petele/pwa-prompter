@@ -8,24 +8,28 @@ class PrompterView extends Component {
     styles: this.getStyles(),
   };
 
-  shouldComponentUpdate() {
-    const styles = this.getStyles();
+  shouldComponentUpdate(nextProps) {
+    const styles = this.getStyles(nextProps);
     this.setState({styles});
   }
 
-  getStyles() {
+  getStyles(props) {
+    if (!props) {
+      props = this.props;
+    }
+    console.log('props', props);
     const style = [];
-    style.push(`font-size: ${this.props.fontSize}em`);
-    style.push(`margin-left: ${this.props.margin}%`);
-    style.push(`margin-right: ${this.props.margin}%`);
-    style.push(`line-height: ${this.props.lineHeight}%`);
-    if (this.props.allCaps) {
+    style.push(`font-size: ${props.fontSize}em`);
+    style.push(`margin-left: ${props.margin}%`);
+    style.push(`margin-right: ${props.margin}%`);
+    style.push(`line-height: ${props.lineHeight}%`);
+    if (props.allCaps) {
       style.push('text-transform: uppercase');
     }
-    if (this.props.flipHorizontal) {
+    if (props.flipHorizontal) {
       style.push('transform: scaleX(-1)');
     }
-    if (this.props.flipVertical) {
+    if (props.flipVertical) {
       style.push('transform: scaleY(-1)');
     }
     return style.join(';');
@@ -35,9 +39,9 @@ class PrompterView extends Component {
     console.log('eyeline changed', value);
   }
 
-  render(props) {
+  render(props, state) {
     return (
-      <div style={this.state.styles}>
+      <div style={state.styles}>
         <Eyeline value={props.eyelineHeight} onChange={this.eyelineChange} />
         <div id="pwapStart" class={style.boundary}>
           Start
@@ -52,7 +56,7 @@ class PrompterView extends Component {
 }
 
 PrompterView.defaultProps = {
-  eyelineHeight: 40,
+  eyelineHeight: 25,
   fontSize: 4,
   margin: 15,
   lineHeight: 120,

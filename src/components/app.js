@@ -18,6 +18,7 @@ import PrompterSettingsDialog from '../components/prompter-settings-dialog';
 import { getScript, updateScript } from './data-layer';
 
 class App extends Component {
+  settingsDialogRef = null;
 
   handleRoute = async (e) => {
     const scriptID = e.current?.props?.scriptID;
@@ -54,17 +55,29 @@ class App extends Component {
     this.setState(newVal);
   }
 
-  render() {
+  showSettings = () => {
+    this.settingsDialogRef.showModal();
+  }
+
+  render(props, state) {
     return (
       <div id="app">
-        <PrompterSettingsDialog />
-        <Header selectedRoute={this.state.currentUrl} scriptID={this.state.scriptID} />
+        <PrompterSettingsDialog
+          ref={el => { this.settingsDialogRef = el }} />
+        <Header selectedRoute={state.currentUrl} scriptID={state.scriptID} />
         <Router onChange={this.handleRoute}>
           <Home path="/" />
           <Profile path="/profile/:user" />
-          <Editor path="/editor/:scriptID" onChange={this.onChange} title={this.state.title} asQuill={this.state.asQuill} lastUpdated={this.state.lastUpdated} />
+          <Editor path="/editor/:scriptID"
+            onChange={this.onChange}
+            title={state.title}
+            asQuill={state.asQuill}
+            lastUpdated={state.lastUpdated} />
           <RedirectToHome path="/editor/" />
-          <Prompter path="/prompter/:scriptID" onChange={this.onChange} asHTML={this.state.asHTML}  />
+          <Prompter path="/prompter/:scriptID"
+            prompterOptions={state.prompterOptions}
+            onClickSettings={this.showSettings}
+            asHTML={state.asHTML} />
           <RedirectToHome path="/prompter/" />
           <About path="/about" />
           <Account path="/account" />
@@ -73,7 +86,6 @@ class App extends Component {
       </div>
     );
   }
-
 }
 
 export default App;

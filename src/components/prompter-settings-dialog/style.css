@@ -1,12 +1,12 @@
 dialog {
   position: fixed;
-  top: 50%;
+  top: calc(50% - 56px);
   transform: translate(0, -50%);
 }
 
 dialog::backdrop {
-  background-color: green;
+  background-color: rgba(0, 0, 0, 0.8);
 }
 dialog + .backdrop { /* polyfill */
-  background-color: green;
+  background-color: rgba(0, 0, 0, 0.8);
 }

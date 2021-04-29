@@ -9,14 +9,18 @@ import './style.css';
 
 
 class PrompterSettingsDialog extends Component {
-  settingsDialogRef = null;
+  _settingsDialogRef = null;
 
   // Lifecycle: Called whenever our component is created
   componentDidMount() {
     if (!this.settingsDialogRef) {
       return;
     }
-    dialogPolyfill.registerDialog(this.settingsDialogRef);
+    dialogPolyfill.registerDialog(this._settingsDialogRef);
+  }
+
+  showModal = () => {
+    this._settingsDialogRef.showModal();
   }
 
   // shouldComponentUpdate(nextProps) {
@@ -30,7 +34,7 @@ class PrompterSettingsDialog extends Component {
 
   render(props) {
     return (
-      <dialog {...props} ref={el => { this.settingsDialogRef = el }}>
+      <dialog {...props} ref={el => { this._settingsDialogRef = el }}>
         <h2>Settings</h2>
         <form method="dialog">
           <div>scroll speed</div>
