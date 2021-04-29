@@ -30,8 +30,8 @@ class Editor extends Component {
     const now = Date.now();
     const lastUpdated = this.props.lastUpdated;
     const ago = now - lastUpdated;
-    if (ago < 60 * 60 * 24 * 30 * 1000) {
-      const pretty = formatDistanceToNow(lastUpdated, { addSuffix: true });
+    if (ago < 60 * 60 * 12 * 1000) {
+      const pretty = formatDistanceToNow(lastUpdated, { addSuffix: true, includeSeconds: true });
       this.setState({lastUpdated: pretty});
       return;
     }

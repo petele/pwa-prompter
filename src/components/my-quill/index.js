@@ -141,13 +141,6 @@ class MyQuill extends Component {
       <div class={style.fullContainer} ref={el => { this.containerRef = el }}>
         <div class={style.toolbarContainer} ref={el => { this.toolbarRef = el }}>
           <span class="ql-formats">
-            {/* Save */}
-            <button id="butSave">
-              {/* TODO: Save Icon */}
-              Sa
-            </button>
-          </span>
-          <span class="ql-formats">
             {/* <!-- bold/italic/underline --> */}
             <button class="ql-bold" />
             <button class="ql-italic" />
@@ -243,17 +236,6 @@ class MyQuill extends Component {
             <button class="ql-clean" />
           </span>
           <span class="ql-formats">
-            {/* <!-- undo/redo --> */}
-            <button id="butUndo">
-              {/* TODO: Undo icon */}
-              Un
-            </button>
-            <button id="butRedo">
-              {/* TODO: Redo icon */}
-              Re
-            </button>
-          </span>
-          <span class="ql-formats">
             {/* <!-- Pause/Bookmark --> */}
             <button id="butBookmark">
               <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="18px" viewBox="0 0 20 20" width="18px" class="ql-fill">
@@ -268,6 +250,33 @@ class MyQuill extends Component {
               </svg>
             </button>
           </span>
+          <span class="ql-formats">
+            {/* Save */}
+            <button id="butSave">
+              <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px" class="ql-fill">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm2 16H5V5h11.17L19 7.83V19z" />
+                <circle cx="12" cy="15" r="3" />
+                <path d="M6 6h9v4H6z" />
+              </svg>
+            </button>
+          </span>
+          <span class="ql-formats">
+            {/* <!-- undo/redo --> */}
+            <button id="butUndo">
+              <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px" class="ql-fill">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path d="M14.1 8H7.83l2.59-2.59L9 4 4 9l5 5 1.41-1.41L7.83 10h6.27c2.15 0 3.9 1.57 3.9 3.5S16.25 17 14.1 17H7v2h7.1c3.25 0 5.9-2.47 5.9-5.5S17.35 8 14.1 8z" />
+              </svg>
+            </button>
+            <button id="butRedo">
+              <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px" class="ql-fill">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path d="M6 13.5C6 11.57 7.75 10 9.9 10h6.27l-2.59 2.59L15 14l5-5-5-5-1.41 1.41L16.17 8H9.9C6.65 8 4 10.47 4 13.5S6.65 19 9.9 19H17v-2H9.9C7.75 17 6 15.43 6 13.5z" />
+              </svg>
+            </button>
+          </span>
+
         </div>
         <div class={style.editorContainer} ref={el => { this.editorRef = el }} />
       </div>
