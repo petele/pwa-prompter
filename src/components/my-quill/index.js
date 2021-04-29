@@ -4,8 +4,9 @@ import { h, Component } from 'preact';
 import Quill from 'quill';
 import '/style/quill.css';
 import style from './style.css';
-
+const Delta = Quill.import('delta');
 const BlockEmbed = Quill.import('blots/block/embed');
+
 class PauseBlot extends BlockEmbed {}
 PauseBlot.blotName = 'pause';
 PauseBlot.tagName = 'hr';
@@ -22,6 +23,7 @@ class MyQuill extends Component {
   editorRef = null;
   toolbarRef = null;
   containerRef = null;
+  saveInterval = null;
 
   // Lifecycle: Called whenever our component is created
   componentDidMount() {
@@ -44,8 +46,12 @@ class MyQuill extends Component {
     });
 
     if (this.props.asQuill) {
-      this.editor.setContents(this.props.asQuill);
+      this.editor.setContents(this.props.asQuill, Quill.sources.SILENT);
     }
+    const butSave = this.toolbarRef.querySelector('#butSave');
+    butSave.addEventListener('click', () => {
+      this.saveIntervalTick(true);
+    });
     const butAddBookmark = this.toolbarRef.querySelector('#butBookmark');
     butAddBookmark.addEventListener('click', () => {
       this.addPrompterElement('bookmark');
@@ -54,13 +60,29 @@ class MyQuill extends Component {
     butAddPause.addEventListener('click', () => {
       this.addPrompterElement('pause');
     });
+    const butUndo = this.toolbarRef.querySelector('#butUndo');
+    butUndo.addEventListener('click', () => {
+      this.editor.history.undo();
+    });
+    const butRedo = this.toolbarRef.querySelector('#butRedo');
+    butRedo.addEventListener('click', () => {
+      this.editor.history.redo();
+    });
 
+    this.quillDelta = new Delta();
+    this.saveInterval = setInterval(this.saveIntervalTick, 2500);
     this.editor.on('text-change', this.onTextChange);
+    this.containerRef.addEventListener('keydown', this.onKeyDown);
   }
 
   componentWillUnmount() {
-    // TODO: Add check to make sure we've saved everything.
     this.editor.off('text-change', this.onTextChange);
+    this.containerRef.removeEventListener('keydown', this.onKeyDown);
+    if (this.saveInterval) {
+      clearInterval(this.saveInterval);
+      this.saveInterval = null;
+    }
+    this.saveIntervalTick();
   }
 
   addPrompterElement = (kind) => {
@@ -70,16 +92,24 @@ class MyQuill extends Component {
     this.editor.setSelection(range.index + 2, Quill.sources.SILENT);
   }
 
-  onTextChange = () => {
-    const scriptData = {
-      asHTML: this.editor.root.innerHTML,
-      asQuill: this.editor.getContents(),
-      snippet: this.editor.getText(0, 250),
-      lastUpdated: Date.now(),
+  onKeyDown = (e) => {
+    console.log('keydown [quill]', e, e.code, e.ctrlKey, e.metaKey, e.shiftKey, e.key);
+    const keyCode = e.code;
+
+    if ((e.metaKey || e.ctrlKey) && keyCode === 'KeyY') {
+      e.preventDefault();
+      this.editor.history.redo();
+      return;
     }
-    if (this?.props?.onChange) {
-      this.props.onChange(scriptData);
+    if ((e.metaKey || e.ctrlKey) && keyCode === 'KeyS') {
+      e.preventDefault();
+      this.saveIntervalTick(true);
+      return;
     }
+  }
+
+  onTextChange = (change) => {
+    this.quillDelta = this.quillDelta.compose(change);
   }
 
   shouldComponentUpdate() {
@@ -90,10 +120,33 @@ class MyQuill extends Component {
     return false;
   }
 
+  saveIntervalTick = (force) => {
+    if (!force && this.quillDelta.length() === 0) {
+      return;
+    }
+    const scriptData = {
+      asHTML: this.editor.root.innerHTML,
+      asQuill: this.editor.getContents(),
+      snippet: this.editor.getText(0, 250),
+      lastUpdated: Date.now(),
+    }
+    this.quillDelta = new Delta();
+    if (this?.props?.onChange) {
+      this.props.onChange(scriptData);
+    }
+  }
+
   render() {
     return (
       <div class={style.fullContainer} ref={el => { this.containerRef = el }}>
         <div class={style.toolbarContainer} ref={el => { this.toolbarRef = el }}>
+          <span class="ql-formats">
+            {/* Save */}
+            <button id="butSave">
+              {/* TODO: Save Icon */}
+              Sa
+            </button>
+          </span>
           <span class="ql-formats">
             {/* <!-- bold/italic/underline --> */}
             <button class="ql-bold" />
@@ -188,6 +241,17 @@ class MyQuill extends Component {
           <span class="ql-formats">
             {/* <!-- clear formatting --> */}
             <button class="ql-clean" />
+          </span>
+          <span class="ql-formats">
+            {/* <!-- undo/redo --> */}
+            <button id="butUndo">
+              {/* TODO: Undo icon */}
+              Un
+            </button>
+            <button id="butRedo">
+              {/* TODO: Redo icon */}
+              Re
+            </button>
           </span>
           <span class="ql-formats">
             {/* <!-- Pause/Bookmark --> */}
