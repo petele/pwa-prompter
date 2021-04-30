@@ -2,89 +2,73 @@
 
 import { get, set, update, del, keys } from 'idb-keyval';
 
-const DEFAULT_PROMPTER_OPTIONS = {
-  scrollSpeed: 175,
-  fontSize: 4,
-  margin: 15,
-  lineHeight: 120,
-  eyelineHeight: 10,
-  autoHideFooter: true,
-  allCaps: false,
-  flipVertical: false,
-  flipHorizontal: false,
-};
-
-const SCRIPT_TEMPLATE = {
+const DEFAULT_SCRIPT_TEMPLATE = {
   asHTML: '',
   asQuill: '',
+  snippet: '',
   createdOn: Date.now(),
   hasStar: false,
   lastUpdated: Date.now(),
-  snippet: '',
   title: 'Untitled Script',
 };
 
-const cachedScript = {
+const _cachedScript = {
   id: null,
   script: null,
 };
 
-let scriptList = {};
+let _cachedScriptList = {};
 
 export async function getScript(scriptID) {
-  if (cachedScript.id === scriptID) {
-    console.log('getScript [cached]', scriptID);
-    return cachedScript.script;
+  if (_cachedScript.id === scriptID) {
+    console.log('getScript', scriptID, '[cached]');
+    return _cachedScript.script;
   }
-  console.log('getScript', scriptID);
+  console.log('getScript', scriptID, '[db]');
   const idbKey = `script.${scriptID}`;
   const scriptObj = await get(idbKey);
   if (scriptObj) {
-    let opts = Object.assign({}, DEFAULT_PROMPTER_OPTIONS);
-    if (scriptObj.prompterOptions) {
-      opts = Object.assign(opts, scriptObj.prompterOptions);
-    }
-    scriptObj.prompterOptions = opts;
-    cachedScript.id = scriptID;
-    cachedScript.script = scriptObj;
+    _cachedScript.id = scriptID;
+    _cachedScript.script = scriptObj;
     return scriptObj;
   }
-  return Object.assign({}, SCRIPT_TEMPLATE);
+  console.log('getScript', scriptID, '[new]');
+  return Object.assign({}, DEFAULT_SCRIPT_TEMPLATE);
 }
 
 export async function updateScript(scriptID, scriptObj) {
   console.log('updateScript', scriptID, scriptObj);
   const idbKey = `script.${scriptID}`;
-  update(idbKey, (dbScriptObj) => {
+  return await update(idbKey, (dbScriptObj) => {
     if (!dbScriptObj) {
-      dbScriptObj = Object.assign({}, SCRIPT_TEMPLATE);
+      dbScriptObj = Object.assign({}, DEFAULT_SCRIPT_TEMPLATE);
     }
     Object.assign(dbScriptObj, scriptObj);
-    cachedScript.id = scriptID;
-    cachedScript.script = dbScriptObj;
+    _cachedScript.id = scriptID;
+    _cachedScript.script = dbScriptObj;
     return dbScriptObj;
   });
 }
 
-export async function saveScript(scriptID, scriptObj) {
-  console.log('saveScript', scriptID, scriptObj);
-  const idbKey = `script.${scriptID}`;
-  scriptObj.scriptID = scriptID;
-  cachedScript.id = scriptID;
-  cachedScript.script = scriptObj;
-  await set(idbKey, scriptObj);
-  updateScriptListItem(scriptID, scriptObj);
-}
+// export async function saveScript(scriptID, scriptObj) {
+//   console.log('saveScript', scriptID, scriptObj);
+//   const idbKey = `script.${scriptID}`;
+//   scriptObj.scriptID = scriptID;
+//   _cachedScript.id = scriptID;
+//   _cachedScript.script = scriptObj;
+//   await set(idbKey, scriptObj);
+//   updateScriptListItem(scriptID, scriptObj);
+// }
 
 export async function deleteScript(scriptID) {
   console.log('deleteScript', scriptID);
   const idbKey = `script.${scriptID}`;
   await del(idbKey);
-  if (cachedScript.id === scriptID) {
-    cachedScript.id = null;
-    cachedScript.script = null;
+  if (_cachedScript.id === scriptID) {
+    _cachedScript.id = null;
+    _cachedScript.script = null;
   }
-  delete scriptList[scriptID];
+  delete _cachedScriptList[scriptID];
 }
 
 function updateScriptListItem(scriptID, scriptObj) {
@@ -95,7 +79,7 @@ function updateScriptListItem(scriptID, scriptObj) {
     lastUpdated: scriptObj.lastUpdated,
     hasStar: scriptObj.hasStar || false,
   };
-  scriptList[scriptID] = listItem;
+  _cachedScriptList[scriptID] = listItem;
 }
 
 export async function updateScriptList() {
@@ -108,8 +92,8 @@ export async function updateScriptList() {
       updateScriptListItem(scriptID, scriptObj);
     }
   }
-  await set('scriptList', scriptList);
-  return scriptList;
+  await set('scriptList', _cachedScriptList);
+  return _cachedScriptList;
 }
 
 export async function getScriptList() {

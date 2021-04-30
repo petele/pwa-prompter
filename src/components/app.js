@@ -18,72 +18,80 @@ import PrompterSettingsDialog from '../components/prompter-settings-dialog';
 import { getScript, updateScript } from './data-layer';
 
 class App extends Component {
+  updatedSettings = {};
 
   handleRoute = async (e) => {
     const scriptID = e.current?.props?.scriptID;
-    if (scriptID) {
-      getScript(scriptID).then((scriptObj) => {
-        scriptObj.scriptID = scriptID;
-        scriptObj.currentUrl = e.url;
-        this.setState(scriptObj);
-      });
-    } else {
-      this.setState({
-        scriptID: null,
-        currentUrl: e.url,
-        title: null,
-      });
-    }
-  }
+    const currentURL = e.url;
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (nextState?.title) {
-      document.title = `${nextState.title} - MyPrompter`;
-    } else {
+    if (!scriptID) {
+      this.setState({scriptID: null, currentURL});
       document.title = `MyPrompter`;
-    }
-  }
-
-  onChange = (newVal) => {
-    console.log('onChange', newVal);
-    if (!this.state.scriptID) {
-      console.error('NO SCRIPT ID!', newVal);
       return;
     }
-    updateScript(this.state.scriptID, newVal);
-    this.setState(newVal);
+
+    const newState = await getScript(scriptID);
+    newState.scriptID = scriptID;
+    newState.currentURL = currentURL;
+    document.title = `${newState.title} - MyPrompter`
+    this.setState(newState);
+  }
+
+  onScriptChange = async (scriptObj) => {
+    console.log('scriptUpdated', scriptObj);
+    await updateScript(this.state.scriptID, scriptObj);
+    this.setState(scriptObj);
   }
 
   onSettingsChange = (key, value) => {
-    this.setState((prevState) => {
-      prevState.prompterOptions[key] = value;
-      return prevState;
-    });
+    this.updatedSettings[key] = value;
+    this.setState(this.updatedSettings);
   }
 
-  onSettingsClose = () => {
-    console.log('TODO: Save settings on dialog closed.', this.state.prompterOptions);
+  onSettingsClose = async () => {
+    if (Object.keys(this.updatedSettings).length > 0) {
+      await updateScript(this.state.scriptID, this.updatedSettings);
+      this.updatedSettings = {};
+    }
   }
 
   render(props, state) {
     return (
       <div id="app">
-        <PrompterSettingsDialog
-          prompterOptions={state.prompterOptions}
-          onChange={this.onSettingsChange}
-          onClose={this.onSettingsClose} />
-        <Header selectedRoute={state.currentUrl} scriptID={state.scriptID} />
+        { state.currentURL?.startsWith('/prompter/') &&
+          <PrompterSettingsDialog
+            eyelineHeight={state.eyelineHeight}
+            scrollSpeed={state.scrollSpeed}
+            autoHideFooter={state.autoHideFooter}
+            fontSize={state.fontSize}
+            margin={state.margin}
+            lineHeight={state.lineHeight}
+            allCaps={state.allCaps}
+            flipHorizontal={state.flipHorizontal}
+            flipVertical={state.flipVertical}
+            onChange={this.onSettingsChange}
+            onClose={this.onSettingsClose} />
+        }
+        <Header selectedRoute={state.currentURL} scriptID={state.scriptID} />
         <Router onChange={this.handleRoute}>
           <Home path="/" />
           <Profile path="/profile/:user" />
           <Editor path="/editor/:scriptID"
-            onChange={this.onChange}
+            onChange={this.onScriptChange}
             title={state.title}
             asQuill={state.asQuill}
             lastUpdated={state.lastUpdated} />
           <RedirectToHome path="/editor/" />
           <Prompter path="/prompter/:scriptID"
-            prompterOptions={state.prompterOptions}
+            eyelineHeight={state.eyelineHeight}
+            scrollSpeed={state.scrollSpeed}
+            autoHideFooter={state.autoHideFooter}
+            fontSize={state.fontSize}
+            margin={state.margin}
+            lineHeight={state.lineHeight}
+            allCaps={state.allCaps}
+            flipHorizontal={state.flipHorizontal}
+            flipVertical={state.flipVertical}
             asHTML={state.asHTML} />
           <RedirectToHome path="/prompter/" />
           <About path="/about" />

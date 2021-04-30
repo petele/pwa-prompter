@@ -6,6 +6,8 @@ import ProgressBar from '../../components/progress-bar';
 import PrompterScriptContainer from '../../components/prompter-script-container';
 import Eyeline from '../../components/eyeline';
 
+import DefaultSettings from '../../components/default-prompter-settings';
+
 class Prompter extends Component {
   _ref = createRef();
   state = {class: style.prompter};
@@ -22,12 +24,14 @@ class Prompter extends Component {
     return (
       <div id="docScroller" class={style.prompter} ref={this._ref}>
         <ProgressBar />
-        <Eyeline value={props.prompterOptions?.eyelineHeight} margin={props.prompterOptions?.margin} onChange={this.eyelineChange} />
-        <PrompterScriptContainer asHTML={props.asHTML} {...props.prompterOptions}  />
-        <PrompterFooter onFooterVisibleChange={this.footerVisibleChange} {...props.prompterOptions} />
+        <Eyeline value={props.eyelineHeight} margin={props.margin} onChange={this.eyelineChange} />
+        <PrompterScriptContainer asHTML={props.asHTML} {...props}  />
+        <PrompterFooter onFooterVisibleChange={this.footerVisibleChange} {...props} />
       </div>
     );
   }
 }
+
+Prompter.defaultProps = DefaultSettings;
 
 export default Prompter;

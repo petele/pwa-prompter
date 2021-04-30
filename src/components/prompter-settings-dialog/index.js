@@ -7,14 +7,14 @@ import PWAPSlider from '../pwap-slider';
 
 import style from './style.css';
 
+import DefaultSettings from '../default-prompter-settings';
+
 /* https://github.com/GoogleChrome/dialog-polyfill */
 
 
 class PrompterSettingsDialog extends Component {
   _settingsDialogRef = createRef();
-  state = {};
 
-  // Lifecycle: Called whenever our component is created
   componentDidMount() {
     if (this._settingsDialogRef.current) {
       const dialog = this._settingsDialogRef.current;
@@ -23,19 +23,10 @@ class PrompterSettingsDialog extends Component {
     }
   }
 
-  shouldComponentUpdate(nextProps) {
-    if (!nextProps.prompterOptions) {
-      return false;
-    }
-    const newState = {};
-    for (const key of Object.keys(nextProps.prompterOptions)) {
-      const val = nextProps.prompterOptions[key];
-      if (val !== this.state[key]) {
-        newState[key] = val;
-      }
-    }
-    if (Object.keys(newState).length > 0) {
-      this.setState(newState);
+  componentWillUnmount() {
+    if (this._settingsDialogRef.current) {
+      const dialog = this._settingsDialogRef.current;
+      dialog.removeEventListener('close', this.onClose);
     }
   }
 
@@ -52,28 +43,28 @@ class PrompterSettingsDialog extends Component {
   }
 
   onInputSpeed = (e) => {
-    const value = e.target.value;
+    const value = parseInt(e.target.value, 10);
     if (this.props?.onChange) {
       this.props.onChange('scrollSpeed', value);
     }
   }
 
   onInputFontSize = (e) => {
-    const value = e.target.value;
+    const value = parseFloat(e.target.value);
     if (this.props?.onChange) {
       this.props.onChange('fontSize', value);
     }
   }
 
   onInputMargin = (e) => {
-    const value = e.target.value;
+    const value = parseInt(e.target.value, 10);
     if (this.props?.onChange) {
       this.props.onChange('margin', value);
     }
   }
 
   onInputLineHeight = (e) => {
-    const value = e.target.value;
+    const value = parseInt(e.target.value, 10);
     if (this.props?.onChange) {
       this.props.onChange('lineHeight', value);
     }
@@ -107,36 +98,36 @@ class PrompterSettingsDialog extends Component {
     }
   }
 
-  render(props, state) {
+  render(props) {
     return (
       <dialog id="dialogSettings" class={style.settingsDialog} ref={this._settingsDialogRef}>
         <header>
           <h2>Settings</h2>
         </header>
         <form method="dialog">
-          <PWAPSlider id="optScrollSpeed" label="Scroll Speed" value={state.scrollSpeed} min="1" max="400" onInput={this.onInputSpeed} />
-          <PWAPSlider id="optFontSize" label="Font Size" value={state.fontSize} min="1" max="16" onInput={this.onInputFontSize} />
-          <PWAPSlider id="optMargin" label="Margin" suffix="%" value={state.margin} min="0" max="40" onInput={this.onInputMargin} />
-          <PWAPSlider id="optLineHeight" label="Line Height" suffix="%" value={state.lineHeight} min="80" max="200" onInput={this.onInputLineHeight} />
+          <PWAPSlider id="optScrollSpeed" label="Scroll Speed" value={props.scrollSpeed} min="1" max="400" onInput={this.onInputSpeed} />
+          <PWAPSlider id="optFontSize" label="Font Size" value={props.fontSize} min="1" max="16" onInput={this.onInputFontSize} />
+          <PWAPSlider id="optMargin" label="Margin" suffix="%" value={props.margin} min="0" max="40" onInput={this.onInputMargin} />
+          <PWAPSlider id="optLineHeight" label="Line Height" suffix="%" value={props.lineHeight} min="80" max="200" onInput={this.onInputLineHeight} />
           <div class={style.flex}>
-            <input id="allCaps" type="checkbox" onInput={this.onChangeAllCaps} checked={state.allCaps} />
+            <input id="allCaps" type="checkbox" onInput={this.onChangeAllCaps} checked={props.allCaps} />
             <label for="allCaps">
               All Caps
             </label>
           </div>
           <div class={style.flex}>
-            <input id="autoHideFooter" type="checkbox" onInput={this.onChangeHideFooter} checked={state.autoHideFooter} />
+            <input id="autoHideFooter" type="checkbox" onInput={this.onChangeHideFooter} checked={props.autoHideFooter} />
             <label for="autoHideFooter">Hide Footer on Scroll</label>
           </div>
           <div>
             <div class={style.label}>Flip</div>
             <div class={style.flip}>
               <div class={style.flex}>
-                <input id="flipH" type="checkbox" onInput={this.onChangeFlipH} checked={state.flipHorizontal} />
+                <input id="flipH" type="checkbox" onInput={this.onChangeFlipH} checked={props.flipHorizontal} />
                 <label for="flipH">Horizontal</label>
               </div>
               <div class={style.flex}>
-                <input id="flipV" type="checkbox" onInput={this.onChangeFlipV} checked={state.flipVertical} />
+                <input id="flipV" type="checkbox" onInput={this.onChangeFlipV} checked={props.flipVertical} />
                 <label for="flipV">Vertical</label>
               </div>
             </div>
@@ -151,5 +142,7 @@ class PrompterSettingsDialog extends Component {
     );
   }
 }
+
+PrompterSettingsDialog.defaultProps = DefaultSettings;
 
 export default PrompterSettingsDialog;
