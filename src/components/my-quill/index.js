@@ -128,7 +128,6 @@ class MyQuill extends Component {
       asHTML: this.editor.root.innerHTML,
       asQuill: this.editor.getContents(),
       snippet: this.editor.getText(0, 250),
-      lastUpdated: Date.now(),
     }
     this.quillDelta = new Delta();
     if (this?.props?.onChange) {

@@ -41,6 +41,7 @@ class Editor extends Component {
 
   onValueChange = (newVal) => {
     if (this?.props?.onChange) {
+      newVal.lastUpdated = Date.now();
       this.props.onChange(newVal);
     }
   }
