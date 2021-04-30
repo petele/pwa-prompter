@@ -11,12 +11,17 @@ class Eyeline extends Component {
 
   render(props) {
     return (
-      <input class={style.eyeline} onChange={this.eyelineChange} type="range" min="0" max="100" value={props.value} />
+      <input type="range" min="0" max="100"
+        value={props.value}
+        class={style.eyeline}
+        style={`margin-left: ${props.margin}%;`}
+        onChange={this.eyelineChange} />
     );
   }
 }
 
 Eyeline.defaultProps = {
+  margin: 15,
   value: 40,
 };
 

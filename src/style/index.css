@@ -84,3 +84,39 @@ hr.pause:after {
   margin-left: 8px;
   margin-right: 8px;
 }
+
+dialog {
+  position: fixed;
+  top: calc(50% - 56px);
+  transform: translate(0, -50%);
+}
+
+dialog {
+  /* TODO */
+  width: 400px !important;
+}
+
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+dialog + .backdrop { /* polyfill */
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+dialog header h2 {
+  margin-top: 0;
+}
+
+dialog footer button {
+  float: right;
+  background-color: transparent;
+  border: none;
+  color: var(--app-highlight-primary);
+  font-size: 1em;
+  text-transform: uppercase;
+  padding: 8px 16px;
+}
+
+dialog footer button:hover {
+  background-color: var(--app-color-primary);
+}

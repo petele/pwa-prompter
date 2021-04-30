@@ -1,0 +1,21 @@
+.pwapSlider {
+  margin-bottom: 8px;
+}
+
+.pwapSlider label {
+  font-weight: bold;
+}
+
+.pwapSlider .flex {
+  display: flex;
+}
+
+.pwapSlider .flex label {
+  flex-grow: 1;
+}
+
+.pwapSlider input[type=range] {
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}

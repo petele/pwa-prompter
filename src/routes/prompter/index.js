@@ -1,27 +1,29 @@
-import { h, Component } from 'preact';
+import { h, Component, createRef } from 'preact';
 import style from './style.css';
 
 import PrompterFooter from '../../components/prompter-footer';
 import ProgressBar from '../../components/progress-bar';
-import PrompterView from '../../components/prompter-view';
+import PrompterScriptContainer from '../../components/prompter-script-container';
+import Eyeline from '../../components/eyeline';
 
 class Prompter extends Component {
+  _ref = createRef();
   state = {class: style.prompter};
 
   footerVisibleChange = (isVisible) => {
-    // console.log('footerVisibleChange', isVisible);
-    if (isVisible) {
-      this.setState({class: style.prompter});
-      return;
-    }
-    this.setState({class: `${style.prompter} ${style.footerHidden}`});
+    this._ref.current.classList.toggle(style.footerHidden, !isVisible);
+  }
+
+  eyelineChange = (value) => {
+    console.log('eyeline changed', value);
   }
 
   render(props) {
     return (
-      <div id="docScroller" class={this.state.class}>
+      <div id="docScroller" class={style.prompter} ref={this._ref}>
         <ProgressBar />
-        <PrompterView asHTML={props.asHTML} {...props.prompterOptions}  />
+        <Eyeline value={props.prompterOptions?.eyelineHeight} margin={props.prompterOptions?.margin} onChange={this.eyelineChange} />
+        <PrompterScriptContainer asHTML={props.asHTML} {...props.prompterOptions}  />
         <PrompterFooter onFooterVisibleChange={this.footerVisibleChange} {...props.prompterOptions} />
       </div>
     );

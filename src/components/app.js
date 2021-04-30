@@ -18,7 +18,6 @@ import PrompterSettingsDialog from '../components/prompter-settings-dialog';
 import { getScript, updateScript } from './data-layer';
 
 class App extends Component {
-  settingsDialogRef = null;
 
   handleRoute = async (e) => {
     const scriptID = e.current?.props?.scriptID;
@@ -55,15 +54,24 @@ class App extends Component {
     this.setState(newVal);
   }
 
-  showSettings = () => {
-    this.settingsDialogRef.showModal();
+  onSettingsChange = (key, value) => {
+    this.setState((prevState) => {
+      prevState.prompterOptions[key] = value;
+      return prevState;
+    });
+  }
+
+  onSettingsClose = () => {
+    console.log('TODO: Save settings on dialog closed.', this.state.prompterOptions);
   }
 
   render(props, state) {
     return (
       <div id="app">
         <PrompterSettingsDialog
-          ref={el => { this.settingsDialogRef = el }} />
+          prompterOptions={state.prompterOptions}
+          onChange={this.onSettingsChange}
+          onClose={this.onSettingsClose} />
         <Header selectedRoute={state.currentUrl} scriptID={state.scriptID} />
         <Router onChange={this.handleRoute}>
           <Home path="/" />
@@ -76,7 +84,6 @@ class App extends Component {
           <RedirectToHome path="/editor/" />
           <Prompter path="/prompter/:scriptID"
             prompterOptions={state.prompterOptions}
-            onClickSettings={this.showSettings}
             asHTML={state.asHTML} />
           <RedirectToHome path="/prompter/" />
           <About path="/about" />

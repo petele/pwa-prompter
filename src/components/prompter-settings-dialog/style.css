@@ -1,12 +1,16 @@
-dialog {
-  position: fixed;
-  top: calc(50% - 56px);
-  transform: translate(0, -50%);
+.settingsDialog .flex {
+  display: flex;
 }
 
-dialog::backdrop {
-  background-color: rgba(0, 0, 0, 0.8);
+.label {
+  font-weight: bold;
 }
-dialog + .backdrop { /* polyfill */
-  background-color: rgba(0, 0, 0, 0.8);
+
+.settingsDialog .flip > div {
+  display: inline-block;
+  width: 50%;
+}
+
+.settingsDialog form > div {
+  margin-bottom: 8px;
 }

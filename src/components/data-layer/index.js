@@ -2,13 +2,24 @@
 
 import { get, set, update, del, keys } from 'idb-keyval';
 
+const DEFAULT_PROMPTER_OPTIONS = {
+  scrollSpeed: 175,
+  fontSize: 4,
+  margin: 15,
+  lineHeight: 120,
+  eyelineHeight: 10,
+  autoHideFooter: true,
+  allCaps: false,
+  flipVertical: false,
+  flipHorizontal: false,
+};
+
 const SCRIPT_TEMPLATE = {
   asHTML: '',
   asQuill: '',
   createdOn: Date.now(),
   hasStar: false,
   lastUpdated: Date.now(),
-  prompterOptions: {},
   snippet: '',
   title: 'Untitled Script',
 };
@@ -21,7 +32,6 @@ const cachedScript = {
 let scriptList = {};
 
 export async function getScript(scriptID) {
-
   if (cachedScript.id === scriptID) {
     console.log('getScript [cached]', scriptID);
     return cachedScript.script;
@@ -30,6 +40,11 @@ export async function getScript(scriptID) {
   const idbKey = `script.${scriptID}`;
   const scriptObj = await get(idbKey);
   if (scriptObj) {
+    let opts = Object.assign({}, DEFAULT_PROMPTER_OPTIONS);
+    if (scriptObj.prompterOptions) {
+      opts = Object.assign(opts, scriptObj.prompterOptions);
+    }
+    scriptObj.prompterOptions = opts;
     cachedScript.id = scriptID;
     cachedScript.script = scriptObj;
     return scriptObj;

@@ -1,9 +1,7 @@
 import { h, Component } from 'preact';
 import style from './style.css';
 
-import Eyeline from '../eyeline';
-
-class PrompterView extends Component {
+class PrompterScriptContainer extends Component {
   state = {
     styles: this.getStyles(),
   };
@@ -17,7 +15,6 @@ class PrompterView extends Component {
     if (!props) {
       props = this.props;
     }
-    console.log('props', props);
     const style = [];
     style.push(`font-size: ${props.fontSize}em`);
     style.push(`margin-left: ${props.margin}%`);
@@ -35,14 +32,9 @@ class PrompterView extends Component {
     return style.join(';');
   }
 
-  eyelineChange = (value) => {
-    console.log('eyeline changed', value);
-  }
-
   render(props, state) {
     return (
       <div style={state.styles}>
-        <Eyeline value={props.eyelineHeight} onChange={this.eyelineChange} />
         <div id="pwapStart" class={style.boundary}>
           Start
         </div>
@@ -55,8 +47,7 @@ class PrompterView extends Component {
   }
 }
 
-PrompterView.defaultProps = {
-  eyelineHeight: 25,
+PrompterScriptContainer.defaultProps = {
   fontSize: 4,
   margin: 15,
   lineHeight: 120,
@@ -65,4 +56,4 @@ PrompterView.defaultProps = {
   flipVertical: false,
 };
 
-export default PrompterView;
+export default PrompterScriptContainer;
