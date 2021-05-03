@@ -27,7 +27,6 @@ class App extends Component {
 
     if (!scriptID) {
       this.setState({scriptID: null, currentURL});
-      this.setDocTitle(null);
       return;
     }
 
@@ -35,18 +34,10 @@ class App extends Component {
     newState.scriptID = scriptID;
     newState.currentURL = currentURL;
     this.setState(newState);
-    this.setDocTitle(newState.title);
-  }
-
-  setDocTitle = (title) => {
-    document.title = title ? `${title} - MyPrompter` : `MyPrompter`;
   }
 
   onScriptChange = async (scriptObj) => {
     console.log('scriptUpdated', scriptObj);
-    if (scriptObj.title) {
-      this.setDocTitle(scriptObj.title);
-    }
     await updateScript(this.state.scriptID, scriptObj);
     this.setState(scriptObj);
   }

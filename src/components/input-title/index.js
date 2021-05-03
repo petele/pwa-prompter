@@ -9,6 +9,8 @@ const InputTitle = ({title, onChange}) => {
     }
   }
 
+  document.title = title ? `${title} - MyPrompter` : `MyPrompter`;
+
   return (
     <input class={style.title} name="script-title" onInput={titleChanged} value={title} />
   );
