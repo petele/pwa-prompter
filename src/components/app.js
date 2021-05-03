@@ -14,6 +14,7 @@ import NotFound from '../routes/404';
 
 import RedirectToHome from '../components/redir-to-home';
 import PrompterSettingsDialog from '../components/prompter-settings-dialog';
+import ConfirmDeleteDialog from '../components/confirm-delete-dialog';
 
 import { getScript, updateScript } from './data-layer';
 
@@ -58,6 +59,9 @@ class App extends Component {
   render(props, state) {
     return (
       <div id="app">
+        { state.currentURL === '/' &&
+          <ConfirmDeleteDialog />
+        }
         { state.currentURL?.startsWith('/prompter/') &&
           <PrompterSettingsDialog
             eyelineHeight={state.eyelineHeight}
