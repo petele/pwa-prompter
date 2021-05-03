@@ -148,7 +148,8 @@ class PrompterFooter extends Component {
 
   doScrollStep = (lastScrollAmount) => {
     const currentY = this.scrollerRef.scrollTop;
-    const scrollSpeed = this.state.scrollSpeedPercent;
+    // const scrollSpeed = this.state.scrollSpeedPercent;
+    const scrollSpeed = this.props.scrollSpeed / 100;
     const scrollAmount = scrollSpeed + (lastScrollAmount || 0);
     const scrollBy = Math.floor(scrollAmount);
     let scrollRemainder = scrollAmount;

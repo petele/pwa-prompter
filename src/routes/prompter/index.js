@@ -6,6 +6,7 @@ import ProgressBar from '../../components/progress-bar';
 import PrompterScriptContainer from '../../components/prompter-script-container';
 import Eyeline from '../../components/eyeline';
 
+import { updateScript } from '../../components/data-layer';
 import DefaultSettings from '../../components/default-prompter-settings';
 
 class Prompter extends Component {
@@ -16,8 +17,8 @@ class Prompter extends Component {
     this._ref.current.classList.toggle(style.footerHidden, !isVisible);
   }
 
-  eyelineChange = (value) => {
-    console.log('eyeline changed', value);
+  eyelineChange = async (value) => {
+    await updateScript(this.props.scriptID, {eyelineHeight: value});
   }
 
   render(props, state) {

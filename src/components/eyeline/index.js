@@ -5,7 +5,7 @@ const Eyeline = ({margin = 15, value = 40, onChange}) => {
 
   const eyelineChange = (e) => {
     if (onChange) {
-      onChange({eyelineHeight: e.target.value});
+      onChange(parseInt(e.target.value, 10));
     }
   }
 
