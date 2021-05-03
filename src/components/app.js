@@ -27,19 +27,26 @@ class App extends Component {
 
     if (!scriptID) {
       this.setState({scriptID: null, currentURL});
-      document.title = `MyPrompter`;
+      this.setDocTitle(null);
       return;
     }
 
     const newState = await getScript(scriptID);
     newState.scriptID = scriptID;
     newState.currentURL = currentURL;
-    document.title = `${newState.title} - MyPrompter`
     this.setState(newState);
+    this.setDocTitle(newState.title);
+  }
+
+  setDocTitle = (title) => {
+    document.title = title ? `${title} - MyPrompter` : `MyPrompter`;
   }
 
   onScriptChange = async (scriptObj) => {
     console.log('scriptUpdated', scriptObj);
+    if (scriptObj.title) {
+      this.setDocTitle(scriptObj.title);
+    }
     await updateScript(this.state.scriptID, scriptObj);
     this.setState(scriptObj);
   }

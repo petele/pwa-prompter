@@ -1,20 +1,17 @@
-import { h, Component } from 'preact';
-
+import { h } from 'preact';
 import style from './style.css';
 
-class InputTitle extends Component {
+const InputTitle = ({title, onChange}) => {
 
-  titleChanged = (e) => {
-    if (this.props.onChange) {
-      this.props.onChange({title: e.target.value});
+  const titleChanged = (e) => {
+    if (onChange) {
+      onChange({title: e.target.value});
     }
   }
 
-  render(props) {
-    return (
-      <input class={style.title} name="script-title" onInput={this.titleChanged} value={props.title} />
-    );
-  }
+  return (
+    <input class={style.title} name="script-title" onInput={titleChanged} value={title} />
+  );
 }
 
 export default InputTitle;
