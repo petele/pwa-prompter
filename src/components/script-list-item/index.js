@@ -6,7 +6,6 @@ import { format } from 'date-fns';
 const ScriptListItem = ({ scriptID, title, snippet, lastUpdated, hasStar, onDelete, onStar }) => {
 
   const editorURL = `/editor/${scriptID}`;
-  // const editorURL = '#';
 
   const formatDate = (lastUpdated) => {
     if (lastUpdated) {

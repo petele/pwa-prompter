@@ -20,10 +20,10 @@ class Prompter extends Component {
     console.log('eyeline changed', value);
   }
 
-  render(props) {
+  render(props, state) {
     return (
       <div id="docScroller" class={style.prompter} ref={this._ref}>
-        <ProgressBar />
+        <ProgressBar percent={state.percent} />
         <Eyeline value={props.eyelineHeight} margin={props.margin} onChange={this.eyelineChange} />
         <PrompterScriptContainer asHTML={props.asHTML} {...props}  />
         <PrompterFooter onFooterVisibleChange={this.footerVisibleChange} {...props} />

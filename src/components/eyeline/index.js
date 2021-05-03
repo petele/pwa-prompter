@@ -1,28 +1,21 @@
-import { h, Component } from 'preact';
+import { h } from 'preact';
 import style from './style.css';
 
-class Eyeline extends Component {
+const Eyeline = ({margin = 15, value = 40, onChange}) => {
 
-  eyelineChange = (e) => {
-    if (this.props?.onChange) {
-      this.props.onChange(e.target.value);
+  const eyelineChange = (e) => {
+    if (onChange) {
+      onChange({eyelineHeight: e.target.value});
     }
   }
 
-  render(props) {
-    return (
-      <input type="range" min="0" max="100"
-        value={props.value}
-        class={style.eyeline}
-        style={`margin-left: ${props.margin}%;`}
-        onChange={this.eyelineChange} />
-    );
-  }
+  return (
+    <input type="range" min="0" max="100"
+      value={value}
+      class={style.eyeline}
+      style={`margin-left: ${margin}%;`}
+      onChange={eyelineChange} />
+  );
 }
-
-Eyeline.defaultProps = {
-  margin: 15,
-  value: 40,
-};
 
 export default Eyeline;

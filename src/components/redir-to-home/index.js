@@ -1,14 +1,9 @@
-import { Component } from 'preact';
 import { route } from 'preact-router';
 
-class RedirectToHome extends Component {
-  componentWillMount() {
-    route('/', true);
-  }
+const RedirectToHome = () => {
+  route('/', true);
 
-  render() {
-    return null;
-  }
+  return null;
 }
 
 export default RedirectToHome;
