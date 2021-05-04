@@ -3,9 +3,9 @@ import { route } from 'preact-router';
 
 import style from './style.css';
 
-import MyQuill from '../../components/my-quill';
-import InputTitle from '../../components/input-title';
-import LastUpdated from '../../components/last-updated';
+import MyQuill from '../../components/routes/editor/my-quill';
+import InputTitle from '../../components/routes/editor/input-title';
+import LastUpdated from '../../components/routes/editor/last-updated';
 
 import { getScript, updateScript } from '../../components/data-layer';
 

@@ -2,11 +2,11 @@ import { h, Component, createRef } from 'preact';
 import { route } from 'preact-router';
 import style from './style.css';
 
-import PrompterFooter from '../../components/prompter-footer';
-import ProgressBar from '../../components/progress-bar';
-import PrompterScriptContainer from '../../components/prompter-script-container';
-import Eyeline from '../../components/eyeline';
-import PrompterSettingsDialog from '../../components/prompter-settings-dialog';
+import PrompterFooter from '../../components/routes/prompter/prompter-footer';
+import ProgressBar from '../../components/routes/prompter/progress-bar';
+import PrompterScriptContainer from '../../components/routes/prompter/prompter-script-container';
+import Eyeline from '../../components/routes/prompter/eyeline';
+import PrompterSettingsDialog from '../../components/routes/prompter/dialog-settings';
 
 import { getScript, updateScript } from '../../components/data-layer';
 import DefaultSettings from '../../components/default-prompter-settings';

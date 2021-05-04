@@ -3,10 +3,10 @@ import style from './style.css';
 
 import map from 'lodash/map';
 
-import DialogConfirmDelete from '../../components/routes/home/dialog-confirm-delete';
-
 import { getScriptList, updateScript, deleteScript } from '../../components/data-layer';
-import ScriptListItem from '../../components/script-list-item';
+
+import DialogConfirmDelete from '../../components/routes/home/dialog-confirm-delete';
+import ScriptListItem from '../../components/routes/home/script-list-item';
 
 class Home extends Component {
 
