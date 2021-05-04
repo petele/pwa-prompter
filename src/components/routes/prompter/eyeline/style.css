@@ -5,7 +5,7 @@
   width: 100vh;
   position: fixed;
   top: 0;
-  z-index: 100;
+  z-index: 1;
 }
 
 .eyeline::-webkit-slider-runnable-track {
