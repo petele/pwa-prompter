@@ -13,7 +13,6 @@ import Account from '../routes/account';
 import NotFound from '../routes/404';
 
 import RedirectToHome from '../components/redir-to-home';
-import PrompterSettingsDialog from '../components/prompter-settings-dialog';
 import ConfirmDeleteDialog from '../components/confirm-delete-dialog';
 
 import { getScript, updateScript } from './data-layer';
@@ -37,21 +36,8 @@ class App extends Component {
   }
 
   onScriptChange = async (scriptObj) => {
-    console.log('scriptUpdated', scriptObj);
     await updateScript(this.state.scriptID, scriptObj);
     this.setState(scriptObj);
-  }
-
-  onSettingsChange = (key, value) => {
-    this.updatedSettings[key] = value;
-    this.setState(this.updatedSettings);
-  }
-
-  onSettingsClose = async () => {
-    if (Object.keys(this.updatedSettings).length > 0) {
-      await updateScript(this.state.scriptID, this.updatedSettings);
-      this.updatedSettings = {};
-    }
   }
 
   render(props, state) {
@@ -59,20 +45,6 @@ class App extends Component {
       <div id="app">
         { state.currentURL === '/' &&
           <ConfirmDeleteDialog />
-        }
-        { state.currentURL?.startsWith('/prompter/') &&
-          <PrompterSettingsDialog
-            eyelineHeight={state.eyelineHeight}
-            scrollSpeed={state.scrollSpeed}
-            autoHideFooter={state.autoHideFooter}
-            fontSize={state.fontSize}
-            margin={state.margin}
-            lineHeight={state.lineHeight}
-            allCaps={state.allCaps}
-            flipHorizontal={state.flipHorizontal}
-            flipVertical={state.flipVertical}
-            onChange={this.onSettingsChange}
-            onClose={this.onSettingsClose} />
         }
         <Header selectedRoute={state.currentURL} scriptID={state.scriptID} />
         <Router onChange={this.handleRoute}>

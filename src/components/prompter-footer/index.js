@@ -13,24 +13,23 @@ class PrompterFooter extends Component {
     hidePlay: '',
     hidePause: style.hidden,
     fullScreenStyle: '',
+    scrollSpeed: this.props.scrollSpeed,
+    scrollSpeedPercent: this.props.scrollSpeed / 100,
   };
 
   componentDidMount() {
     if (this.scrollerRef) {
       return;
     }
-    this.setScrollSpeed(this.props.scrollSpeed);
     this.scrollerRef = document.getElementById('docScroller');
     this.scrollerRef.addEventListener('scroll', this.onScroll);
     window.addEventListener('keydown', this.keyboardHandler);
-    // this.scrollerRef.addEventListener('keydown', this.keyboardHandler);
     document.addEventListener('fullscreenchange', this.fullScreenChanged);
   }
 
   componentWillUnmount() {
     this.scrollerRef.removeEventListener('scroll', this.onScroll);
     window.removeEventListener('keydown', this.keyboardHandler);
-    // this.scrollerRef.removeEventListener('keydown', this.keyboardHandler);
     document.removeEventListener('fullscreenchange', this.fullScreenChanged);
     if (this.scrollingRAF) {
       cancelAnimationFrame(this.scrollingRAF);
@@ -78,13 +77,11 @@ class PrompterFooter extends Component {
       return this.resetScroller();
     }
     if (keyCode === 'ArrowLeft') {
-      const newSpeed = this.state.scrollSpeed - 10;
-      this.setScrollSpeed(newSpeed);
+      this.adjustScrollSpeed(-10);
       return;
     }
     if (keyCode === 'ArrowRight') {
-      const newSpeed = this.state.scrollSpeed + 10;
-      this.setScrollSpeed(newSpeed);
+      this.adjustScrollSpeed(10);
       return;
     }
     if (keyCode === 'BracketLeft') {
@@ -121,13 +118,11 @@ class PrompterFooter extends Component {
     }
   }
 
-  setScrollSpeed = (newSpeed) => {
+  adjustScrollSpeed = (amount) => {
     this.setState((prevState) => {
-      if (prevState.scrollSpeedRaw === newSpeed) {
-        return null;
-      }
-      if (newSpeed < 1 || newSpeed > 1000) {
-        console.log('out of bounds', newSpeed);
+      const newSpeed = prevState.scrollSpeed + amount;
+      if (newSpeed < 1 || newSpeed > 500) {
+        console.error('scrollSpeed out of range', newSpeed);
         return null;
       }
       if (this.props.onScrollSpeedChange) {
@@ -146,6 +141,8 @@ class PrompterFooter extends Component {
       playButtonText: 'Pause',
       hidePlay: style.hidden,
       hidePause: '',
+      scrollSpeed: this.props.scrollSpeed,
+      scrollSpeedPercent: this.props.scrollSpeed / 100,
     });
     this.doScrollStep(0);
   }

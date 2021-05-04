@@ -6,6 +6,7 @@ import PrompterFooter from '../../components/prompter-footer';
 import ProgressBar from '../../components/progress-bar';
 import PrompterScriptContainer from '../../components/prompter-script-container';
 import Eyeline from '../../components/eyeline';
+import PrompterSettingsDialog from '../../components/prompter-settings-dialog';
 
 import { getScript, updateScript } from '../../components/data-layer';
 import DefaultSettings from '../../components/default-prompter-settings';
@@ -13,6 +14,7 @@ import DefaultSettings from '../../components/default-prompter-settings';
 class Prompter extends Component {
   _ref = createRef();
   _loading = false;
+  updatedSettings = {};
   state = Object.assign({class: style.prompter}, DefaultSettings);
 
   componentDidMount() {
@@ -58,13 +60,37 @@ class Prompter extends Component {
     await updateScript(this.props.scriptID, obj);
   }
 
+  onSettingsChange = (key, value) => {
+    this.updatedSettings[key] = value;
+    this.setState(this.updatedSettings);
+  }
+
+  onSettingsClose = async () => {
+    if (Object.keys(this.updatedSettings).length > 0) {
+      await updateScript(this.state.scriptID, this.updatedSettings);
+      this.updatedSettings = {};
+    }
+  }
+
   render(props, state) {
     return (
       <div id="docScroller" class={style.prompter} ref={this._ref}>
         <ProgressBar percent={state.scrollPercent} />
-        <Eyeline
-          value={state.eyelineHeight}
+        <PrompterSettingsDialog
+          eyelineHeight={state.eyelineHeight}
+          scrollSpeed={state.scrollSpeed}
+          autoHideFooter={state.autoHideFooter}
+          fontSize={state.fontSize}
           margin={state.margin}
+          lineHeight={state.lineHeight}
+          allCaps={state.allCaps}
+          flipHorizontal={state.flipHorizontal}
+          flipVertical={state.flipVertical}
+          onChange={this.onSettingsChange}
+          onClose={this.onSettingsClose} />
+        <Eyeline
+          margin={state.margin}
+          value={state.eyelineHeight}
           onChange={this.onEyelineChange} />
         <PrompterScriptContainer
           asHTML={state.asHTML}
