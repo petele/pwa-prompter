@@ -55,7 +55,7 @@ class Prompter extends Component {
   onScrollSpeedChange = async (value) => {
     const obj = {scrollSpeed: value};
     this.setState(obj);
-    await updateScript(this.props.scriptID, value);
+    await updateScript(this.props.scriptID, obj);
   }
 
   render(props, state) {

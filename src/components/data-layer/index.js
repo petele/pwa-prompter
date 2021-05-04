@@ -37,6 +37,14 @@ export async function getScript(scriptID) {
 }
 
 export async function updateScript(scriptID, scriptObj) {
+  if (!scriptID || typeof scriptID !== 'string') {
+    console.error('updateScript - invalid scriptID', scriptID);
+    return;
+  }
+  if (typeof scriptObj !== 'object') {
+    console.error('updateScript - invalid scriptObj', scriptObj);
+    return;
+  }
   console.log('updateScript', scriptID, scriptObj);
   const idbKey = `script.${scriptID}`;
   return await update(idbKey, (dbScriptObj) => {
