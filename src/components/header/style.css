@@ -49,3 +49,7 @@
 .header nav a.hidden {
   display: none;
 }
+
+a.newScript {
+  cursor: pointer;
+}

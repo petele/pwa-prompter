@@ -13,18 +13,18 @@ class Editor extends Component {
 
   componentDidMount() {
     const scriptID = this.props.scriptID;
-    if (this.props.scriptID.length != 21) {
-      route(`/`, true);
-      return;
-    }
     this.loadScript(scriptID);
   }
 
   async loadScript(scriptID) {
-    const newState = await getScript(scriptID);
-    newState.scriptID = scriptID;
-    this.setState(newState);
-    const title = newState.title;
+    const script = await getScript(scriptID);
+    if (!script) {
+      route('/', true);
+      return;
+    }
+    script.scriptID = scriptID;
+    this.setState(script);
+    const title = script.title;
     document.title = title ? `${title} - MyPrompter` : `MyPrompter`;
   }
 

@@ -1,9 +1,7 @@
 import { h, Component } from 'preact';
 import style from './style.css';
-import { route } from 'preact-router';
 
 import map from 'lodash/map';
-import { customAlphabet, urlAlphabet } from 'nanoid';
 
 import DialogConfirmDelete from '../../components/routes/home/dialog-confirm-delete';
 
@@ -20,12 +18,6 @@ class Home extends Component {
   refreshScriptList = async () => {
     const scripts = await getScriptList();
     this.setState({scripts});
-  }
-
-  clickNew = function() {
-    const nanoid = customAlphabet(urlAlphabet, 21);
-    const newPath = `/editor/${ nanoid() }`;
-    route(newPath);
   }
 
   clickDelete = (scriptID) => {
@@ -56,12 +48,10 @@ class Home extends Component {
           scriptDetails={state.scriptToDelete}
           onClose={this.onDeleteDialogClose}
           onDelete={this.onDeleteDialogConfirmed} />
-        <h1>Scripts</h1>
         {map(state.scripts, (script, key) => (
           <ScriptListItem scriptID={key} onDelete={this.clickDelete} onStar={this.clickStar} {...script}  />
         ))}
-        <button onClick={this.clickNew}>New Script</button>
-        <button onClick={this.refreshScriptList}>Refresh List</button>
+        {/* <button onClick={this.refreshScriptList}>Refresh List</button> */}
       </div>);
   }
 

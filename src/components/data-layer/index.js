@@ -1,5 +1,6 @@
 /* eslint-disable quote-props */
 
+import { customAlphabet, urlAlphabet } from 'nanoid';
 import { get, set, update, del, keys } from 'idb-keyval';
 
 const SCRIPT_KEY_PREFIX = 'script';
@@ -9,9 +10,7 @@ const DEFAULT_SCRIPT_TEMPLATE = {
   asHTML: '',
   asQuill: [],
   snippet: '',
-  createdOn: Date.now(),
   hasStar: false,
-  lastUpdated: Date.now(),
   title: 'Untitled Script',
 };
 
@@ -32,6 +31,7 @@ export async function getScript(scriptID) {
     console.log('getScript', scriptID, '[cached]');
     return _cachedScript.script;
   }
+  await getScriptList();
   console.log('getScript', scriptID, '[db]');
   const idbKey = `${SCRIPT_KEY_PREFIX}.${scriptID}`;
   const scriptObj = await get(idbKey);
@@ -40,8 +40,25 @@ export async function getScript(scriptID) {
     _cachedScript.script = scriptObj;
     return scriptObj;
   }
-  console.log('getScript', scriptID, '[new]');
-  return Object.assign({}, DEFAULT_SCRIPT_TEMPLATE);
+  console.warn('getScript', scriptID, '[not_found]');
+  return null;
+}
+
+export async function createNewScript() {
+  const nanoid = customAlphabet(urlAlphabet, 21);
+  const scriptID = nanoid();
+  const scriptObj = Object.assign({}, DEFAULT_SCRIPT_TEMPLATE);
+  const now = Date.now();
+  scriptObj.scriptID = scriptID;
+  scriptObj.createdOn = now;
+  scriptObj.lastUpdated = now;
+  const idbKey = `${SCRIPT_KEY_PREFIX}.${scriptID}`;
+  console.log('createScript', scriptID);
+  await set(idbKey, scriptObj);
+  _cachedScript.id = scriptID;
+  _cachedScript.script = scriptObj;
+  updateScriptListItem(scriptID, scriptObj);
+  return scriptObj;
 }
 
 /**
@@ -97,10 +114,10 @@ export async function deleteScript(scriptID) {
  * @returns Object
  */
 export async function getScriptList() {
-  console.log('getScriptList');
   if (_cachedScript.list) {
     return _cachedScript.list;
   }
+  console.log('getScriptList');
   _cachedScript.list = await get(SCRIPT_LIST_KEY) || {};
   return _cachedScript.list;
 }
@@ -119,7 +136,7 @@ export async function rebuildScriptList() {
   return _cachedScript.list;
 }
 
-function updateScriptListItem(scriptID, scriptObj) {
+async function updateScriptListItem(scriptID, scriptObj) {
   const listItem = {
     scriptID,
     title: scriptObj.title,
@@ -128,6 +145,5 @@ function updateScriptListItem(scriptID, scriptObj) {
     hasStar: scriptObj.hasStar || false,
   };
   _cachedScript.list[scriptID] = listItem;
-  console.log('updateScriptListItem', scriptID, listItem);
   set(SCRIPT_LIST_KEY, _cachedScript.list);
 }

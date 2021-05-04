@@ -13,31 +13,24 @@ import DefaultSettings from '../../components/default-prompter-settings';
 
 class Prompter extends Component {
   _ref = createRef();
-  _loading = false;
   updatedSettings = {};
   state = Object.assign({class: style.prompter}, DefaultSettings);
 
   componentDidMount() {
     const scriptID = this.props.scriptID;
-    if (scriptID.length != 21) {
-      route(`/`, true);
-      return;
-    }
     this.loadScript(scriptID);
   }
 
   async loadScript(scriptID) {
-    if (this._loading) {
-      console.log('already attempting to load...');
+    const script = await getScript(scriptID);
+    if (!script) {
+      route('/', true);
       return;
     }
-    this._loading = true;
-    const newState = await getScript(scriptID);
-    newState.scriptID = scriptID;
-    this.setState(newState);
-    const title = newState.title;
+    script.scriptID = scriptID;
+    this.setState(script);
+    const title = script.title;
     document.title = title ? `${title} - MyPrompter` : `MyPrompter`;
-    this._loading = false;
   }
 
   onFooterVisibleChange = (isVisible) => {

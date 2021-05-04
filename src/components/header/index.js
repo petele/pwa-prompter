@@ -1,8 +1,17 @@
 import { h } from 'preact';
+import { route } from 'preact-router';
 import { Link } from 'preact-router/match';
 import style from './style.css';
 
+import { createNewScript } from '../../components/data-layer';
+
 const Header = ({selectedRoute, scriptID}) => {
+
+  async function createScript() {
+    const obj = await createNewScript();
+    route(`/editor/${obj.scriptID}`, true);
+  }
+
   return (
     <header class={style.header}>
       <nav>
@@ -18,6 +27,13 @@ const Header = ({selectedRoute, scriptID}) => {
           </Link>
           <Link activeClassName={style.active} href={`/prompter/${scriptID}`}>
             Prompt
+          </Link>
+        </nav>
+      }
+      { (selectedRoute === '/') &&
+        <nav>
+          <Link class={style.newScript} onClick={createScript}>
+            New
           </Link>
         </nav>
       }
