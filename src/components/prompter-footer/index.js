@@ -1,10 +1,13 @@
 import { h, Component } from 'preact';
 import style from './style.css';
 
+import DefaultSettings from '../default-prompter-settings';
+
 class PrompterFooter extends Component {
   footerRef = null;
   scrollerRef = null;
   scrollingRAF = null;
+  _lastScrollVal = 0;
   state = {
     playButtonText: 'Play',
     hidePlay: '',
@@ -18,12 +21,14 @@ class PrompterFooter extends Component {
     }
     this.setScrollSpeed(this.props.scrollSpeed);
     this.scrollerRef = document.getElementById('docScroller');
+    this.scrollerRef.addEventListener('scroll', this.onScroll);
     window.addEventListener('keydown', this.keyboardHandler);
     // this.scrollerRef.addEventListener('keydown', this.keyboardHandler);
     document.addEventListener('fullscreenchange', this.fullScreenChanged);
   }
 
   componentWillUnmount() {
+    this.scrollerRef.removeEventListener('scroll', this.onScroll);
     window.removeEventListener('keydown', this.keyboardHandler);
     // this.scrollerRef.removeEventListener('keydown', this.keyboardHandler);
     document.removeEventListener('fullscreenchange', this.fullScreenChanged);
@@ -34,6 +39,18 @@ class PrompterFooter extends Component {
     if (this.hideFooterTimer) {
       clearTimeout(this.hideFooterTimer);
       this.hideFooterTimer = null;
+    }
+  }
+
+  onScroll = () => {
+    const currentY = this.scrollerRef.scrollTop;
+    const scrollHeight = this.docScrollHeight || this.scrollerRef.scrollHeight;
+    const windowHeight = window.innerHeight;
+    const percent = (currentY / (scrollHeight - windowHeight)) * 100;
+    const value = Math.min(Math.round(percent), 100);
+    if (this.props.onScrollChange && this._lastScrollVal !== value) {
+      this.props.onScrollChange(value);
+      this._lastScrollVal = value;
     }
   }
 
@@ -148,8 +165,7 @@ class PrompterFooter extends Component {
 
   doScrollStep = (lastScrollAmount) => {
     const currentY = this.scrollerRef.scrollTop;
-    // const scrollSpeed = this.state.scrollSpeedPercent;
-    const scrollSpeed = this.props.scrollSpeed / 100;
+    const scrollSpeed = this.state.scrollSpeedPercent;
     const scrollAmount = scrollSpeed + (lastScrollAmount || 0);
     const scrollBy = Math.floor(scrollAmount);
     let scrollRemainder = scrollAmount;
@@ -368,9 +384,6 @@ class PrompterFooter extends Component {
   }
 }
 
-PrompterFooter.defaultProps = {
-  scrollSpeed: 175,
-  autoHideFooter: true,
-};
+PrompterFooter.defaultProps = DefaultSettings;
 
 export default PrompterFooter;

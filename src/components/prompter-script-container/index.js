@@ -1,6 +1,8 @@
 import { h, Component } from 'preact';
 import style from './style.css';
 
+import DefaultSettings from '../default-prompter-settings';
+
 class PrompterScriptContainer extends Component {
   state = {
     styles: this.getStyles(),
@@ -47,13 +49,6 @@ class PrompterScriptContainer extends Component {
   }
 }
 
-PrompterScriptContainer.defaultProps = {
-  fontSize: 4,
-  margin: 15,
-  lineHeight: 120,
-  allCaps: false,
-  flipHorizontal: false,
-  flipVertical: false,
-};
+PrompterScriptContainer.defaultProps = DefaultSettings;
 
 export default PrompterScriptContainer;
