@@ -9,7 +9,7 @@ import Eyeline from '../../components/routes/prompter/eyeline';
 import PrompterSettingsDialog from '../../components/routes/prompter/dialog-settings';
 
 import { getScript, updateScript } from '../../components/data-layer';
-import DefaultSettings from '../../components/default-prompter-settings';
+import DefaultSettings from '../../components/routes/prompter/default-prompter-settings';
 
 class Prompter extends Component {
   _ref = createRef();

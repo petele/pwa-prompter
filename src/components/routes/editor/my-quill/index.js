@@ -30,6 +30,7 @@ class MyQuill extends Component {
     if (!this.editorRef) {
       return;
     }
+
     this.editor = new Quill(this.editorRef, {
       theme: 'snow',
       placeholder: 'Write your script here...',
@@ -282,7 +283,6 @@ class MyQuill extends Component {
               </svg>
             </button>
           </span>
-
         </div>
         <div class={style.editorContainer} ref={el => { this.editorRef = el }} />
       </div>

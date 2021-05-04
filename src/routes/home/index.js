@@ -10,7 +10,6 @@ import ScriptListItem from '../../components/routes/home/script-list-item';
 
 class Home extends Component {
 
-  // Lifecycle: Called whenever our component is created
   componentDidMount() {
     this.refreshScriptList();
   }

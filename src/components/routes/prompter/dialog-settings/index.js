@@ -1,16 +1,14 @@
 import { h, Component, createRef } from 'preact';
 
+/* https://github.com/GoogleChrome/dialog-polyfill */
 import dialogPolyfill from 'dialog-polyfill';
 import 'dialog-polyfill/dist/dialog-polyfill.css';
 
-import PWAPSlider from '../pwap-slider';
+import PWAPSlider from '../../../pwap-slider';
 
 import style from './style.css';
 
 import DefaultSettings from '../default-prompter-settings';
-
-/* https://github.com/GoogleChrome/dialog-polyfill */
-
 
 class PrompterSettingsDialog extends Component {
   _settingsDialogRef = createRef();
