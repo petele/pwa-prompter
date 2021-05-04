@@ -84,6 +84,7 @@ class Prompter extends Component {
         <Eyeline
           margin={state.margin}
           value={state.eyelineHeight}
+          flipHorizontal={state.flipHorizontal}
           onChange={this.onEyelineChange} />
         <PrompterScriptContainer
           asHTML={state.asHTML}
@@ -96,6 +97,7 @@ class Prompter extends Component {
         <PrompterFooter
           scrollSpeed={state.scrollSpeed}
           autoHideFooter={state.autoHideFooter}
+          flipVertical={state.flipVertical}
           onScrollChange={this.onScrollChange}
           onScrollSpeedChange={this.onScrollSpeedChange}
           onFooterVisibleChange={this.onFooterVisibleChange} />

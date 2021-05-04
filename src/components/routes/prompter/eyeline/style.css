@@ -8,6 +8,12 @@
   z-index: 1;
 }
 
+.eyeline.flipH {
+  transform: rotate(-90deg);
+  bottom: 0;
+  top: auto;
+}
+
 .eyeline::-webkit-slider-runnable-track {
   /* height: 1px; */
   height: 0;
