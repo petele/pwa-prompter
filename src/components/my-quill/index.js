@@ -45,9 +45,8 @@ class MyQuill extends Component {
       bounds: this.containerRef,
     });
 
-    if (this.props.asQuill) {
-      this.editor.setContents(this.props.asQuill, Quill.sources.SILENT);
-    }
+    this.editor.disable();
+
     const butSave = this.toolbarRef.querySelector('#butSave');
     butSave.addEventListener('click', () => {
       this.saveIntervalTick(true);
@@ -112,11 +111,19 @@ class MyQuill extends Component {
     this.quillDelta = this.quillDelta.compose(change);
   }
 
-  shouldComponentUpdate() {
-    // console.log('here', nextProps)
-    // if (nextProps.asQuill) {
-    //   this.editor.setContents(nextProps.asQuill);
-    // }
+  shouldComponentUpdate(nextProps) {
+    if (this.props.asQuill) {
+      // Quill already set.
+      return false;
+    }
+    if (!nextProps.asQuill) {
+      // No value for Quill, quit.
+      return false;
+    }
+    this.editor.setContents(nextProps.asQuill, Quill.sources.SILENT);
+    this.editor.history.clear();
+    this.quillDelta = new Delta();
+    this.editor.enable();
     return false;
   }
 

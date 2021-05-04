@@ -2,9 +2,12 @@
 
 import { get, set, update, del, keys } from 'idb-keyval';
 
+const SCRIPT_KEY_PREFIX = 'script';
+const SCRIPT_LIST_KEY = 'scriptList';
+
 const DEFAULT_SCRIPT_TEMPLATE = {
   asHTML: '',
-  asQuill: '',
+  asQuill: [],
   snippet: '',
   createdOn: Date.now(),
   hasStar: false,
@@ -15,17 +18,22 @@ const DEFAULT_SCRIPT_TEMPLATE = {
 const _cachedScript = {
   id: null,
   script: null,
+  list: null,
 };
 
-let _cachedScriptList = {};
-
+/**
+ * Gets a script object from the data store
+ *
+ * @param {String} scriptID
+ * @returns Object
+ */
 export async function getScript(scriptID) {
   if (_cachedScript.id === scriptID) {
     console.log('getScript', scriptID, '[cached]');
     return _cachedScript.script;
   }
   console.log('getScript', scriptID, '[db]');
-  const idbKey = `script.${scriptID}`;
+  const idbKey = `${SCRIPT_KEY_PREFIX}.${scriptID}`;
   const scriptObj = await get(idbKey);
   if (scriptObj) {
     _cachedScript.id = scriptID;
@@ -36,6 +44,13 @@ export async function getScript(scriptID) {
   return Object.assign({}, DEFAULT_SCRIPT_TEMPLATE);
 }
 
+/**
+ * Updates the specified properties of the script object.
+ *
+ * @param {String} scriptID Script identifier
+ * @param {Object} scriptObj Properties of the script to update
+ * @returns Promise
+ */
 export async function updateScript(scriptID, scriptObj) {
   if (!scriptID || typeof scriptID !== 'string') {
     console.error('updateScript - invalid scriptID', scriptID);
@@ -46,37 +61,62 @@ export async function updateScript(scriptID, scriptObj) {
     return;
   }
   console.log('updateScript', scriptID, scriptObj);
-  const idbKey = `script.${scriptID}`;
-  return await update(idbKey, (dbScriptObj) => {
+  const idbKey = `${SCRIPT_KEY_PREFIX}.${scriptID}`;
+  return update(idbKey, (dbScriptObj) => {
     if (!dbScriptObj) {
       dbScriptObj = Object.assign({}, DEFAULT_SCRIPT_TEMPLATE);
     }
     Object.assign(dbScriptObj, scriptObj);
     _cachedScript.id = scriptID;
     _cachedScript.script = dbScriptObj;
+    updateScriptListItem(scriptID, dbScriptObj);
     return dbScriptObj;
   });
 }
 
-// export async function saveScript(scriptID, scriptObj) {
-//   console.log('saveScript', scriptID, scriptObj);
-//   const idbKey = `script.${scriptID}`;
-//   scriptObj.scriptID = scriptID;
-//   _cachedScript.id = scriptID;
-//   _cachedScript.script = scriptObj;
-//   await set(idbKey, scriptObj);
-//   updateScriptListItem(scriptID, scriptObj);
-// }
-
+/**
+ * Deletes a script from the data store.
+ *
+ * @param {String} scriptID Script identifier
+ */
 export async function deleteScript(scriptID) {
   console.log('deleteScript', scriptID);
-  const idbKey = `script.${scriptID}`;
+  const idbKey = `${SCRIPT_KEY_PREFIX}.${scriptID}`;
   await del(idbKey);
   if (_cachedScript.id === scriptID) {
     _cachedScript.id = null;
     _cachedScript.script = null;
   }
-  delete _cachedScriptList[scriptID];
+  delete _cachedScript.list[scriptID];
+  set(SCRIPT_LIST_KEY, _cachedScript.list);
+}
+
+/**
+ * Gets the list of scripts available.
+ *
+ * @returns Object
+ */
+export async function getScriptList() {
+  console.log('getScriptList');
+  if (_cachedScript.list) {
+    return _cachedScript.list;
+  }
+  _cachedScript.list = await get(SCRIPT_LIST_KEY) || {};
+  return _cachedScript.list;
+}
+
+export async function rebuildScriptList() {
+  console.log('rebuildScriptList');
+  const scriptKeys = await keys();
+  for (let key of scriptKeys) {
+    if (key.startsWith(SCRIPT_KEY_PREFIX)) {
+      const scriptObj = await get(key);
+      const scriptID = key.replace(`${SCRIPT_KEY_PREFIX}.`, '');
+      updateScriptListItem(scriptID, scriptObj);
+    }
+  }
+  await set(SCRIPT_LIST_KEY, _cachedScript.list);
+  return _cachedScript.list;
 }
 
 function updateScriptListItem(scriptID, scriptObj) {
@@ -87,26 +127,7 @@ function updateScriptListItem(scriptID, scriptObj) {
     lastUpdated: scriptObj.lastUpdated,
     hasStar: scriptObj.hasStar || false,
   };
-  _cachedScriptList[scriptID] = listItem;
-}
-
-export async function updateScriptList() {
-  console.log('updateScriptList');
-  const scriptKeys = await keys();
-  for (let key of scriptKeys) {
-    if (key.startsWith('script.')) {
-      const scriptObj = await get(key);
-      const scriptID = key.replace('script.', '');
-      updateScriptListItem(scriptID, scriptObj);
-    }
-  }
-  await set('scriptList', _cachedScriptList);
-  return _cachedScriptList;
-}
-
-export async function getScriptList() {
-  console.log('getScriptList');
-  const idbKey = `scriptList`;
-  const scriptList = await get(idbKey) || {};
-  return scriptList;
+  _cachedScript.list[scriptID] = listItem;
+  console.log('updateScriptListItem', scriptID, listItem);
+  set(SCRIPT_LIST_KEY, _cachedScript.list);
 }
