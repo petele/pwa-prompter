@@ -9,7 +9,8 @@
     "serve": "sirv build --port 8080 --cors --single",
     "dev": "preact watch",
     "lint": "eslint src",
-    "test": "jest"
+    "test": "jest",
+    "deploy": "preact build --no-prerender && firebase deploy"
   },
   "eslintConfig": {
     "extends": "preact",
@@ -32,6 +33,7 @@
     "eslint": "^6.8.0",
     "eslint-config-preact": "^1.1.0",
     "firebase": "^8.4.1",
+    "firebase-tools": "^9.10.0",
     "idb-keyval": "^5.0.5",
     "jest": "^24.9.0",
     "jest-preset-preact": "^1.0.0",
