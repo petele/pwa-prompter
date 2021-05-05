@@ -3,63 +3,36 @@ import style from './style.css';
 
 import DefaultSettings from '../default-prompter-settings';
 
+import * as scrollController from  '../scroll-controller';
+
 class PrompterFooter extends Component {
-  footerRef = null;
-  scrollerRef = null;
-  scrollingRAF = null;
-  _lastScrollVal = 0;
+  _footerRef = null;
+  _hideFooterTimer = null;
   state = {
     playButtonText: 'Play',
     hidePlay: '',
     hidePause: style.hidden,
     fullScreenStyle: '',
-    scrollSpeed: this.props.scrollSpeed,
-    scrollSpeedPercent: this.props.scrollSpeed / 100,
   };
 
   componentDidMount() {
-    if (this.scrollerRef) {
-      return;
-    }
-    this.scrollerRef = document.getElementById('docScroller');
-    this.scrollerRef.addEventListener('scroll', this.onScroll);
     window.addEventListener('keydown', this.keyboardHandler);
-    document.addEventListener('fullscreenchange', this.fullScreenChanged);
   }
 
   componentWillUnmount() {
-    this.scrollerRef.removeEventListener('scroll', this.onScroll);
     window.removeEventListener('keydown', this.keyboardHandler);
-    document.removeEventListener('fullscreenchange', this.fullScreenChanged);
-    if (this.scrollingRAF) {
-      cancelAnimationFrame(this.scrollingRAF);
-      this.scrollingRAF = null;
+    if (this._hideFooterTimer) {
+      clearTimeout(this._hideFooterTimer);
+      this._hideFooterTimer = null;
     }
-    if (this.hideFooterTimer) {
-      clearTimeout(this.hideFooterTimer);
-      this.hideFooterTimer = null;
+    if (scrollController.isScrolling()) {
+      scrollController.stop();
     }
-  }
-
-  onScroll = () => {
-    const currentY = this.scrollerRef.scrollTop;
-    const scrollHeight = this.docScrollHeight || this.scrollerRef.scrollHeight;
-    const windowHeight = window.innerHeight;
-    const percent = (currentY / (scrollHeight - windowHeight)) * 100;
-    const value = Math.min((Math.round(percent * 100) / 100), 100);
-    if (this.props.onScrollChange && this._lastScrollVal !== value) {
-      this.props.onScrollChange(value);
-      this._lastScrollVal = value;
-    }
-  }
-
-  fullScreenChanged = () => {
-    const value = document.fullscreenElement ? style.enabled : '';
-    this.setState({fullScreenStyle: value});
   }
 
   keyboardHandler = (e) => {
-    console.log('key', e.code, e.ctrlKey, e.metaKey, e.shiftKey, e.key);
+    const activeElem = document.activeElement;
+    console.log('key', activeElem, e.code, e.ctrlKey, e.metaKey, e.shiftKey, e.key);
 
     const keyCode = e.code;
 
@@ -77,11 +50,11 @@ class PrompterFooter extends Component {
       return this.resetScroller();
     }
     if (keyCode === 'ArrowLeft') {
-      this.adjustScrollSpeed(-10);
+      this.adjustScrollSpeed(-5);
       return;
     }
     if (keyCode === 'ArrowRight') {
-      this.adjustScrollSpeed(10);
+      this.adjustScrollSpeed(5);
       return;
     }
     if (keyCode === 'BracketLeft') {
@@ -109,49 +82,48 @@ class PrompterFooter extends Component {
       return;
     }
     if (keyCode === 'PageDown') {
-      this.scrollPage(window.innerHeight);
+      e.preventDefault();
+      scrollController.scrollPageDown(this.props.flipVertical);
       return;
     }
     if (keyCode === 'PageUp') {
-      this.scrollPage(window.innerHeight * -1);
+      e.preventDefault();
+      scrollController.scrollPageUp(this.props.flipVertical);
       return;
     }
   }
 
   adjustScrollSpeed = (amount) => {
-    this.setState((prevState) => {
-      const newSpeed = prevState.scrollSpeed + amount;
-      if (newSpeed < 1 || newSpeed > 500) {
-        console.error('scrollSpeed out of range', newSpeed);
-        return null;
-      }
-      if (this.props.onScrollSpeedChange) {
-        this.props.onScrollSpeedChange(newSpeed);
-      }
-      return {
-        scrollSpeed: newSpeed,
-        scrollSpeedPercent: newSpeed / 100,
-      };
-    });
+    const currentSpeed = scrollController.getSpeed();
+    const newSpeed = scrollController.adjustSpeed(amount);
+    if (newSpeed !== currentSpeed && this.props.onScrollSpeedChange) {
+      this.props.onScrollSpeedChange(newSpeed);
+    }
   }
 
   scrollStart = () => {
-    this.docScrollHeight = this.scrollerRef.scrollHeight;
+    const opts = {
+      reverse: this.props.flipVertical,
+      scrollSpeed: this.props.scrollSpeed,
+    }
+    scrollController.start(opts, this.scrollStop);
     this.setState({
       playButtonText: 'Pause',
       hidePlay: style.hidden,
       hidePause: '',
-      scrollSpeed: this.props.scrollSpeed,
-      scrollSpeedPercent: this.props.scrollSpeed / 100,
     });
-    this.doScrollStep(0);
+    if (this.props.autoHideFooter) {
+      this._hideFooterTimer = setTimeout(() => {
+        if (scrollController.isScrolling()) {
+          this.setFooterVisibility(false);
+        }
+      }, 2500);
+    }
+    document.body.focus();
   }
 
   scrollStop = () => {
-    if (this.scrollingRAF) {
-      cancelAnimationFrame(this.scrollingRAF);
-      this.scrollingRAF = null;
-    }
+    scrollController.stop();
     this.setState({
       playButtonText: 'Play',
       hidePlay: '',
@@ -160,96 +132,35 @@ class PrompterFooter extends Component {
     this.setFooterVisibility(true);
   }
 
-  doScrollStep = (lastScrollAmount) => {
-    const currentY = this.scrollerRef.scrollTop;
-    const scrollSpeed = this.state.scrollSpeedPercent;
-    const scrollAmount = scrollSpeed + (lastScrollAmount || 0);
-    const scrollBy = Math.floor(scrollAmount);
-    let scrollRemainder = scrollAmount;
-    if (scrollBy >= 1) {
-      this.scrollerRef.scrollBy({top: scrollBy});
-      scrollRemainder -= scrollBy;
-    }
-    if (currentY + window.innerHeight >= this.docScrollHeight) {
-      this.scrollStop();
-      return;
-    }
-    this.scrollingRAF = window.requestAnimationFrame(() => {
-      this.doScrollStep(scrollRemainder);
-    });
-  }
-
-  promisedSleep() {
-    return new Promise((resolve) => {
-      setTimeout(resolve, 50);
-    });
-  }
-
-  waitWhileScrolling(prevY) {
-    const currentY = this.scrollerRef.scrollTop;
-    if (currentY === prevY) {
-      return Promise.resolve();
-    }
-    return this.promisedSleep().then(() => {
-      return this.waitWhileScrolling(currentY);
-    });
-  }
-
-  // scrollPage = async (val) => {
-  async scrollPage(val) {
-    const isScrolling = !!this.scrollingRAF;
-    if (isScrolling) {
-      cancelAnimationFrame(this.scrollingRAF);
-      this.scrollingRAF = null;
-    }
-    if (typeof val === 'object') {
-      val.scrollIntoView({behavior: 'smooth'});
-    } else{
-      this.scrollerRef.scrollBy({top: val, behavior: 'smooth'});
-    }
-    await this.waitWhileScrolling();
-    if (isScrolling) {
-      this.scrollStart();
-    }
-  }
-
   setFooterVisibility(isVisible) {
-    if (this.hideFooterTimer) {
-      clearTimeout(this.hideFooterTimer);
-      this.hideFooterTimer = null;
+    if (this._hideFooterTimer) {
+      clearTimeout(this._hideFooterTimer);
+      this._hideFooterTimer = null;
     }
-    this.footerRef.classList.toggle(style.minimized, !isVisible);
+    this._footerRef.classList.toggle(style.minimized, !isVisible);
     if (this.props.onFooterVisibleChange) {
       this.props.onFooterVisibleChange(isVisible);
     }
   }
 
   toggleFooterVisibility = () => {
-    const isVisible = this.footerRef.classList.contains(style.minimized);
+    const isVisible = this._footerRef.classList.contains(style.minimized);
     this.setFooterVisibility(isVisible)
   }
 
   resetScroller = () => {
-    this.scrollStop();
-    this.scrollerRef.scrollTo({top: 0, behavior: 'smooth'});
+    if (scrollController.isScrolling()) {
+      this.scrollStop();
+    }
+    scrollController.scrollToStart(this.props.flipVertical);
   }
 
   gotoPrevMarker = () => {
-    const currentY = this.scrollerRef.scrollTop;
-    const markers = this.scrollerRef.querySelectorAll('hr.bookmark');
-    const len = markers.length;
-    // eslint-disable-next-line for-direction
-    for (let i = len - 1; i >= 0; i--) {
-      const marker = markers[i];
-      if (currentY > marker.offsetTop) {
-        this.scrollPage(marker);
-        break;
-      }
-    }
+    scrollController.scrollToPrevMarker(this.props.flipVertical);
   }
 
   skipBackward = () => {
-    this.scrollPage(-150);
+    scrollController.scrollBy(-200, this.props.flipVertical);
   }
 
   toggleScroller = (e) => {
@@ -258,33 +169,19 @@ class PrompterFooter extends Component {
     if (e && e.x === 0 && e.y === 0) {
       return;
     }
-    if (this.scrollingRAF) {
+    if (scrollController.isScrolling()) {
       this.scrollStop();
       return;
     }
     this.scrollStart();
-    if (this.props.autoHideFooter) {
-      this.hideFooterTimer = setTimeout(() => {
-        if (this.scrollingRAF) {
-          this.setFooterVisibility(false);
-        }
-      }, 2500);
-    }
   }
 
   gotoNextMarker = () => {
-    const currentY = this.scrollerRef.scrollTop + 60;
-    const markers = this.scrollerRef.querySelectorAll('hr.bookmark');
-    for (const marker of markers) {
-      if (marker.offsetTop > currentY) {
-        this.scrollPage(marker);
-        break;
-      }
-    }
+    scrollController.scrollToNextMarker(this.props.flipVertical);
   }
 
   skipForward = () => {
-    this.scrollPage(150);
+    scrollController.scrollBy(200, this.props.flipVertical);
   }
 
   toggleFullScreen = () => {
@@ -292,17 +189,22 @@ class PrompterFooter extends Component {
       document.exitFullscreen();
       return;
     }
-    this.scrollerRef.requestFullscreen();
+    document.documentElement.requestFullscreen();
   }
 
   onClickSettings = () => {
-    const dialogSettings = document.querySelector('#dialogSettings');
-    dialogSettings.showModal();
+    if (scrollController.isScrolling()) {
+      this.scrollStop();
+    }
+    const dialog = document.querySelector('#dialogSettings');
+    if (dialog) {
+      dialog.showModal();
+    }
   }
 
   render() {
     return (
-      <footer class={style.footer} ref={el => { this.footerRef = el }}>
+      <footer class={style.footer} ref={el => { this._footerRef = el }}>
         <div class={style.toggle}>
           <button onClick={this.toggleFooterVisibility} type="button">
             &bull;&bull;&bull;

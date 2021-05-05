@@ -1,12 +1,14 @@
 import { h } from 'preact';
 import style from './style.css';
 
-const ProgressBar = ({percent = 0}) => {
+const ProgressBar = ({percent = 0, flipVertical}) => {
 
-  const width = `width: ${percent}%;`
+  if (flipVertical) {
+    percent = 100 - percent;
+  }
 
   return (
-    <div class={style.progress} style={width} />
+    <div class={style.progress} style={`width: ${percent}%`} />
   );
 }
 

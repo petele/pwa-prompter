@@ -3,6 +3,8 @@
 import { customAlphabet, urlAlphabet } from 'nanoid';
 import { get, set, update, del, keys } from 'idb-keyval';
 
+import { sampleScriptList, sampleScript } from '../sample-script';
+
 const SCRIPT_KEY_PREFIX = 'script';
 const SCRIPT_LIST_KEY = 'scriptList';
 
@@ -27,6 +29,9 @@ const _cachedScript = {
  * @returns Object
  */
 export async function getScript(scriptID) {
+  if (scriptID === 'sample') {
+    return sampleScript;
+  }
   if (_cachedScript.id === scriptID) {
     console.log('getScript', scriptID, '[cached]');
     return _cachedScript.script;
@@ -118,7 +123,7 @@ export async function getScriptList() {
     return _cachedScript.list;
   }
   console.log('getScriptList');
-  _cachedScript.list = await get(SCRIPT_LIST_KEY) || {};
+  _cachedScript.list = await get(SCRIPT_LIST_KEY) || sampleScriptList;
   return _cachedScript.list;
 }
 

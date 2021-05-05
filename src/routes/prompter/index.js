@@ -1,4 +1,4 @@
-import { h, Component, createRef } from 'preact';
+import { h, Component } from 'preact';
 import { route } from 'preact-router';
 import style from './style.css';
 
@@ -12,13 +12,25 @@ import { getScript, updateScript } from '../../components/data-layer';
 import DefaultSettings from '../../components/routes/prompter/default-prompter-settings';
 
 class Prompter extends Component {
-  _ref = createRef();
   updatedSettings = {};
-  state = Object.assign({class: style.prompter}, DefaultSettings);
+  state = Object.assign({
+    class: style.prompter,
+    scrollPercent: 0,
+  }, DefaultSettings);
 
   componentDidMount() {
     const scriptID = this.props.scriptID;
     this.loadScript(scriptID);
+
+    if (document) {
+      document.addEventListener('scroll', this.onScroll);
+    }
+  }
+
+  componentWillUnmount() {
+    if (document) {
+      document.removeEventListener('scroll', this.onScroll);
+    }
   }
 
   async loadScript(scriptID) {
@@ -31,14 +43,26 @@ class Prompter extends Component {
     this.setState(script);
     const title = script.title;
     document.title = title ? `${title} - MyPrompter` : `MyPrompter`;
+
+    if (script.flipVertical) {
+      setTimeout(() => {
+        window.scrollTo({top: document.body.scrollHeight});
+      }, 25);
+    }
+
   }
 
-  onFooterVisibleChange = (isVisible) => {
-    this._ref.current.classList.toggle(style.footerHidden, !isVisible);
-  }
-
-  onScrollChange = async (value) => {
-    this.setState({scrollPercent: value});
+  onScroll = () => {
+    if (!window || !document) {
+      return;
+    }
+    const currentY = window.scrollY;
+    const scrollHeight = document.body.scrollHeight;
+    const windowHeight = window.innerHeight;
+    let percent = (currentY / (scrollHeight - windowHeight)) * 100;
+    percent = Math.round(percent * 100) / 100;
+    percent = Math.min(percent, 100);
+    this.setState({scrollPercent: percent});
   }
 
   onEyelineChange = async (value) => {
@@ -50,6 +74,7 @@ class Prompter extends Component {
   onScrollSpeedChange = async (value) => {
     const obj = {scrollSpeed: value};
     this.setState(obj);
+
     await updateScript(this.props.scriptID, obj);
   }
 
@@ -67,8 +92,10 @@ class Prompter extends Component {
 
   render(props, state) {
     return (
-      <div id="docScroller" class={style.prompter} ref={this._ref}>
-        <ProgressBar percent={state.scrollPercent} />
+      <div id="prompterContainer" class={style.prompter}>
+        <ProgressBar
+          percent={state.scrollPercent}
+          flipVertical={state.flipVertical} />
         <PrompterSettingsDialog
           eyelineHeight={state.eyelineHeight}
           scrollSpeed={state.scrollSpeed}
@@ -98,9 +125,7 @@ class Prompter extends Component {
           scrollSpeed={state.scrollSpeed}
           autoHideFooter={state.autoHideFooter}
           flipVertical={state.flipVertical}
-          onScrollChange={this.onScrollChange}
-          onScrollSpeedChange={this.onScrollSpeedChange}
-          onFooterVisibleChange={this.onFooterVisibleChange} />
+          onScrollSpeedChange={this.onScrollSpeedChange} />
       </div>
     );
   }

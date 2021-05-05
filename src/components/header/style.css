@@ -2,20 +2,21 @@
   left: 0;
   top: 0;
   width: 100%;
-  height: 56px;
+  height: var(--header-height);
   padding: 0;
   background: var(--app-background-secondary);
   color: var(--app-color-primary);
   z-index: 50;
   display: flex;
   flex-wrap: nowrap;
+  position: fixed;
 }
 
 .header h1 {
   margin: 0;
   padding: 0 15px;
   font-size: 24px;
-  line-height: 56px;
+  line-height: var(--header-height);
   font-weight: 400;
   color: var(--app-color-secondary);
   flex-grow: 1;
@@ -28,8 +29,8 @@
 
 .header nav a {
   display: block;
-  height: 56px;
-  line-height: 56px;
+  height: var(--header-height);
+  line-height: var(--header-height);
   padding: 0 15px;
   min-width: 50px;
   text-align: center;

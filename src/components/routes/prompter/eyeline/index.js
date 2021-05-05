@@ -5,17 +5,26 @@ const Eyeline = ({margin = 15, value = 40, flipHorizontal, onChange}) => {
 
   const eyelineChange = (e) => {
     if (onChange) {
-      onChange(parseInt(e.target.value, 10));
+      let newVal = parseInt(e.target.value, 10);
+      if (flipHorizontal) {
+        newVal = 100 - newVal;
+      }
+      onChange(newVal);
     }
   }
-  const mValue = flipHorizontal ? `${100 - parseInt(margin, 10)}` : margin;
-  const flipHClass = flipHorizontal ? style.flipH : '';
+
+  const classList = [style.eyeline];
+  if (flipHorizontal) {
+    margin = 100 - margin;
+    value = 100 - value;
+    classList.push(style.flipH);
+  }
 
   return (
     <input type="range" min="0" max="100"
       value={value}
-      class={`${style.eyeline} ${flipHClass}`}
-      style={`margin-left: ${mValue}%;`}
+      class={classList.join(' ')}
+      style={`margin-left: ${margin}%;`}
       onChange={eyelineChange} />
   );
 }
