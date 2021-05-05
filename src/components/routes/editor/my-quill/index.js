@@ -125,6 +125,8 @@ class MyQuill extends Component {
     this.editor.history.clear();
     this.quillDelta = new Delta();
     this.editor.enable();
+    const elemEdit = document.querySelector('.ql-editor');
+    elemEdit.setAttribute('tabindex', 2);
     return false;
   }
 
@@ -149,13 +151,13 @@ class MyQuill extends Component {
         <div class={style.toolbarContainer} ref={el => { this.toolbarRef = el }}>
           <span class="ql-formats">
             {/* <!-- bold/italic/underline --> */}
-            <button class="ql-bold" />
-            <button class="ql-italic" />
-            <button class="ql-underline" />
+            <button class="ql-bold" tabindex="3" aria-label="bold" />
+            <button class="ql-italic" tabindex="3" aria-label="italic" />
+            <button class="ql-underline" tabindex="3" aria-label="underline" />
           </span>
           <span class="ql-formats">
             {/* <!-- color --> */}
-            <select class="ql-color">
+            <select class="ql-color" tabindex="3" aria-label="color">
               <option selected="selected"></option>
               <option value="#e60000"></option>
               <option value="#ff9900"></option>
@@ -192,7 +194,7 @@ class MyQuill extends Component {
               <option value="#002966"></option>
               <option value="#3d1466"></option>
             </select>
-            <select class="ql-background">
+            <select class="ql-background" tabindex="3" aria-label="background color">
               <option selected="selected"></option>
               <option value="#e60000"></option>
               <option value="#ff9900"></option>
@@ -232,25 +234,25 @@ class MyQuill extends Component {
           </span>
           <span class="ql-formats">
             {/* <!-- alignment --> */}
-            <select class="ql-align">
+            <select class="ql-align" tabindex="3" aria-label="alignment">
               <option selected></option>
               <option value="center"></option>
               <option value="right"></option>
             </select>
           </span>
-          <span class="ql-formats">
+          <span class="ql-formats" tabindex="3" aria-label="clear formatting">
             {/* <!-- clear formatting --> */}
             <button class="ql-clean" />
           </span>
           <span class="ql-formats">
             {/* <!-- Pause/Bookmark --> */}
-            <button id="butBookmark">
+            <button id="butBookmark" tabindex="3" aria-label="add bookmark">
               <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="18px" viewBox="0 0 20 20" width="18px" class="ql-fill">
                 <rect fill="none" height="20" width="20" />
                 <path d="M13.5,9v5.78l-3.5-1.4l-3.5,1.4V4.5H11V3H6.5C5.67,3,5,3.67,5,4.5V17l5-2l5,2V9H13.5z M15.75,4.25v-1.5h-1.5v1.5h-1.5v1.5 h1.5v1.5h1.5v-1.5h1.5v-1.5H15.75z" />
               </svg>
             </button>
-            <button id="butPause" style="display:none;">
+            <button id="butPause" style="display:none;" tabindex="-1">
               <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px" class="ql-fill">
                 <path d="M0 0h24v24H0V0z" fill="none" />
                 <path d="M19 19h-6V5h6v14zm-4-2h2V7h-2v10zm-4 2H5V5h6v14zm-4-2h2V7H7v10z" />
@@ -259,7 +261,7 @@ class MyQuill extends Component {
           </span>
           <span class="ql-formats">
             {/* Save */}
-            <button id="butSave">
+            <button id="butSave" tabindex="3" aria-label="save">
               <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px" class="ql-fill">
                 <path d="M0 0h24v24H0V0z" fill="none" />
                 <path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm2 16H5V5h11.17L19 7.83V19z" />
@@ -270,13 +272,13 @@ class MyQuill extends Component {
           </span>
           <span class="ql-formats">
             {/* <!-- undo/redo --> */}
-            <button id="butUndo">
+            <button id="butUndo" tabindex="3" aria-label="undo">
               <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px" class="ql-fill">
                 <path d="M0 0h24v24H0V0z" fill="none" />
                 <path d="M14.1 8H7.83l2.59-2.59L9 4 4 9l5 5 1.41-1.41L7.83 10h6.27c2.15 0 3.9 1.57 3.9 3.5S16.25 17 14.1 17H7v2h7.1c3.25 0 5.9-2.47 5.9-5.5S17.35 8 14.1 8z" />
               </svg>
             </button>
-            <button id="butRedo">
+            <button id="butRedo" tabindex="3" aria-label="redo">
               <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px" class="ql-fill">
                 <path d="M0 0h24v24H0V0z" fill="none" />
                 <path d="M6 13.5C6 11.57 7.75 10 9.9 10h6.27l-2.59 2.59L15 14l5-5-5-5-1.41 1.41L16.17 8H9.9C6.65 8 4 10.47 4 13.5S6.65 19 9.9 19H17v-2H9.9C7.75 17 6 15.43 6 13.5z" />
