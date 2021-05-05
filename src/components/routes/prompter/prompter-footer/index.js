@@ -46,7 +46,7 @@ class PrompterFooter extends Component {
     const scrollHeight = this.docScrollHeight || this.scrollerRef.scrollHeight;
     const windowHeight = window.innerHeight;
     const percent = (currentY / (scrollHeight - windowHeight)) * 100;
-    const value = Math.min(Math.round(percent), 100);
+    const value = Math.min((Math.round(percent * 100) / 100), 100);
     if (this.props.onScrollChange && this._lastScrollVal !== value) {
       this.props.onScrollChange(value);
       this._lastScrollVal = value;

@@ -11,6 +11,7 @@ import ScriptListItem from '../../components/routes/home/script-list-item';
 class Home extends Component {
 
   componentDidMount() {
+    document.title = `MyPrompter`;
     this.refreshScriptList();
   }
 
