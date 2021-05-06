@@ -1,4 +1,6 @@
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/database';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBUCT7b-BAG9jpBhP9iJyDxQbocV86hOvY",
@@ -17,3 +19,32 @@ export default firebase;
 export const database = firebase.database();
 export const auth = firebase.auth();
 export const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
+
+let _user;
+
+auth.onAuthStateChanged((user) => {
+  console.log('[FB] change', user);
+  _user = user;
+});
+
+export function getUser() {
+  return _user;
+}
+
+export function getUserID() {
+  return _user?.uid;
+}
+
+export async function saveScriptToFB(scriptID, scriptObj) {
+  console.log('[FB] save script', scriptID, scriptObj);
+  const uid = _user.uid;
+  const path = `userData/${uid}/scripts/${scriptID}`;
+  database.ref(path).set(scriptObj);
+}
+
+export async function saveScriptListToFB(list) {
+  console.log('[FB] save list', list);
+  const uid = _user.uid;
+  const path = `userData/${uid}/scriptList`;
+  database.ref(path).set(list);
+}

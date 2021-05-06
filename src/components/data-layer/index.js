@@ -5,6 +5,8 @@ import { get, set, update, del, keys } from 'idb-keyval';
 
 import { sampleScriptList, sampleScript } from '../sample-script';
 
+import { saveScriptToFB, saveScriptListToFB } from '../firebase';
+
 const SCRIPT_KEY_PREFIX = 'script';
 const SCRIPT_LIST_KEY = 'scriptList';
 
@@ -98,6 +100,7 @@ export async function updateScript(scriptID, scriptObj) {
     _cachedScript.id = scriptID;
     _cachedScript.script = dbScriptObj;
     updateScriptListItem(scriptID, dbScriptObj);
+    saveScriptToFB(scriptID, dbScriptObj);
     return dbScriptObj;
   });
 }
@@ -158,4 +161,5 @@ async function updateScriptListItem(scriptID, scriptObj) {
   };
   _cachedScript.list[scriptID] = listItem;
   set(SCRIPT_LIST_KEY, _cachedScript.list);
+  saveScriptListToFB(_cachedScript.list);
 }
