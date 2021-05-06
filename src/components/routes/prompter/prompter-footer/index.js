@@ -2,7 +2,7 @@ import { h, Component } from 'preact';
 import style from './style.css';
 
 import DefaultSettings from '../default-prompter-settings';
-
+import { getKeyCombination, getShortcut } from '../keyboard-shortcuts';
 import * as scrollController from  '../scroll-controller';
 
 class PrompterFooter extends Component {
@@ -31,65 +31,79 @@ class PrompterFooter extends Component {
   }
 
   keyboardHandler = (e) => {
-    const activeElem = document.activeElement;
-    console.log('key', activeElem, e.code, e.ctrlKey, e.metaKey, e.shiftKey, e.key);
+    // const activeElem = document.activeElement;
+    // console.log('key', activeElem, e.code, e.ctrlKey, e.metaKey, e.shiftKey, e.key);
 
-    const keyCode = e.code;
+    const combo = getKeyCombination(e);
+    if (!combo) {
+      return;
+    }
 
-    if (keyCode === 'Space') {
+    const shortcut = getShortcut(combo);
+    if (!shortcut) {
+      return;
+    }
+
+    console.log('keyboardShortcut', shortcut);
+
+    if (shortcut === 'togglePlay') {
       e.preventDefault();
       return this.toggleScroller();
     }
-    if (keyCode === 'ArrowUp') {
+
+    if (shortcut === 'skipBack') {
+      e.preventDefault();
       return this.skipBackward();
     }
-    if (keyCode === 'ArrowDown') {
+
+    if (shortcut === 'skipForward') {
+      e.preventDefault();
       return this.skipForward();
     }
-    if (keyCode === 'Escape') {
-      return this.resetScroller();
-    }
-    if (keyCode === 'ArrowLeft') {
-      this.adjustScrollSpeed(-5);
-      return;
-    }
-    if (keyCode === 'ArrowRight') {
-      this.adjustScrollSpeed(5);
-      return;
-    }
-    if (keyCode === 'BracketLeft') {
-      this.gotoPrevMarker();
-      return;
-    }
-    if (keyCode === 'BracketRight') {
-      this.gotoNextMarker();
-      return;
-    }
-    if (keyCode === 'KeyF') {
-      this.toggleFullScreen();
-      return;
+
+    if (shortcut === 'speedDown') {
+      e.preventDefault();
+      return this.adjustScrollSpeed(-5);
     }
 
-    if (keyCode === 'Home') {
+    if (shortcut === 'speedUp') {
       e.preventDefault();
-      this.resetScroller();
-      return;
+      return this.adjustScrollSpeed(5);
     }
-    if (keyCode === 'End') {
+
+    if (shortcut === 'markerPrev') {
       e.preventDefault();
-      const elem = document.getElementById('pwapEnd');
-      this.scrollPage(elem);
-      return;
+      return this.gotoPrevMarker();
     }
-    if (keyCode === 'PageDown') {
+
+    if (shortcut === 'markerNext') {
       e.preventDefault();
-      scrollController.scrollPageDown(this.props.flipVertical);
-      return;
+      return this.gotoNextMarker();
     }
-    if (keyCode === 'PageUp') {
+
+    if (shortcut === 'toggleFullscreen') {
       e.preventDefault();
-      scrollController.scrollPageUp(this.props.flipVertical);
-      return;
+      return this.toggleFullScreen();
+    }
+
+    if (shortcut === 'skipToHome') {
+      e.preventDefault();
+      return this.resetScroller();
+    }
+
+    if (shortcut === 'skipToEnd') {
+      e.preventDefault();
+      return this.gotoEnd();
+    }
+
+    if (shortcut === 'pageUp') {
+      e.preventDefault();
+      return scrollController.scrollPageUp(this.props.flipVertical);
+    }
+
+    if (shortcut === 'pageDown') {
+      e.preventDefault();
+      return scrollController.scrollPageDown(this.props.flipVertical);
     }
   }
 
@@ -153,6 +167,13 @@ class PrompterFooter extends Component {
       this.scrollStop();
     }
     scrollController.scrollToStart(this.props.flipVertical);
+  }
+
+  gotoEnd = () => {
+    if (scrollController.isScrolling()) {
+      this.scrollStop();
+    }
+    scrollController.scrollToEnd(this.props.flipVertical);
   }
 
   gotoPrevMarker = () => {

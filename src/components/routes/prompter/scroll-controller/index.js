@@ -68,6 +68,11 @@ export function scrollToStart(reverse) {
   window.scrollTo({top: pos, behavior: 'smooth'});
 }
 
+export function scrollToEnd(reverse) {
+  const pos = reverse ? 0 : getDocHeight();
+  window.scrollTo({top: pos, behavior: 'smooth'});
+}
+
 export function scrollToNextMarker(reverse) {
   if (reverse) {
     console.log('TODO: NYI scrollToNextMarker (reverse)');
