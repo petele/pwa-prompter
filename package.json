@@ -10,7 +10,7 @@
     "dev": "preact watch",
     "lint": "eslint src",
     "test": "jest",
-    "deploy": "preact build --no-prerender && firebase deploy"
+    "production": "NODE_ENV=production preact build --no-prerender"
   },
   "eslintConfig": {
     "extends": "preact",
@@ -23,9 +23,14 @@
         2
       ],
       "no-tabs": "error"
+    },
+    "globals": {
+      "__BUILD_DATE__": false,
+      "__BUILD_TYPE__": false
     }
   },
   "devDependencies": {
+    "babel-plugin-transform-remove-console": "^6.9.4",
     "date-fns": "^2.21.1",
     "dialog-polyfill": "^0.5.6",
     "enzyme": "^3.10.0",
