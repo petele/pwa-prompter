@@ -48,6 +48,42 @@ class MyQuill extends Component {
 
     this.editor.disable();
 
+    // Paste handler for links
+    // - Removes links, only inserts the text.
+    this.editor.clipboard.addMatcher('A', (node, delta) => {
+      const text = delta.ops[0]?.insert;
+      return new Delta().insert(text);
+    });
+
+    // Paste handler for images
+    // - Removes images completely.
+    this.editor.clipboard.addMatcher('IMG', () => {
+      return new Delta();
+    });
+
+    // Paste handler for HTML
+    // - Removes color from black text on black/transparent background.
+    // - Removes background color if it's black, or transparent.
+    this.editor.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
+      delta.ops.forEach((op) => {
+        const color = op.attributes?.color;
+        const bgColor = op.attributes?.background;
+
+        // Is the background black, or transparent?
+        const removeBg = (bgColor === '#000000' || bgColor === 'transparent');
+        // Is the color black on a black/transparent background?
+        const removeColor = (color === '#000000' && removeBg);
+
+        if (removeBg) {
+          delete op.attributes.background;
+        }
+        if (removeColor) {
+          delete op.attributes.color;
+        }
+      });
+      return delta;
+    });
+
     const butSave = this.toolbarRef.querySelector('#butSave');
     butSave.addEventListener('click', () => {
       this.saveIntervalTick(true);
@@ -93,7 +129,7 @@ class MyQuill extends Component {
   }
 
   onKeyDown = (e) => {
-    console.log('keydown [quill]', e, e.code, e.ctrlKey, e.metaKey, e.shiftKey, e.key);
+    // console.log('keydown [quill]', e, e.code, e.ctrlKey, e.metaKey, e.shiftKey, e.key);
     const keyCode = e.code;
 
     if ((e.metaKey || e.ctrlKey) && keyCode === 'KeyY') {
