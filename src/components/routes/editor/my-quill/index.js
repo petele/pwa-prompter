@@ -124,9 +124,11 @@ class MyQuill extends Component {
     this.editor.setContents(nextProps.asQuill, Quill.sources.SILENT);
     this.editor.history.clear();
     this.quillDelta = new Delta();
-    this.editor.enable();
     const elemEdit = document.querySelector('.ql-editor');
     elemEdit.setAttribute('tabindex', 2);
+    if (!nextProps.readOnly) {
+      this.editor.enable();
+    }
     return false;
   }
 

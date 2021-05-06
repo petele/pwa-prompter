@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import style from './style.css';
 
-const InputTitle = ({title, onChange}) => {
+const InputTitle = ({title, readOnly = false, onChange}) => {
 
   const titleChanged = (e) => {
     if (onChange) {
@@ -12,7 +12,14 @@ const InputTitle = ({title, onChange}) => {
   document.title = title ? `${title} - MyPrompter` : `MyPrompter`;
 
   return (
-    <input tabindex="1" class={style.title} name="script-title" onInput={titleChanged} value={title} />
+    <input
+      tabindex="1"
+      autocomplete="off"
+      value={title}
+      disabled={readOnly}
+      readonly={readOnly}
+      class={style.title}
+      onInput={titleChanged} />
   );
 }
 

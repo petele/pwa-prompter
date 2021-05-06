@@ -45,9 +45,9 @@ class Editor extends Component {
   render(props, state) {
     return (
       <div class={style.editor}>
-        <InputTitle title={state.title} onChange={this.onTitleChange} />
-        <MyQuill asQuill={state.asQuill} onChange={this.onQuillChange} />
-        <LastUpdated lastUpdated={state.lastUpdated} />
+        <InputTitle title={state.title} readOnly={state.readOnly} onChange={this.onTitleChange} />
+        <MyQuill asQuill={state.asQuill} readOnly={state.readOnly} onChange={this.onQuillChange} />
+        <LastUpdated lastUpdated={state.lastUpdated} readOnly={state.readOnly} />
       </div>
     );
   }

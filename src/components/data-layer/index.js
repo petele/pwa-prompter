@@ -9,11 +9,12 @@ const SCRIPT_KEY_PREFIX = 'script';
 const SCRIPT_LIST_KEY = 'scriptList';
 
 const DEFAULT_SCRIPT_TEMPLATE = {
-  asHTML: '',
+  title: 'Untitled Script',
   asQuill: [],
+  asHTML: '',
   snippet: '',
   hasStar: false,
-  title: 'Untitled Script',
+  readOnly: false,
 };
 
 const _cachedScript = {
@@ -82,6 +83,10 @@ export async function updateScript(scriptID, scriptObj) {
     console.error('updateScript - invalid scriptObj', scriptObj);
     return;
   }
+  if (scriptObj.readOnly) {
+    console.error('updateScript - script marked as readOnly', scriptObj);
+    return;
+  }
   console.log('updateScript', scriptID, scriptObj);
   const idbKey = `${SCRIPT_KEY_PREFIX}.${scriptID}`;
   return update(idbKey, (dbScriptObj) => {
@@ -89,6 +94,7 @@ export async function updateScript(scriptID, scriptObj) {
       dbScriptObj = Object.assign({}, DEFAULT_SCRIPT_TEMPLATE);
     }
     Object.assign(dbScriptObj, scriptObj);
+    dbScriptObj.lastSaved = Date.now();
     _cachedScript.id = scriptID;
     _cachedScript.script = dbScriptObj;
     updateScriptListItem(scriptID, dbScriptObj);
@@ -148,6 +154,7 @@ async function updateScriptListItem(scriptID, scriptObj) {
     snippet: scriptObj.snippet,
     lastUpdated: scriptObj.lastUpdated,
     hasStar: scriptObj.hasStar || false,
+    readOnly: scriptObj.readOnly || false,
   };
   _cachedScript.list[scriptID] = listItem;
   set(SCRIPT_LIST_KEY, _cachedScript.list);

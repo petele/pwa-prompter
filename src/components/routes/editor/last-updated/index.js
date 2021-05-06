@@ -7,7 +7,7 @@ import { format, formatDistanceToNow } from 'date-fns';
 const VERY_RECENT = 15 * 1000;
 const RECENT = 60 * 60 * 24 * 1000;
 
-const LastUpdated = ({lastUpdated}) => {
+const LastUpdated = ({lastUpdated, readOnly}) => {
   const [ago, setAgo] = useState('');
 
   useEffect(() => {
@@ -29,9 +29,11 @@ const LastUpdated = ({lastUpdated}) => {
     return () => clearInterval(timer);
   }, [lastUpdated]);
 
+  const readOnlyText = readOnly ? '(Read Only)' : '';
+
   return (
     <div class={style.lastSaved}>
-      {ago}
+      {ago} <b>{readOnlyText}</b>
     </div>
   );
 }

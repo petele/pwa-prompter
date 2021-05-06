@@ -3,9 +3,10 @@ import style from './style.css';
 
 import { format } from 'date-fns';
 
-const ScriptListItem = ({ scriptID, title, snippet, lastUpdated, hasStar, onDelete, onStar }) => {
+const ScriptListItem = ({ scriptID, title, snippet, lastUpdated, hasStar, readOnly, onDelete, onStar }) => {
 
   const editorURL = `/editor/${scriptID}`;
+  const readOnlyText = readOnly ? '(Read Only)' : '';
 
   const formatDate = (lastUpdated) => {
     if (lastUpdated) {
@@ -69,6 +70,7 @@ const ScriptListItem = ({ scriptID, title, snippet, lastUpdated, hasStar, onDele
         <div class={style.snippet}>{snippet}...</div>
         <div class={style.lastUpdated}>
           <b>Updated:</b> {formatDate(lastUpdated)}
+          <b>{readOnlyText}</b>
         </div>
       </a>
     </div>
