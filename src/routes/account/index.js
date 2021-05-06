@@ -9,6 +9,10 @@ const Account = () => {
     <div class={style.account}>
       <h1>Account</h1>
       <p>This is the account page.</p>
+      <p>
+        In the future, this is where you'll log in to enable cloud sync,
+        and the ability to share scripts.
+      </p>
     </div>
   );
 };

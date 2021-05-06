@@ -33,7 +33,14 @@ const Header = ({selectedRoute, scriptID}) => {
       { (selectedRoute === '/') &&
         <nav>
           <Link class={style.newScript} onClick={createScript}>
-            New
+            New Script
+          </Link>
+        </nav>
+      }
+      { ((selectedRoute === '/') || (selectedRoute === '/about') || (selectedRoute === '/account')) &&
+        <nav>
+          <Link activeClassName={style.active} href="/about">
+            About
           </Link>
         </nav>
       }
