@@ -1,8 +1,6 @@
 import { h, Component } from 'preact';
 import style from './style.css';
 
-import map from 'lodash/map';
-
 import { getScriptList, updateScript, deleteScript } from '../../components/data-layer';
 
 import DialogConfirmDelete from '../../components/routes/home/dialog-confirm-delete';
@@ -41,6 +39,19 @@ class Home extends Component {
     this.setState({scriptToDelete: null});
   }
 
+  map = (obj, callback) => {
+    if (!obj || typeof obj !== 'object') {
+      return [];
+    }
+    const result = [];
+    const keys = Object.keys(obj);
+    keys.forEach((key) => {
+      const item = obj[key];
+      result.push(callback(item, key));
+    });
+    return result;
+  };
+
   render(props, state) {
     return (
       <div class={style.home}>
@@ -48,7 +59,7 @@ class Home extends Component {
           scriptDetails={state.scriptToDelete}
           onClose={this.onDeleteDialogClose}
           onDelete={this.onDeleteDialogConfirmed} />
-        {map(state.scripts, (script, key) => (
+        {this.map(state.scripts, (script, key) => (
           <ScriptListItem scriptID={key} onDelete={this.clickDelete} onStar={this.clickStar} {...script}  />
         ))}
         {/* <button onClick={this.refreshScriptList}>Refresh List</button> */}
