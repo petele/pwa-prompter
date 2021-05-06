@@ -7,3 +7,13 @@
 .about > :first-child {
   margin-top: 0;
 }
+
+.buildInfo {
+  margin-top: 2em;
+  color: var(--black-800);
+  font-size: smaller;
+}
+
+.buildInfo .label {
+  font-weight: bold;
+}

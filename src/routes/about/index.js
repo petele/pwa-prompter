@@ -67,6 +67,14 @@ const About = () => {
           </tr>
         </tbody>
       </table>
+      <div class={style.buildInfo}>
+        <div>
+          <span class={style.label}>Build Type:</span> <span>{__BUILD_TYPE__}</span>
+        </div>
+        <div>
+          <span class={style.label}>Build Date:</span> <span>{__BUILD_DATE__}</span>
+        </div>
+      </div>
     </div>
   );
 };
