@@ -15,24 +15,30 @@
     "headers": [
       {
         "source": "**/*",
-        "headers": [ {
-          "key": "cache-control",
-          "value": "max-age=31536000"
-        } ]
+        "headers": [
+          {
+            "key": "cache-control",
+            "value": "max-age=31536000"
+          }
+        ]
       },
       {
         "source": "sw*.js",
-        "headers": [ {
-          "key": "cache-control",
-          "value": "no-cache"
-        } ]
+        "headers": [
+          {
+            "key": "cache-control",
+            "value": "no-cache"
+          }
+        ]
       },
       {
         "source": "**/*.@(map)",
-        "headers": [ {
-          "key": "cache-control",
-          "value": "no-cache"
-        } ]
+        "headers": [
+          {
+            "key": "cache-control",
+            "value": "no-cache"
+          }
+        ]
       }
     ]
   }
