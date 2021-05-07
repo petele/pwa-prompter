@@ -25,6 +25,19 @@ let _user;
 auth.onAuthStateChanged((user) => {
   console.log('[FB] change', user);
   _user = user;
+  if (!user) {
+    return;
+  }
+  const uid = user.uid;
+  const profile = {
+    displayName: user.displayName,
+    email: user.email,
+    lastLogin: Date.now(),
+    photoURL: user.photoURL,
+  }
+  const path = `userData/${uid}/profile`;
+  console.log(path, profile);
+  database.ref(path).update(profile);
 });
 
 export function getUser() {
@@ -36,6 +49,9 @@ export function getUserID() {
 }
 
 export async function saveScriptToFB(scriptID, scriptObj) {
+  if (!_user) {
+    return;
+  }
   console.log('[FB] save script', scriptID, scriptObj);
   const uid = _user.uid;
   const path = `userData/${uid}/scripts/${scriptID}`;
@@ -43,6 +59,9 @@ export async function saveScriptToFB(scriptID, scriptObj) {
 }
 
 export async function saveScriptListToFB(list) {
+  if (!_user) {
+    return;
+  }
   console.log('[FB] save list', list);
   const uid = _user.uid;
   const path = `userData/${uid}/scriptList`;

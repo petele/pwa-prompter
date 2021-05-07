@@ -5,6 +5,7 @@
   "private": true,
   "license": "Apache-2.0",
   "scripts": {
+    "analyze": "preact build --no-prerender --analyze",
     "build": "preact build --no-prerender",
     "serve": "sirv build --port 8080 --cors --single",
     "dev": "preact watch",
