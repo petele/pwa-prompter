@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 import style from './style.css';
 
-import { getScriptList, updateScript, deleteScript } from '../../components/data-layer';
+import { getScriptList, updateScript, deleteScript, saveToLocalStorage } from '../../components/data-layer';
 
 import DialogConfirmDelete from '../../components/routes/home/dialog-confirm-delete';
 import ScriptListItem from '../../components/routes/home/script-list-item';
@@ -52,6 +52,10 @@ class Home extends Component {
     return result;
   };
 
+  saveLocal = () => {
+    saveToLocalStorage();
+  }
+
   render(props, state) {
     return (
       <div class={style.home}>
@@ -62,7 +66,7 @@ class Home extends Component {
         {this.map(state.scripts, (script, key) => (
           <ScriptListItem scriptID={key} onDelete={this.clickDelete} onStar={this.clickStar} {...script}  />
         ))}
-        {/* <button onClick={this.refreshScriptList}>Refresh List</button> */}
+        <button onClick={this.saveLocal}>Save Local</button>
       </div>);
   }
 
