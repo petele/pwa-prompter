@@ -1,16 +1,21 @@
 import { h, Component } from 'preact';
 import style from './style.css';
 
-import { getScriptList, updateScript, deleteScript, saveToLocalStorage } from '../../components/data-layer';
-
-import DialogConfirmDelete from '../../components/routes/home/dialog-confirm-delete';
 import ScriptListItem from '../../components/routes/home/script-list-item';
+import DialogConfirmDelete from '../../components/routes/home/dialog-confirm-delete';
+import { getScriptList, updateScript, deleteScript, syncWithFirebase } from '../../components/script-manager';
 
 class Home extends Component {
+  state = {
+    scripts: [],
+  };
 
   componentDidMount() {
     document.title = `MyPrompter`;
     this.refreshScriptList();
+    syncWithFirebase().then(() => {
+      this.refreshScriptList();
+    });
   }
 
   refreshScriptList = async () => {
@@ -18,16 +23,20 @@ class Home extends Component {
     this.setState({scripts});
   }
 
-  clickDelete = (scriptID) => {
-    const scriptToDelete = this.state.scripts[scriptID];
-    this.setState({scriptToDelete});
-    const dialogDelete = document.querySelector('#dialogConfirmDelete');
-    dialogDelete.showModal();
-  }
-
   clickStar = async (scriptID, hasStar) => {
     await updateScript(scriptID, {hasStar});
     this.refreshScriptList();
+  }
+
+  clickDelete = (scriptID, idx) => {
+    const scriptToDelete = this.state.scripts[idx];
+    if (scriptToDelete?.key !== scriptID) {
+      console.log('delete - mismatched keys');
+      return;
+    }
+    this.setState({scriptToDelete});
+    const dialogDelete = document.querySelector('#dialogConfirmDelete');
+    dialogDelete.showModal();
   }
 
   onDeleteDialogConfirmed = async (scriptID) => {
@@ -39,21 +48,9 @@ class Home extends Component {
     this.setState({scriptToDelete: null});
   }
 
-  map = (obj, callback) => {
-    if (!obj || typeof obj !== 'object') {
-      return [];
-    }
-    const result = [];
-    const keys = Object.keys(obj);
-    keys.forEach((key) => {
-      const item = obj[key];
-      result.push(callback(item, key));
-    });
-    return result;
-  };
-
-  saveLocal = () => {
-    saveToLocalStorage();
+  peteTest = async () => {
+    await syncWithFirebase();
+    this.refreshScriptList();
   }
 
   render(props, state) {
@@ -63,10 +60,10 @@ class Home extends Component {
           scriptDetails={state.scriptToDelete}
           onClose={this.onDeleteDialogClose}
           onDelete={this.onDeleteDialogConfirmed} />
-        {this.map(state.scripts, (script, key) => (
-          <ScriptListItem scriptID={key} onDelete={this.clickDelete} onStar={this.clickStar} {...script}  />
-        ))}
-        <button onClick={this.saveLocal}>Save Local</button>
+        {state.scripts.map((script, idx) =>
+          <ScriptListItem key={idx} scriptID={script.key} idx={idx} onDelete={this.clickDelete} onStar={this.clickStar} {...script}  />
+        )}
+        <button onClick={this.peteTest}>Sync</button>
       </div>);
   }
 

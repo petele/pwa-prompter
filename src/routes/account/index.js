@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import style from './style.css';
 
-import SignIn from '../../components/sign-in';
+import SignIn from '../../components/routes/accounts/sign-in';
 
 const Account = () => {
 

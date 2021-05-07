@@ -1,9 +1,6 @@
 import { h } from 'preact';
-import { route } from 'preact-router';
 import { Link } from 'preact-router/match';
 import style from './style.css';
-
-import { createNewScript } from '../../components/data-layer';
 
 function isEditOrPrompt(selectedRoute) {
   if (selectedRoute?.startsWith('/editor/')) {
@@ -45,13 +42,9 @@ export const Prompt = ({selectedRoute, scriptID}) => {
 }
 
 export const NewScript = ({selectedRoute}) => {
-  async function createScript() {
-    const obj = await createNewScript();
-    route(`/editor/${obj.scriptID}`, true);
-  }
   if (isHome(selectedRoute)) {
     return (
-      <Link class={style.newScript} onClick={createScript}>
+      <Link activeClassName={style.active} href="/editor/new">
         New Script
       </Link>
     );

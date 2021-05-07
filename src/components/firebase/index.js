@@ -18,12 +18,11 @@ export default firebase;
 
 export const database = firebase.database();
 export const auth = firebase.auth();
-export const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
 
 let _user;
 
 auth.onAuthStateChanged((user) => {
-  console.log('[FB] change', user);
+  console.log('[FB] auth change:', user?.uid);
   _user = user;
   if (!user) {
     return;
@@ -36,7 +35,6 @@ auth.onAuthStateChanged((user) => {
     photoURL: user.photoURL,
   }
   const path = `userData/${uid}/profile`;
-  console.log(path, profile);
   database.ref(path).update(profile);
 });
 
@@ -46,24 +44,4 @@ export function getUser() {
 
 export function getUserID() {
   return _user?.uid;
-}
-
-export async function saveScriptToFB(scriptID, scriptObj) {
-  if (!_user) {
-    return;
-  }
-  console.log('[FB] save script', scriptID, scriptObj);
-  const uid = _user.uid;
-  const path = `userData/${uid}/scripts/${scriptID}`;
-  database.ref(path).set(scriptObj);
-}
-
-export async function saveScriptListToFB(list) {
-  if (!_user) {
-    return;
-  }
-  console.log('[FB] save list', list);
-  const uid = _user.uid;
-  const path = `userData/${uid}/scriptList`;
-  database.ref(path).set(list);
 }

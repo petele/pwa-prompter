@@ -8,7 +8,7 @@ import PrompterScriptContainer from '../../components/routes/prompter/prompter-s
 import Eyeline from '../../components/routes/prompter/eyeline';
 import PrompterSettingsDialog from '../../components/routes/prompter/dialog-settings';
 
-import { getScript, updateScript } from '../../components/data-layer';
+import { getScript, updateScript } from '../../components/script-manager';
 import DefaultSettings from '../../components/routes/prompter/default-prompter-settings';
 
 class Prompter extends Component {
@@ -21,16 +21,11 @@ class Prompter extends Component {
   componentDidMount() {
     const scriptID = this.props.scriptID;
     this.loadScript(scriptID);
-
-    if (document) {
-      document.addEventListener('scroll', this.onScroll);
-    }
+    document.addEventListener('scroll', this.onScroll);
   }
 
   componentWillUnmount() {
-    if (document) {
-      document.removeEventListener('scroll', this.onScroll);
-    }
+    document.removeEventListener('scroll', this.onScroll);
   }
 
   async loadScript(scriptID) {
@@ -39,23 +34,16 @@ class Prompter extends Component {
       route('/', true);
       return;
     }
-    script.scriptID = scriptID;
+    document.title = script.title;
     this.setState(script);
-    const title = script.title;
-    document.title = title ? `${title} - MyPrompter` : `MyPrompter`;
-
     if (script.flipVertical) {
       setTimeout(() => {
         window.scrollTo({top: document.body.scrollHeight});
       }, 25);
     }
-
   }
 
   onScroll = () => {
-    if (!window || !document) {
-      return;
-    }
     const currentY = window.scrollY;
     const scrollHeight = document.body.scrollHeight;
     const windowHeight = window.innerHeight;
@@ -65,17 +53,16 @@ class Prompter extends Component {
     this.setState({scrollPercent: percent});
   }
 
-  onEyelineChange = async (value) => {
+  onEyelineChange = (value) => {
     const obj = {eyelineHeight: value};
     this.setState(obj);
-    await updateScript(this.props.scriptID, obj);
+    updateScript(this.props.scriptID, obj);
   }
 
-  onScrollSpeedChange = async (value) => {
+  onScrollSpeedChange = (value) => {
     const obj = {scrollSpeed: value};
     this.setState(obj);
-
-    await updateScript(this.props.scriptID, obj);
+    updateScript(this.props.scriptID, obj);
   }
 
   onSettingsChange = (key, value) => {
@@ -85,7 +72,7 @@ class Prompter extends Component {
 
   onSettingsClose = async () => {
     if (Object.keys(this.updatedSettings).length > 0) {
-      await updateScript(this.state.scriptID, this.updatedSettings);
+      await updateScript(this.props.scriptID, this.updatedSettings);
       this.updatedSettings = {};
     }
   }

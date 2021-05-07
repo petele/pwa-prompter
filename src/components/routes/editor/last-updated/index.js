@@ -12,6 +12,9 @@ const LastUpdated = ({lastUpdated, readOnly}) => {
 
   useEffect(() => {
     let timer = setInterval(() => {
+      if (!lastUpdated) {
+        return;
+      }
       const prefix = 'Last edit was made';
       const now = Date.now();
       const ago = now - lastUpdated;
