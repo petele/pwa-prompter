@@ -1,53 +1,24 @@
 import { h } from 'preact';
-import { route } from 'preact-router';
-import { Link } from 'preact-router/match';
 import style from './style.css';
 
-import { createNewScript } from '../../components/data-layer';
+import { Home, Edit, NewScript, Prompt, Account } from '../header-buttons';
+
 
 const Header = ({selectedRoute, scriptID}) => {
-
-  async function createScript() {
-    const obj = await createNewScript();
-    route(`/editor/${obj.scriptID}`, true);
-  }
 
   return (
     <header class={style.header}>
       <nav>
-        <Link activeClassName={style.active} href="/">Home</Link>
+        <Home />
       </nav>
       <h1>
         MyPrompter
       </h1>
-      { (selectedRoute?.startsWith('/editor/') || selectedRoute?.startsWith('/prompter/')) &&
-        <nav>
-          <Link activeClassName={style.active} href={`/editor/${scriptID}`}>
-            Edit
-          </Link>
-          <Link activeClassName={style.active} href={`/prompter/${scriptID}`}>
-            Prompt
-          </Link>
-        </nav>
-      }
-      { (selectedRoute === '/') &&
-        <nav>
-          <Link class={style.newScript} onClick={createScript}>
-            New Script
-          </Link>
-        </nav>
-      }
-      { ((selectedRoute === '/') || (selectedRoute === '/about') || (selectedRoute === '/account')) &&
-        <nav>
-          <Link activeClassName={style.active} href="/about">
-            About
-          </Link>
-        </nav>
-      }
       <nav>
-        <Link activeClassName={style.active} href="/account">
-          Account
-        </Link>
+        <Edit selectedRoute={selectedRoute} scriptID={scriptID} />
+        <Prompt selectedRoute={selectedRoute} scriptID={scriptID} />
+        <NewScript selectedRoute={selectedRoute} />
+        <Account />
       </nav>
     </header>
   );

@@ -26,31 +26,3 @@
   font-size: 100%;
   display: flex;
 }
-
-.header nav a {
-  display: block;
-  height: var(--header-height);
-  line-height: var(--header-height);
-  padding: 0 15px;
-  min-width: 50px;
-  text-align: center;
-  background: var(--app-background-secondary);
-  text-decoration: none;
-  color: var(--app-color-secondary);
-  will-change: background-color;
-}
-
-.header nav a:hover,
-.header nav a:active,
-.header nav a.active {
-  background: var(--app-background-third);
-  color: var(--app-color-third);
-}
-
-.header nav a.hidden {
-  display: none;
-}
-
-a.newScript {
-  cursor: pointer;
-}
