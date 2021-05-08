@@ -8,6 +8,11 @@ const Account = ({uid, email, displayName}) => {
   return (
     <div class={style.account}>
       <h1>Account overview</h1>
+      <div>WARNING</div>
+      <div>
+        This app is an experiment! Data may be deleted at any time, the app
+        may disappear. Use at your own risk.
+      </div>
       {!uid &&
         <ViewLoggedOut />
       }
