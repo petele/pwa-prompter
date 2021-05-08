@@ -17,7 +17,8 @@ const About = () => {
 
       <p>
         It will automatically save your script locally on your device every
-        few seconds. Support for saving to the cloud is coming in the future.
+        few seconds. If you are signed in, it will automatically save your
+        scripts to the cloud.
       </p>
 
       <p>
