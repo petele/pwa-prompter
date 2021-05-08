@@ -42,8 +42,8 @@ class ConfirmDeleteDialog extends Component {
 
   onClickConfirm = () => {
     if (this.props?.onDelete) {
-      const scriptID = this.props.scriptDetails.scriptID;
-      this.props.onDelete(scriptID);
+      const key = this.props.scriptDetails.key;
+      this.props.onDelete(key);
     }
     this.closeDialog();
   }

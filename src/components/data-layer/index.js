@@ -1,161 +1,129 @@
-/* eslint-disable quote-props */
 
-import { customAlphabet, urlAlphabet } from 'nanoid';
-import { get, set, update, del, keys } from 'idb-keyval';
+import {
+  get as idbGet,
+  getMetadata as idbGetMetadata,
+  save as idbSave,
+  del as idbDel,
+  list as idbList,
+  keys as idbKeys,
+  clear as idbClear,
+} from '../data-layer-idb';
 
-import { sampleScriptList, sampleScript } from '../sample-script';
-
-const SCRIPT_KEY_PREFIX = 'script';
-const SCRIPT_LIST_KEY = 'scriptList';
-
-const DEFAULT_SCRIPT_TEMPLATE = {
-  title: 'Untitled Script',
-  asQuill: [],
-  asHTML: '',
-  snippet: '',
-  hasStar: false,
-  readOnly: false,
-};
+import {
+  get as fbGet,
+  save as fbSave,
+  del as fbDel,
+  list as fbList,
+} from '../data-layer-fb';
 
 const _cachedScript = {
-  id: null,
-  script: null,
-  list: null,
+  key: null,
+  data: null,
 };
 
-/**
- * Gets a script object from the data store
- *
- * @param {String} scriptID
- * @returns Object
- */
-export async function getScript(scriptID) {
-  if (scriptID === 'sample') {
-    return sampleScript;
+export async function get(key) {
+  if (_cachedScript?.key === key) {
+    return _cachedScript.data;
   }
-  if (_cachedScript.id === scriptID) {
-    console.log('getScript', scriptID, '[cached]');
-    return _cachedScript.script;
+  const local = await idbGet(key);
+  if (local) {
+    _updateCachedScript(local);
+    return local;
   }
-  await getScriptList();
-  console.log('getScript', scriptID, '[db]');
-  const idbKey = `${SCRIPT_KEY_PREFIX}.${scriptID}`;
-  const scriptObj = await get(idbKey);
-  if (scriptObj) {
-    _cachedScript.id = scriptID;
-    _cachedScript.script = scriptObj;
-    return scriptObj;
+  const cloud = await fbGet(key);
+  if (cloud) {
+    _updateCachedScript(local);
+    idbSave(key, cloud);
+    return cloud;
   }
-  console.warn('getScript', scriptID, '[not_found]');
-  return null;
 }
 
-export async function createNewScript() {
-  const nanoid = customAlphabet(urlAlphabet, 21);
-  const scriptID = nanoid();
-  const scriptObj = Object.assign({}, DEFAULT_SCRIPT_TEMPLATE);
+export async function save(data) {
+  const key = data.key;
+  data.lastSaved = Date.now();
+  _updateCachedScript(data);
+  await idbSave(key, data);
+  fbSave(key, data);
+}
+
+export async function del(key) {
   const now = Date.now();
-  scriptObj.scriptID = scriptID;
-  scriptObj.createdOn = now;
-  scriptObj.lastUpdated = now;
-  const idbKey = `${SCRIPT_KEY_PREFIX}.${scriptID}`;
-  console.log('createScript', scriptID);
-  await set(idbKey, scriptObj);
-  _cachedScript.id = scriptID;
-  _cachedScript.script = scriptObj;
-  updateScriptListItem(scriptID, scriptObj);
-  return scriptObj;
+  if (_cachedScript.key === key) {
+    _updateCachedScript(null);
+  }
+  await idbDel(key, now);
+  fbDel(key, now);
 }
 
-/**
- * Updates the specified properties of the script object.
- *
- * @param {String} scriptID Script identifier
- * @param {Object} scriptObj Properties of the script to update
- * @returns Promise
- */
-export async function updateScript(scriptID, scriptObj) {
-  if (!scriptID || typeof scriptID !== 'string') {
-    console.error('updateScript - invalid scriptID', scriptID);
+export async function list() {
+  const local = await idbList();
+  if (local) {
+    return local.filter(item => !item.deleted);
+  }
+}
+
+export async function removeLocalData() {
+  _updateCachedScript(null);
+  return idbClear();
+}
+
+export async function sync() {
+  const list = await fbList();
+  if (!list) {
+    console.warn('[DataLayer] Server unavailable.');
     return;
   }
-  if (typeof scriptObj !== 'object') {
-    console.error('updateScript - invalid scriptObj', scriptObj);
+  // Compare FB store to local store...
+  const keysInFB = Object.keys(list);
+  for (const key of keysInFB) {
+    await _compareAndSyncScript(key, list[key]);
+  }
+  // Compare local store to fb...
+  const keysInIDB = await idbKeys();
+  const diff = keysInIDB.filter(x => !keysInFB.includes(x));
+  for (const key of diff) {
+    await _syncToFirebase(key);
+  }
+}
+
+async function _syncToFirebase(key, timeDeleted) {
+  console.log('[compareAndSync]', key, 'syncToFirebase');
+  if (timeDeleted) {
+    return await fbDel(key, timeDeleted);
+  }
+  const local = await idbGet(key);
+  fbSave(key, local);
+}
+
+async function _syncFromFirebase(key, timeDeleted) {
+  console.log('[compareAndSync]', key, 'syncFromFirebase');
+  if (timeDeleted) {
+    return await idbDel(key, timeDeleted)
+  }
+  const remote = await fbGet(key);
+  await idbSave(key, remote);
+}
+
+async function _compareAndSyncScript(key, remoteMeta) {
+  const localMeta = await idbGetMetadata(key);
+  if (!localMeta || localMeta.lastSaved < remoteMeta.lastSaved) {
+    const timeDeleted = remoteMeta.deleted ? remoteMeta.lastSaved : null;
+    await _syncFromFirebase(key, timeDeleted);
     return;
   }
-  if (scriptObj.readOnly) {
-    console.error('updateScript - script marked as readOnly', scriptObj);
+  if (localMeta.lastSaved === remoteMeta.lastSaved) {
+    console.log('[compareAndSync]', key, 'equal');
     return;
   }
-  console.log('updateScript', scriptID, scriptObj);
-  const idbKey = `${SCRIPT_KEY_PREFIX}.${scriptID}`;
-  return update(idbKey, (dbScriptObj) => {
-    if (!dbScriptObj) {
-      dbScriptObj = Object.assign({}, DEFAULT_SCRIPT_TEMPLATE);
-    }
-    Object.assign(dbScriptObj, scriptObj);
-    dbScriptObj.lastSaved = Date.now();
-    _cachedScript.id = scriptID;
-    _cachedScript.script = dbScriptObj;
-    updateScriptListItem(scriptID, dbScriptObj);
-    return dbScriptObj;
-  });
-}
-
-/**
- * Deletes a script from the data store.
- *
- * @param {String} scriptID Script identifier
- */
-export async function deleteScript(scriptID) {
-  console.log('deleteScript', scriptID);
-  const idbKey = `${SCRIPT_KEY_PREFIX}.${scriptID}`;
-  await del(idbKey);
-  if (_cachedScript.id === scriptID) {
-    _cachedScript.id = null;
-    _cachedScript.script = null;
+  if (localMeta.lastSaved > remoteMeta.lastSaved) {
+    const timeDeleted = localMeta.deleted ? localMeta.lastSaved : null;
+    await _syncToFirebase(key, timeDeleted);
+    return;
   }
-  delete _cachedScript.list[scriptID];
-  set(SCRIPT_LIST_KEY, _cachedScript.list);
+  console.error('[DataLayer:comareAndSync] No good!', localMeta, remoteMeta);
 }
 
-/**
- * Gets the list of scripts available.
- *
- * @returns Object
- */
-export async function getScriptList() {
-  if (_cachedScript.list) {
-    return _cachedScript.list;
-  }
-  console.log('getScriptList');
-  _cachedScript.list = await get(SCRIPT_LIST_KEY) || sampleScriptList;
-  return _cachedScript.list;
-}
-
-export async function rebuildScriptList() {
-  console.log('rebuildScriptList');
-  const scriptKeys = await keys();
-  for (let key of scriptKeys) {
-    if (key.startsWith(SCRIPT_KEY_PREFIX)) {
-      const scriptObj = await get(key);
-      const scriptID = key.replace(`${SCRIPT_KEY_PREFIX}.`, '');
-      updateScriptListItem(scriptID, scriptObj);
-    }
-  }
-  await set(SCRIPT_LIST_KEY, _cachedScript.list);
-  return _cachedScript.list;
-}
-
-async function updateScriptListItem(scriptID, scriptObj) {
-  const listItem = {
-    scriptID,
-    title: scriptObj.title,
-    snippet: scriptObj.snippet,
-    lastUpdated: scriptObj.lastUpdated,
-    hasStar: scriptObj.hasStar || false,
-    readOnly: scriptObj.readOnly || false,
-  };
-  _cachedScript.list[scriptID] = listItem;
-  set(SCRIPT_LIST_KEY, _cachedScript.list);
+function _updateCachedScript(data) {
+  _cachedScript.key = data?.key;
+  _cachedScript.data = data;
 }

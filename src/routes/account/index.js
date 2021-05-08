@@ -1,20 +1,26 @@
 import { h } from 'preact';
 import style from './style.css';
 
-const Account = () => {
+import ViewLoggedIn from '../../components/routes/accounts/view-logged-in';
+import ViewLoggedOut from '../../components/routes/accounts/view-logged-out';
 
-  document.title = 'Account - MyPrompter';
-
+const Account = ({uid, email, displayName}) => {
   return (
     <div class={style.account}>
-      <h1>Account</h1>
-      <p>This is the account page.</p>
-      <p>
-        In the future, this is where you'll log in to enable cloud sync,
-        and the ability to share scripts.
-      </p>
+      <h1>Account overview</h1>
+      <div>WARNING</div>
+      <div>
+        This app is an experiment! Data may be deleted at any time, the app
+        may disappear. Use at your own risk.
+      </div>
+      {!uid &&
+        <ViewLoggedOut />
+      }
+      {uid &&
+        <ViewLoggedIn email={email} displayName={displayName} />
+      }
     </div>
   );
-};
+}
 
 export default Account;

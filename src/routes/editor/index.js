@@ -7,7 +7,7 @@ import MyQuill from '../../components/routes/editor/my-quill';
 import InputTitle from '../../components/routes/editor/input-title';
 import LastUpdated from '../../components/routes/editor/last-updated';
 
-import { getScript, updateScript } from '../../components/data-layer';
+import { getScript, updateScript } from '../../components/script-manager';
 
 class Editor extends Component {
 
@@ -22,7 +22,9 @@ class Editor extends Component {
       route('/', true);
       return;
     }
-    script.scriptID = scriptID;
+    if (scriptID === 'new') {
+      route(`/editor/${script.key}`, true);
+    }
     this.setState(script);
     const title = script.title;
     document.title = title ? `${title} - MyPrompter` : `MyPrompter`;

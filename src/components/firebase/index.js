@@ -1,4 +1,6 @@
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/database';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBUCT7b-BAG9jpBhP9iJyDxQbocV86hOvY",
@@ -16,4 +18,23 @@ export default firebase;
 
 export const database = firebase.database();
 export const auth = firebase.auth();
-export const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
+
+let _user;
+
+auth.onAuthStateChanged((user) => {
+  console.log('[FB] auth change:', user?.uid);
+  _user = user;
+  if (!user) {
+    return;
+  }
+  const path = `userData/${user.uid}/profile/lastLogin`;
+  database.ref(path).set(Date.now());
+});
+
+export function getUser() {
+  return _user;
+}
+
+export function getUserID() {
+  return _user?.uid;
+}

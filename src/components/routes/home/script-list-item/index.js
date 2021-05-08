@@ -3,7 +3,7 @@ import style from './style.css';
 
 import { format } from 'date-fns';
 
-const ScriptListItem = ({ scriptID, title, snippet, lastUpdated, hasStar, readOnly, onDelete, onStar }) => {
+const ScriptListItem = ({ scriptID, idx, title, snippet, lastUpdated, hasStar, readOnly, onDelete, onStar }) => {
 
   const editorURL = `/editor/${scriptID}`;
   const readOnlyText = readOnly ? '(Read Only)' : '';
@@ -17,7 +17,7 @@ const ScriptListItem = ({ scriptID, title, snippet, lastUpdated, hasStar, readOn
 
   const clickDelete = () => {
     if (onDelete) {
-      onDelete(scriptID);
+      onDelete(scriptID, idx);
     }
   }
 
@@ -46,7 +46,7 @@ const ScriptListItem = ({ scriptID, title, snippet, lastUpdated, hasStar, readOn
   };
 
   return (
-    <div class={style.item} href={editorURL}>
+    <div class={style.item}>
       <button class={style.delete} type="button" aria-label="delete" onClick={clickDelete}>
         <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 0 24 24" width="48px" fill="#FFFFFF">
           <path d="M0 0h24v24H0V0z" fill="none" />

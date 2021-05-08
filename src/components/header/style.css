@@ -14,7 +14,6 @@
 
 .header h1 {
   margin: 0;
-  padding: 0 15px;
   font-size: 24px;
   line-height: var(--header-height);
   font-weight: 400;
@@ -25,32 +24,13 @@
 .header nav {
   font-size: 100%;
   display: flex;
+  width: 100%;
 }
 
-.header nav a {
-  display: block;
-  height: var(--header-height);
-  line-height: var(--header-height);
-  padding: 0 15px;
-  min-width: 50px;
-  text-align: center;
-  background: var(--app-background-secondary);
-  text-decoration: none;
-  color: var(--app-color-secondary);
-  will-change: background-color;
+.spacer {
+  flex-grow: 1;
 }
 
-.header nav a:hover,
-.header nav a:active,
-.header nav a.active {
-  background: var(--app-background-third);
-  color: var(--app-color-third);
-}
-
-.header nav a.hidden {
-  display: none;
-}
-
-a.newScript {
-  cursor: pointer;
+nav a svg {
+  margin-top: 10px;
 }
