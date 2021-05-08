@@ -26,6 +26,7 @@
   float: right;
   margin-top: -16px;
   background-color: var(--app-background-secondary);
+  cursor: pointer;
 }
 
 .item button svg {

@@ -278,13 +278,13 @@ class MyQuill extends Component {
               <option value="right"></option>
             </select>
           </span>
-          <span class="ql-formats" tabindex="3" aria-label="clear formatting">
+          <span class="ql-formats" tabindex="3">
             {/* <!-- clear formatting --> */}
-            <button class="ql-clean" />
+            <button class="ql-clean" title="Clear formatting" aria-label="clear formatting" />
           </span>
           <span class="ql-formats">
             {/* <!-- Pause/Bookmark --> */}
-            <button id="butBookmark" tabindex="3" aria-label="add bookmark">
+            <button id="butBookmark" tabindex="3" title="Add bookmark" aria-label="add bookmark">
               <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="18px" viewBox="0 0 20 20" width="18px" class="ql-fill">
                 <rect fill="none" height="20" width="20" />
                 <path d="M13.5,9v5.78l-3.5-1.4l-3.5,1.4V4.5H11V3H6.5C5.67,3,5,3.67,5,4.5V17l5-2l5,2V9H13.5z M15.75,4.25v-1.5h-1.5v1.5h-1.5v1.5 h1.5v1.5h1.5v-1.5h1.5v-1.5H15.75z" />
@@ -310,13 +310,13 @@ class MyQuill extends Component {
           </span>
           <span class="ql-formats">
             {/* <!-- undo/redo --> */}
-            <button id="butUndo" tabindex="3" aria-label="undo">
+            <button id="butUndo" tabindex="3" aria-label="undo" title="Undo">
               <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px" class="ql-fill">
                 <path d="M0 0h24v24H0V0z" fill="none" />
                 <path d="M14.1 8H7.83l2.59-2.59L9 4 4 9l5 5 1.41-1.41L7.83 10h6.27c2.15 0 3.9 1.57 3.9 3.5S16.25 17 14.1 17H7v2h7.1c3.25 0 5.9-2.47 5.9-5.5S17.35 8 14.1 8z" />
               </svg>
             </button>
-            <button id="butRedo" tabindex="3" aria-label="redo">
+            <button id="butRedo" tabindex="3" aria-label="redo" title="Redo">
               <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px" class="ql-fill">
                 <path d="M0 0h24v24H0V0z" fill="none" />
                 <path d="M6 13.5C6 11.57 7.75 10 9.9 10h6.27l-2.59 2.59L15 14l5-5-5-5-1.41 1.41L16.17 8H9.9C6.65 8 4 10.47 4 13.5S6.65 19 9.9 19H17v-2H9.9C7.75 17 6 15.43 6 13.5z" />
