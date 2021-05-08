@@ -1,33 +1,18 @@
 import { h } from 'preact';
 import style from './style.css';
 
-import SignUp from '../../components/routes/accounts/sign-up';
-import SignIn from '../../components/routes/accounts/sign-in';
-import SignOut from '../../components/routes/accounts/sign-out';
-import ForgotPassword from '../../components/routes/accounts/forgot-password';
-import ChangePassword from '../../components/routes/accounts/change-password';
+import ViewLoggedIn from '../../components/routes/accounts/view-logged-in';
+import ViewLoggedOut from '../../components/routes/accounts/view-logged-out';
 
 const Account = ({user}) => {
   return (
     <div class={style.account}>
-      <h1>Account</h1>
-      <p>This is the account page.</p>
-      <p>
-        In the future, this is where you'll log in to enable cloud sync,
-        and the ability to share scripts.
-      </p>
+      <h1>Account overview</h1>
       {!user &&
-        <div>
-          <SignIn />
-          <SignUp />
-          <ForgotPassword />
-        </div>
+        <ViewLoggedOut />
       }
       {user &&
-        <div>
-          <ChangePassword user={user} />
-          <SignOut user={user} />
-        </div>
+        <ViewLoggedIn email={user.email} displayName={user.displayName} />
       }
     </div>
   );
