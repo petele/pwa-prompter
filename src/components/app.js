@@ -29,7 +29,11 @@ class App extends Component {
 
   authStateChanged = (user) => {
     console.log('***authStateChanged', user);
-    this.setState({user});
+    this.setState({
+      uid: user?.uid,
+      displayName: user?.displayName,
+      email: user?.email,
+    });
   }
 
   handleRoute = (e) => {
@@ -42,7 +46,7 @@ class App extends Component {
   render(props, state) {
     return (
       <div id="app">
-        <Header selectedRoute={state.currentURL} user={state.user} scriptID={state.scriptID} />
+        <Header selectedRoute={state.currentURL} uid={state.uid} scriptID={state.scriptID} />
         <Router onChange={this.handleRoute}>
           <Home path="/" />
           <Profile path="/profile/:user" />
@@ -51,7 +55,7 @@ class App extends Component {
           <Prompter path="/prompter/:scriptID" />
           <RedirectToHome path="/prompter/" />
           <About path="/about" />
-          <Account path="/account" user={state.user} />
+          <Account path="/account" uid={state.uid} email={state.email} displayName={state.displayName}  />
           <NotFound default />
         </Router>
       </div>

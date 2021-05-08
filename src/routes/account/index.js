@@ -4,15 +4,15 @@ import style from './style.css';
 import ViewLoggedIn from '../../components/routes/accounts/view-logged-in';
 import ViewLoggedOut from '../../components/routes/accounts/view-logged-out';
 
-const Account = ({user}) => {
+const Account = ({uid, email, displayName}) => {
   return (
     <div class={style.account}>
       <h1>Account overview</h1>
-      {!user &&
+      {!uid &&
         <ViewLoggedOut />
       }
-      {user &&
-        <ViewLoggedIn email={user.email} displayName={user.displayName} />
+      {uid &&
+        <ViewLoggedIn email={email} displayName={displayName} />
       }
     </div>
   );

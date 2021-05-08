@@ -2,3 +2,8 @@ nav a.active {
   background: var(--app-background-third);
   color: var(--app-color-third);
 }
+
+nav a.loggedIn {
+  background: var(--app-highlight-primary);
+  color: white;
+}

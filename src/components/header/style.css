@@ -14,7 +14,6 @@
 
 .header h1 {
   margin: 0;
-  padding: 0 15px;
   font-size: 24px;
   line-height: var(--header-height);
   font-weight: 400;
@@ -25,4 +24,13 @@
 .header nav {
   font-size: 100%;
   display: flex;
+  width: 100%;
+}
+
+.spacer {
+  flex-grow: 1;
+}
+
+nav a svg {
+  margin-top: 10px;
 }
