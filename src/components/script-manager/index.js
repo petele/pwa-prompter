@@ -54,7 +54,7 @@ export async function updateScript(key, data) {
   }
   Object.assign(current, data);
   await dataLayer.save(current);
-  _updateCachedScript(current);
+  await _updateCachedScript(current);
   return current;
 }
 

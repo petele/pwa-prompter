@@ -42,7 +42,7 @@ export async function save(data) {
   const key = data.key;
   data.lastSaved = Date.now();
   _updateCachedScript(data);
-  idbSave(key, data);
+  await idbSave(key, data);
   fbSave(key, data);
 }
 
@@ -73,15 +73,17 @@ export async function sync() {
     console.warn('[DataLayer] Server unavailable.');
     return;
   }
+  // Compare FB store to local store...
   const keysInFB = Object.keys(list);
   for (const key of keysInFB) {
     await _compareAndSyncScript(key, list[key]);
   }
+  // Compare local store to fb...
   const keysInIDB = await idbKeys();
   const diff = keysInIDB.filter(x => !keysInFB.includes(x));
-  diff.forEach(async (key) => {
-    _syncToFirebase(key);
-  });
+  for (const key of diff) {
+    await _syncToFirebase(key);
+  }
 }
 
 async function _syncToFirebase(key, timeDeleted) {

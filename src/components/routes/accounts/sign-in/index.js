@@ -4,7 +4,15 @@ import style from './style.css';
 import { auth } from '../../../firebase';
 import { sync, removeLocalData} from '../../../data-layer';
 
-const SignIn = ({}) => {
+const SignIn = ({isUserSignedIn}) => {
+
+  if (isUserSignedIn) {
+    return (
+      <button type="button" onClick={signOut}>
+        Sign out
+      </button>
+    );
+  }
 
   let email = '';
   let password = '';
@@ -17,21 +25,21 @@ const SignIn = ({}) => {
   }
 
   async function signIn() {
-    const r = await auth.signInWithEmailAndPassword(email, password);
-    console.log('signed in', r);
-    sync();
+    try {
+      await auth.signInWithEmailAndPassword(email, password);
+      await sync();
+    } catch (ex) {
+      console.warn('sign in failed', ex);
+    }
   }
 
   async function signOut() {
-    const r = await auth.signOut();
-    console.log('signed out', r);
-    await removeLocalData();
-    console.log('local data gone');
-  }
-
-  async function clearData() {
-    const r = await removeLocalData();
-    console.log('remove', r);
+    try {
+      await auth.signOut();
+      await removeLocalData();
+    } catch (ex) {
+      console.warn('sign out failed', ex);
+    }
   }
 
   return (
@@ -40,12 +48,6 @@ const SignIn = ({}) => {
       <input type="password" id="password" autoComplete="current-password" onInput={passwordChange} />
       <button type="button" onClick={signIn}>
         Sign in
-      </button>
-      <button type="button" onClick={signOut}>
-        Sign out
-      </button>
-      <button type="button" onClick={clearData}>
-        Clear
       </button>
     </form>
   );

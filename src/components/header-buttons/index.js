@@ -19,6 +19,25 @@ function isHome(selectedRoute) {
   return false;
 }
 
+export const Home = () => {
+  return (
+    <Link activeClassName={style.active} href="/">
+      Home
+    </Link>
+  );
+}
+
+export const NewScript = ({selectedRoute}) => {
+  if (isHome(selectedRoute)) {
+    return (
+      <Link activeClassName={style.active} href="/editor/new">
+        New Script
+      </Link>
+    );
+  }
+  return ('');
+}
+
 export const Edit = ({selectedRoute, scriptID}) => {
   if (isEditOrPrompt(selectedRoute)) {
     return (
@@ -41,29 +60,10 @@ export const Prompt = ({selectedRoute, scriptID}) => {
   return ('');
 }
 
-export const NewScript = ({selectedRoute}) => {
-  if (isHome(selectedRoute)) {
-    return (
-      <Link activeClassName={style.active} href="/editor/new">
-        New Script
-      </Link>
-    );
-  }
-  return ('');
-}
-
 export const Account = () => {
   return (
     <Link activeClassName={style.active} href="/account">
       Account
-    </Link>
-  );
-}
-
-export const Home = () => {
-  return (
-    <Link activeClassName={style.active} href="/">
-      Home
     </Link>
   );
 }

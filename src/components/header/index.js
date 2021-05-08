@@ -1,7 +1,8 @@
 import { h } from 'preact';
 import style from './style.css';
 
-import { Home, Edit, NewScript, Prompt, Account } from '../header-buttons';
+import { Account } from '../header-account';
+import { Home, Edit, NewScript, Prompt } from '../header-buttons';
 
 
 const Header = ({selectedRoute, scriptID}) => {
