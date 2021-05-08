@@ -27,15 +27,8 @@ auth.onAuthStateChanged((user) => {
   if (!user) {
     return;
   }
-  const uid = user.uid;
-  const profile = {
-    displayName: user.displayName,
-    email: user.email,
-    lastLogin: Date.now(),
-    photoURL: user.photoURL,
-  }
-  const path = `userData/${uid}/profile`;
-  database.ref(path).update(profile);
+  const path = `userData/${user.uid}/profile/lastLogin`;
+  database.ref(path).set(Date.now());
 });
 
 export function getUser() {

@@ -2,17 +2,9 @@ import { h } from 'preact';
 import style from './style.css';
 
 import { auth } from '../../../firebase';
-import { sync, removeLocalData} from '../../../data-layer';
+import { sync } from '../../../data-layer';
 
-const SignIn = ({isUserSignedIn}) => {
-
-  if (isUserSignedIn) {
-    return (
-      <button type="button" onClick={signOut}>
-        Sign out
-      </button>
-    );
-  }
+const SignIn = () => {
 
   let email = '';
   let password = '';
@@ -26,25 +18,17 @@ const SignIn = ({isUserSignedIn}) => {
 
   async function signIn() {
     try {
-      await auth.signInWithEmailAndPassword(email, password);
+      const uCred = await auth.signInWithEmailAndPassword(email, password);
+      console.log('[ACCOUNT] Sign in succeeded', uCred.user);
       await sync();
     } catch (ex) {
-      console.warn('sign in failed', ex);
-    }
-  }
-
-  async function signOut() {
-    try {
-      await auth.signOut();
-      await removeLocalData();
-    } catch (ex) {
-      console.warn('sign out failed', ex);
+      console.warn('[ACCOUNT] Sign in failed', ex);
     }
   }
 
   return (
     <form class={style.signIn}>
-      <input type="email" id="username" autoComplete="username" onInput={emailChange} />
+      <input type="email" id="username" autoComplete="email" onInput={emailChange} />
       <input type="password" id="password" autoComplete="current-password" onInput={passwordChange} />
       <button type="button" onClick={signIn}>
         Sign in

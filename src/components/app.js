@@ -12,9 +12,25 @@ import About from '../routes/about';
 import Account from '../routes/account';
 import NotFound from '../routes/404';
 
+import { auth } from '../components/firebase';
 import RedirectToHome from '../components/redir-to-home';
 
 class App extends Component {
+
+  componentDidMount() {
+    this.unAuthListener = auth.onAuthStateChanged(this.authStateChanged);
+  }
+
+  componentWillUnmount() {
+    if (this.unAuthListener) {
+      this.unAuthListener();
+    }
+  }
+
+  authStateChanged = (user) => {
+    console.log('***authStateChanged', user);
+    this.setState({user});
+  }
 
   handleRoute = (e) => {
     this.setState({
@@ -26,7 +42,7 @@ class App extends Component {
   render(props, state) {
     return (
       <div id="app">
-        <Header selectedRoute={state.currentURL} scriptID={state.scriptID} />
+        <Header selectedRoute={state.currentURL} user={state.user} scriptID={state.scriptID} />
         <Router onChange={this.handleRoute}>
           <Home path="/" />
           <Profile path="/profile/:user" />
@@ -35,7 +51,7 @@ class App extends Component {
           <Prompter path="/prompter/:scriptID" />
           <RedirectToHome path="/prompter/" />
           <About path="/about" />
-          <Account path="/account" />
+          <Account path="/account" user={state.user} />
           <NotFound default />
         </Router>
       </div>
