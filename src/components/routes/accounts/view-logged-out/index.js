@@ -9,6 +9,8 @@ class ViewLoggedOut extends Component {
     mode: 'sign-in',
     title: 'Sign in',
     submitText: 'Sign in',
+    message: '',
+    messageClass: '',
   };
 
   showSignIn = () => {
@@ -16,6 +18,8 @@ class ViewLoggedOut extends Component {
       mode: 'sign-in',
       title: 'Sign in',
       submitText: 'Sign in',
+      message: '',
+      messageClass: '',
     };
     this.setState(view);
   }
@@ -25,9 +29,15 @@ class ViewLoggedOut extends Component {
       const uCred = await auth.signInWithEmailAndPassword(email, password);
       console.log('[ACCOUNT] Sign in succeeded', uCred.user);
       await sync();
+      return true;
     } catch (ex) {
       console.warn('[ACCOUNT] Sign in failed', ex);
+      this.setState({
+        message: ex.message || 'Login failed.',
+        messageClass: 'error',
+      });
     }
+    return false;
   }
 
   showSignUp = () => {
@@ -35,6 +45,8 @@ class ViewLoggedOut extends Component {
       mode: 'sign-up',
       title: 'Sign up',
       submitText: 'Sign up',
+      message: '',
+      messageClass: '',
     };
     this.setState(view);
   }
@@ -48,9 +60,15 @@ class ViewLoggedOut extends Component {
       console.log('[ACCOUNT] Updated display name', displayName);
       await user.sendEmailVerification();
       console.log('[ACCOUNT] Sent verification email.');
+      return true;
     } catch (ex) {
       console.warn('[ACCOUNT] Sign up failed.', ex);
+      this.setState({
+        message: ex.message || 'Unable to create new account.',
+        messageClass: 'error',
+      });
     }
+    return false;
   }
 
   showForgotPwd = () => {
@@ -58,6 +76,8 @@ class ViewLoggedOut extends Component {
       mode: 'forgot',
       title: 'Forgot password',
       submitText: 'Send',
+      message: '',
+      messageClass: '',
     };
     this.setState(view);
   }
@@ -66,32 +86,54 @@ class ViewLoggedOut extends Component {
     try {
       await auth.sendPasswordResetEmail(email);
       console.log('[ACCOUNT] Password reset sent');
+      this.setState({
+        message: 'Password reset email sent.',
+        messageClass: '',
+      });
+      return true;
     } catch (ex) {
       console.warn('[ACCOUNT] Password reset failed', ex);
+      this.setState({
+        message: 'Unable to send password reset.',
+        messageClass: 'error',
+      });
     }
+    return false;
   }
 
   submitForm = async (e) => {
     e.preventDefault();
     const form = e.srcElement;
     const mode = this.state.mode;
-    const email = form.querySelector('#signin-email').value;
+    const email = form.querySelector('#signin-email');
     if (mode === 'sign-in') {
-      const password = form.querySelector('#signin-password').value;
-      return this.signIn(email, password);
+      const password = form.querySelector('#signin-password');
+      await this.signIn(email.value, password.value);
+      email.value = '';
+      password.value = '';
+      return false;
     }
     if (mode === 'sign-up') {
-      const passwordA = form.querySelector('#signin-password').value;
-      const passwordB = form.querySelector('#signin-confirm').value;
-      if (passwordA !== passwordB) {
+      const passwordA = form.querySelector('#signin-password');
+      const passwordB = form.querySelector('#signin-confirm');
+      if (passwordA.value !== passwordB.value) {
         console.warn('[SIGN_UP] Passwords do not match');
+        this.setState({
+          message: 'Passwords do not match.',
+          messageClass: 'error',
+        });
+        passwordA.value = '';
+        passwordB.value = '';
         return false;
       }
-      const displayName = form.querySelector('#signin-name').value;
-      return this.signUp(email, displayName, passwordA);
+      const displayName = form.querySelector('#signin-name');
+      await this.signUp(email.value, displayName.value, passwordA.value);
+      return false;
     }
     if (mode === 'forgot') {
-      return this.forgotPassword(email);
+      await this.forgotPassword(email.value);
+      email.value = '';
+      return false;
     }
     console.log('submit', mode);
     return false;
@@ -114,23 +156,26 @@ class ViewLoggedOut extends Component {
         {state.mode === 'sign-in' &&
           <div>
             <label for="signin-password">Password</label>
-            <input type="password" id="signin-password" required autoComplete="current-password" />
+            <input type="password" id="signin-password" minlength="6" required autoComplete="current-password" />
           </div>
         }
         {state.mode === 'sign-up' &&
           <div>
             <label for="signin-password">Password</label>
-            <input type="password" id="signin-password" required autoComplete="new-password" />
+            <input type="password" id="signin-password" minlength="6" required autoComplete="new-password" />
           </div>
         }
         {state.mode === 'sign-up' &&
           <div>
             <label for="signin-confirm">Confirm</label>
-            <input type="password" id="signin-confirm" required autoComplete="new-password" />
+            <input type="password" id="signin-confirm" minlength="6" required autoComplete="new-password" />
           </div>
         }
         <div>
           <input type="submit" name="Submit" value={state.submitText} />
+        </div>
+        <div class={state.messageClass}>
+          {state.message}
         </div>
         <div>
           <button type="button" onClick={this.showSignIn}>Sign In</button>
