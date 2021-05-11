@@ -3,7 +3,7 @@ import style from './style.css';
 
 import { format } from 'date-fns';
 
-const ScriptListItem = ({ scriptID, idx, title, snippet, lastUpdated, hasStar, readOnly, onDelete, onStar }) => {
+const ScriptListItem = ({ scriptID, idx, title, snippet, lastUpdated, createdOn, hasStar, readOnly, onDelete, onStar }) => {
 
   const editorURL = `/editor/${scriptID}`;
   const readOnlyText = readOnly ? '(Read Only)' : '';
@@ -69,7 +69,8 @@ const ScriptListItem = ({ scriptID, idx, title, snippet, lastUpdated, hasStar, r
         <div class={style.title}>{title}</div>
         <div class={style.snippet}>{snippet}...</div>
         <div class={style.lastUpdated}>
-          <b>Updated:</b> {formatDate(lastUpdated)}
+          <b>Updated:</b> {formatDate(lastUpdated)} &nbsp;
+          <b>Created:</b> {formatDate(createdOn)} &nbsp;
           <b>{readOnlyText}</b>
         </div>
       </a>
