@@ -7,3 +7,8 @@
 .account > :first-child {
   margin-top: 0;
 }
+
+h2.warning {
+  color: var(--app-color-warning);
+  margin-bottom: 0;
+}

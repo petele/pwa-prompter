@@ -1,9 +1,16 @@
 .error {
-  /* TODO */
-  color: red;
+  color: var(--app-color-warning);
 }
 
 .success {
-  /* TODO */
-  color: green;
+  color: var(--app-color-success);
+}
+
+.label, .value, label {
+  display: inline-block;
+}
+
+.label, label {
+  font-weight: bold;
+  margin-right: 16px;
 }

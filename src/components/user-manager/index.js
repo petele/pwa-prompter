@@ -55,7 +55,6 @@ export async function createAccount(email, password, displayName) {
       displayName,
     });
     console.log('[user_manager] Updated profile info.');
-    // TODO: Copy default script here.
     return {success: true};
   } catch (ex) {
     console.warn('[user_manager] Sign up failed.', ex);

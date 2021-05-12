@@ -1,9 +1,7 @@
 .error {
-  /* TODO */
-  color: red;
+  color: var(--app-color-warning);
 }
 
 .success {
-  /* TODO */
-  color: green;
+  color: var(--app-color-success);
 }

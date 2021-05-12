@@ -8,7 +8,6 @@
   --black-500: #9e9e9e;
   --black-400: #bdbdbd;
   --black-300: #e0e0e0;
-  --black-300: #eeeeee;
   --black-100: #f5f5f5;
   --black-50: #fafafa;
 
@@ -26,12 +25,12 @@ html {
   --app-highlight-primary: #3f51b5;
   --app-highlight-secondary: #303f9f;
   --app-highlight-third: #1a237e;
-
-  --app-background-warning: #b71c1c;
-  --app-color-warning: #fafafa;
-  --app-background-caution: #ffeb3b;
-  --app-color-caution: #212121;
-
+  --app-color-warning: #b71c1c; /* red 900 */
+  --app-color-warning-contrast: #fafafa;
+  --app-color-caution: #ffeb3b;
+  --app-color-caution-contrast: #212121;
+  --app-color-success: #2E7D32; /* green 800 */
+  --app-color-success-contrast: #fafafa;
   --header-height: 56px;
 
   height: 100%;

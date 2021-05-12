@@ -40,8 +40,8 @@
 }
 
 .item button.delete {
-  background-color: var(--app-background-warning);
-  color: var(--app-color--warning);
+  background-color: var(--app-color-warning);
+  color: var(--app-color-warning-contrast);
 }
 
 .item button.hasStar {
