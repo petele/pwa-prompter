@@ -48,7 +48,7 @@ class Home extends Component {
     this.setState({scriptToDelete: null});
   }
 
-  peteTest = async () => {
+  clickSync = async () => {
     await syncWithFirebase();
     this.refreshScriptList();
   }
@@ -63,7 +63,7 @@ class Home extends Component {
         {state.scripts.map((script, idx) =>
           <ScriptListItem key={idx} scriptID={script.key} idx={idx} onDelete={this.clickDelete} onStar={this.clickStar} {...script}  />
         )}
-        <button onClick={this.peteTest}>Sync</button>
+        {props.uid && <button onClick={this.clickSync}>Sync</button>}
       </div>);
   }
 

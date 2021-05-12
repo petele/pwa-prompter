@@ -1,18 +1,25 @@
-
 import { auth, database } from '../firebase';
 
 
 export async function signIn(email, password) {
+  const result = await _signIn(email, password);
+  if (result.success) {
+    return {success: true};
+  }
+  return result;
+}
+
+async function _signIn(email, password) {
   try {
     const uCred = await auth.signInWithEmailAndPassword(email, password);
     console.log('[user_manager] Sign in succeeded', uCred.user);
-    return {success: true};
+    return {success: true, user: uCred.user};
   } catch (ex) {
     console.warn('[user_manager] Sign in failed', ex);
     return {
       success: false,
-      message: 'Login failed',
-      kind: 'todo',
+      message: ex.message,
+      kind: ex.code,
     };
   }
 }
@@ -23,11 +30,11 @@ export async function signOut() {
     console.log('[user_manager] Sign out success.');
     return {success: true};
   } catch (ex) {
-    console.warn('[ACCOUNT] Sign out failed.', ex);
+    console.warn('[user_manager] Sign out failed.', ex);
     return {
       success: false,
-      message: 'Logout failed.',
-      kind: 'todo',
+      message: ex.message,
+      kind: ex.code,
     }
   }
 }
@@ -54,18 +61,20 @@ export async function createAccount(email, password, displayName) {
     console.warn('[user_manager] Sign up failed.', ex);
     return {
       success: false,
-      message: 'Unable to create new account',
-      kind: 'todo',
+      message: ex.message,
+      kind: ex.code,
     };
   }
 }
 
 export async function deleteAccount(email, password) {
+  const signInResult = await _signIn(email, password);
+  if (!signInResult.success) {
+    return signInResult;
+  }
+  const user = signInResult.user;
+  const userID = user.uid;
   try {
-    const uCred = await auth.signInWithEmailAndPassword(email, password);
-    console.log('[user_manager] User re-authenticated.');
-    const user = uCred.user;
-    const userID = user.uid;
     const path = `userData/${userID}`;
     await database.ref(path).remove();
     console.log('[user_manager] Deleted cloud data.');
@@ -76,8 +85,8 @@ export async function deleteAccount(email, password) {
     console.warn('[account_manager] Delete account failed.', ex);
     return {
       success: false,
-      message: 'Unable to delete account',
-      kind: 'todo',
+      message: ex.message,
+      kind: ex.code,
     };
   }
 }
@@ -88,20 +97,26 @@ export async function changePassword(email, passwordCurrent, passwordA, password
     return {
       success: false,
       message: 'Passwords do not match.',
-      kind: 'todo',
+      kind: 'auth/password-mismatch',
     };
   }
+  const signInResult = await _signIn(email, passwordCurrent);
+  if (!signInResult.success) {
+    return signInResult;
+  }
+  const user = signInResult.user;
   try {
-    const uCred = await auth.signInWithEmailAndPassword(email, passwordCurrent);
-    const user = uCred.user;
     await user.updatePassword(passwordA);
-    return {success: true};
+    return {
+      success: true,
+      message: 'Password successfully changed.',
+    };
   } catch (ex) {
     console.warn('[user_manager] Password change failed.', ex);
     return {
       success: false,
-      message: 'Password change failed.',
-      kind: 'todo',
+      message: ex.message,
+      kind: ex.code,
     };
   }
 }
@@ -110,13 +125,16 @@ export async function forgotPassword(email) {
   try {
     await auth.sendPasswordResetEmail(email);
     console.log('[account_manager] Password reset sent');
-    return {success: true};
+    return {
+      success: true,
+      message: 'Password reset email sent.',
+    };
   } catch (ex) {
     console.warn('[account_manager] Password reset failed', ex);
     return {
       success: false,
-      message: 'Unable to send password reset.',
-      kind: 'todo',
+      message: ex.message,
+      kind: ex.code,
     }
   }
 }

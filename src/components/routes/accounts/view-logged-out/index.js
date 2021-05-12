@@ -1,8 +1,8 @@
 import { h, Component } from 'preact';
 import style from './style.css';
 
-import { auth } from '../../../firebase';
-import { sync } from '../../../data-layer';
+import { signIn, createAccount, forgotPassword } from '../../../user-manager';
+import { syncWithFirebase } from '../../../script-manager';
 
 class ViewLoggedOut extends Component {
   state = {
@@ -24,20 +24,16 @@ class ViewLoggedOut extends Component {
     this.setState(view);
   }
 
-  signIn = async (email, password) => {
-    try {
-      const uCred = await auth.signInWithEmailAndPassword(email, password);
-      console.log('[ACCOUNT] Sign in succeeded', uCred.user);
-      await sync();
-      return true;
-    } catch (ex) {
-      console.warn('[ACCOUNT] Sign in failed', ex);
-      this.setState({
-        message: ex.message || 'Login failed.',
-        messageClass: 'error',
-      });
+  doSignIn = async (email, password) => {
+    const result = await signIn(email, password);
+    if (result.success) {
+      await syncWithFirebase();
+      return;
     }
-    return false;
+    this.setState({
+      message: result.message,
+      messageClass: style.error,
+    });
   }
 
   showSignUp = () => {
@@ -51,24 +47,16 @@ class ViewLoggedOut extends Component {
     this.setState(view);
   }
 
-  signUp = async (email, displayName, password) => {
-    try {
-      const uCred = await auth.createUserWithEmailAndPassword(email, password);
-      const user = uCred.user;
-      console.log('[ACCOUNT] Sign up success.');
-      await user.updateProfile({displayName});
-      console.log('[ACCOUNT] Updated display name', displayName);
-      await user.sendEmailVerification();
-      console.log('[ACCOUNT] Sent verification email.');
-      return true;
-    } catch (ex) {
-      console.warn('[ACCOUNT] Sign up failed.', ex);
-      this.setState({
-        message: ex.message || 'Unable to create new account.',
-        messageClass: 'error',
-      });
+  doSignUp = async (email, displayName, password) => {
+    const result = await createAccount(email, password, displayName);
+    if (result.success) {
+      // TODO: Setup user account.
+      return;
     }
-    return false;
+    this.setState({
+      message: result.message,
+      messageClass: style.error,
+    });
   }
 
   showForgotPwd = () => {
@@ -82,22 +70,13 @@ class ViewLoggedOut extends Component {
     this.setState(view);
   }
 
-  forgotPassword = async (email) => {
-    try {
-      await auth.sendPasswordResetEmail(email);
-      console.log('[ACCOUNT] Password reset sent');
-      this.setState({
-        message: 'Password reset email sent.',
-        messageClass: '',
-      });
-      return true;
-    } catch (ex) {
-      console.warn('[ACCOUNT] Password reset failed', ex);
-      this.setState({
-        message: 'Unable to send password reset.',
-        messageClass: 'error',
-      });
+  doForgotPassword = async (email) => {
+    const result = await forgotPassword(email);
+    const newState = {
+      message: result.message,
+      messageClass: result.success ? style.success : style.error,
     }
+    this.setState(newState);
     return false;
   }
 
@@ -108,7 +87,7 @@ class ViewLoggedOut extends Component {
     const email = form.querySelector('#signin-email');
     if (mode === 'sign-in') {
       const password = form.querySelector('#signin-password');
-      await this.signIn(email.value, password.value);
+      await this.doSignIn(email.value, password.value);
       email.value = '';
       password.value = '';
       return false;
@@ -127,11 +106,11 @@ class ViewLoggedOut extends Component {
         return false;
       }
       const displayName = form.querySelector('#signin-name');
-      await this.signUp(email.value, displayName.value, passwordA.value);
+      await this.doSignUp(email.value, displayName.value, passwordA.value);
       return false;
     }
     if (mode === 'forgot') {
-      await this.forgotPassword(email.value);
+      await this.doForgotPassword(email.value);
       email.value = '';
       return false;
     }

@@ -92,6 +92,10 @@ export async function syncWithFirebase() {
   return dataLayer.sync();
 }
 
+export async function removeLocalData() {
+  return dataLayer.removeLocalData();
+}
+
 
 function _createNewScript() {
   const nanoid = customAlphabet(urlAlphabet, 21);

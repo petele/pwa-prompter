@@ -1,68 +1,44 @@
 import { h, Component } from 'preact';
 import style from './style.css';
 
-import { auth } from '../../../firebase';
-import { removeLocalData, removeCloudData } from '../../../data-layer';
+import { deleteAccount, changePassword, signOut } from '../../../user-manager';
+import { removeLocalData } from '../../../script-manager';
 
 class ViewLoggedIn extends Component {
   state = {
-    message: '',
     messageClass: '',
     deleteMessage: '',
-    deleteMessageClass: '',
+    pwChangeMessage: '',
   };
 
-  deleteAccount = async (password) => {
-    try {
-      const email = this.props.email;
-      const uCred = await auth.signInWithEmailAndPassword(email, password);
-      const user = uCred.user;
-      await removeCloudData();
+  onDeleteAccount = async (password) => {
+    const email = this.props.email;
+    const result = await deleteAccount(email, password);
+    if (result.success) {
       await removeLocalData();
-      await user.delete();
-    } catch (ex) {
-      console.warn('[ACCOUNT] Delete account failed.', ex);
-      this.setState({
-        deleteMessage: 'Unable to delete account. An error occured.',
-        deleteMessageClass: 'error',
-      });
-    }
-  }
-
-  changePassword = async (passwordCurrent, passwordA, passwordB) => {
-    if (passwordA !== passwordB) {
-      console.warn('[ACCOUNT] Password change failed. Passwords do not match!');
-      this.setState({
-        message: 'Password change failed. Passwords do not match!',
-        messageClass: 'error',
-      });
       return;
     }
-    try {
-      const email = this.props.email;
-      const uCred = await auth.signInWithEmailAndPassword(email, passwordCurrent);
-      const user = uCred.user;
-      await user.updatePassword(passwordA);
-      this.setState({
-        message: 'Password changed successfully.',
-        messageClass: 'success',
-      });
-    } catch (ex) {
-      console.warn('[ACCOUNT] Password change failed.', ex);
-      this.setState({
-        message: 'Password change failed. An error occured.',
-        messageClass: 'error',
-      });
-    }
+    this.setState({
+      messageClass: style.error,
+      deleteMessage: result.message,
+      pwChangeMessage: '',
+    });
   }
 
-  signOut = async () => {
-    try {
-      await auth.signOut();
+  doChangePassword = async (passwordCurrent, passwordA, passwordB) => {
+    const email = this.props.email;
+    const result = await changePassword(email, passwordCurrent, passwordA, passwordB);
+    this.setState({
+      messageClass: result.success ? style.success : style.error,
+      deleteMessage: '',
+      pwChangeMessage: result.message,
+    });
+  }
+
+  doSignOut = async () => {
+    const result = await signOut();
+    if (result.success) {
       await removeLocalData();
-      console.log('[ACCOUNT] Sign out success.');
-    } catch (ex) {
-      console.warn('[ACCOUNT] Sign out failed.', ex);
     }
   }
 
@@ -72,7 +48,7 @@ class ViewLoggedIn extends Component {
     const current = form.querySelector('#currentPassword');
     const pwdA = form.querySelector('#newPasswordA');
     const pwdB = form.querySelector('#newPasswordB');
-    await this.changePassword(current.value, pwdA.value, pwdB.value);
+    await this.doChangePassword(current.value, pwdA.value, pwdB.value);
     current.value = '';
     pwdA.value = '';
     pwdB.value = '';
@@ -83,7 +59,8 @@ class ViewLoggedIn extends Component {
     e.preventDefault();
     const form = e.srcElement;
     const current = form.querySelector('#deletePassword');
-    await this.deleteAccount(current.value);
+    await this.onDeleteAccount(current.value);
+    current.value = '';
     return false;
   }
 
@@ -102,7 +79,7 @@ class ViewLoggedIn extends Component {
           </div>
         </div>
         <div>
-          <button class={style.button} type="button" onClick={this.signOut}>
+          <button class={style.button} type="button" onClick={this.doSignOut}>
             Sign out
           </button>
         </div>
@@ -115,7 +92,7 @@ class ViewLoggedIn extends Component {
           <div>
             <input type="submit" name="Submit" value="Delete Account" />
           </div>
-          <div class={state.deleteMessageClass}>
+          <div class={state.messageClass}>
             {state.deleteMessage}
           </div>
         </form>
@@ -137,7 +114,7 @@ class ViewLoggedIn extends Component {
             <input type="submit" name="Submit" value="Change" />
           </div>
           <div class={state.messageClass}>
-            {state.message}
+            {state.pwChangeMessage}
           </div>
         </form>
       </div>

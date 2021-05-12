@@ -47,7 +47,7 @@ class App extends Component {
       <div id="app">
         <Header selectedRoute={state.currentURL} uid={state.uid} scriptID={state.scriptID} />
         <Router onChange={this.handleRoute}>
-          <Home path="/" />
+          <Home path="/" uid={state.uid} />
           <Profile path="/profile/:user" />
           <Editor path="/editor/:scriptID" />
           <RedirectToHome path="/editor/" />
