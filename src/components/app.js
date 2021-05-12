@@ -28,7 +28,6 @@ class App extends Component {
   }
 
   authStateChanged = (user) => {
-    console.log('***authStateChanged', user);
     this.setState({
       uid: user?.uid,
       displayName: user?.displayName,

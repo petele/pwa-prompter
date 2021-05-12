@@ -14,46 +14,60 @@ import {
   save as fbSave,
   del as fbDel,
   list as fbList,
-  deleteUser as fbDeleteUser,
+  deleteAllUserData as fbDeleteAllUserData,
 } from '../data-layer-fb';
 
-const _cachedScript = {
-  key: null,
-  data: null,
-};
-
 export async function get(key) {
-  if (_cachedScript?.key === key) {
-    return _cachedScript.data;
+  if (!key) {
+    return null;
+  }
+  const fromLocal = getFromLocal(key);
+  if (fromLocal) {
+    return fromLocal;
+  }
+  const fromCloud = getFromCloud(key);
+  if (fromCloud) {
+    return fromCloud;
+  }
+  return null;
+}
+
+export async function getFromLocal(key) {
+  if (!key) {
+    return null;
   }
   const local = await idbGet(key);
   if (local) {
-    _updateCachedScript(local);
     return local;
+  }
+  return null;
+}
+
+export async function getFromCloud(key) {
+  if (!key) {
+    return null;
   }
   const cloud = await fbGet(key);
   if (cloud) {
-    _updateCachedScript(local);
     idbSave(key, cloud);
     return cloud;
   }
+  return null;
 }
 
 export async function save(data) {
   const key = data.key;
   data.lastSaved = Date.now();
-  _updateCachedScript(data);
   await idbSave(key, data);
-  fbSave(key, data);
+  await fbSave(key, data);
+  return data;
 }
 
 export async function del(key) {
   const now = Date.now();
-  if (_cachedScript.key === key) {
-    _updateCachedScript(null);
-  }
   await idbDel(key, now);
-  fbDel(key, now);
+  await fbDel(key, now);
+  return key;
 }
 
 export async function list() {
@@ -64,12 +78,11 @@ export async function list() {
 }
 
 export async function removeLocalData() {
-  _updateCachedScript(null);
   return idbClear();
 }
 
 export async function removeCloudData() {
-  return fbDeleteUser();
+  return fbDeleteAllUserData();
 }
 
 export async function sync() {
@@ -117,7 +130,6 @@ async function _compareAndSyncScript(key, remoteMeta) {
     return;
   }
   if (localMeta.lastSaved === remoteMeta.lastSaved) {
-    console.log('[compareAndSync]', key, 'equal');
     return;
   }
   if (localMeta.lastSaved > remoteMeta.lastSaved) {
@@ -125,10 +137,5 @@ async function _compareAndSyncScript(key, remoteMeta) {
     await _syncToFirebase(key, timeDeleted);
     return;
   }
-  console.error('[DataLayer:comareAndSync] No good!', localMeta, remoteMeta);
-}
-
-function _updateCachedScript(data) {
-  _cachedScript.key = data?.key;
-  _cachedScript.data = data;
+  console.error('[comareAndSync] Error!', localMeta, remoteMeta);
 }

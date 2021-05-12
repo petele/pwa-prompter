@@ -30,6 +30,10 @@ class Editor extends Component {
     document.title = title ? `${title} - MyPrompter` : `MyPrompter`;
   }
 
+  onResync = () => {
+    console.log('TODO: editor/onResync');
+  }
+
   onQuillChange = (newVal) => {
     const lastUpdated = Date.now();
     newVal.lastUpdated = lastUpdated;
@@ -48,7 +52,7 @@ class Editor extends Component {
     return (
       <div class={style.editor}>
         <InputTitle title={state.title} readOnly={state.readOnly} onChange={this.onTitleChange} />
-        <MyQuill asQuill={state.asQuill} readOnly={state.readOnly} onChange={this.onQuillChange} />
+        <MyQuill asQuill={state.asQuill} readOnly={state.readOnly} onChange={this.onQuillChange} onResync={this.onResync} />
         <LastUpdated lastUpdated={state.lastUpdated} readOnly={state.readOnly} />
       </div>
     );
