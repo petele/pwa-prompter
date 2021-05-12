@@ -21,7 +21,15 @@ const _cachedScript = {
  * @param {String} key
  * @returns Object
  */
-export async function getScript(key) {
+export async function getScript(key, forceNetwork) {
+  if (forceNetwork) {
+    const data = await dataLayer.getFromFirebase(key);
+    if (data) {
+      _updateCachedScript(data);
+      return data;
+    }
+    return;
+  }
   if (key === _cachedScript.key) {
     return _cachedScript.data;
   }

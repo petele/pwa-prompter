@@ -18,6 +18,13 @@ import {
   deleteAllUserData as fbDeleteAllUserData,
 } from '../data-layer-fb';
 
+/**
+ * Get's the specified script.
+ *   Checks cache first, then idb, then cloud.
+ *
+ * @param {String} key script key
+ * @returns {Promise<!Object>}
+ */
 export async function get(key) {
   if (!key) {
     return null;
@@ -26,13 +33,19 @@ export async function get(key) {
   if (fromLocal) {
     return fromLocal;
   }
-  const fromCloud = getFromCloud(key);
-  if (fromCloud) {
-    return fromCloud;
+  const fromFirebase = getFromFirebase(key);
+  if (fromFirebase) {
+    return fromFirebase;
   }
   return null;
 }
 
+/**
+ * Get's the specified script from IDB.
+ *
+ * @param {String} key Script key
+ * @returns {Promise<!Object>}
+ */
 export async function getFromLocal(key) {
   if (!key) {
     return null;
@@ -44,7 +57,13 @@ export async function getFromLocal(key) {
   return null;
 }
 
-export async function getFromCloud(key) {
+/**
+ * Get's the specified script from the network.
+ *
+ * @param {String} key Script key
+ * @returns {Promise<!Object>}
+ */
+export async function getFromFirebase(key) {
   if (!key) {
     return null;
   }
@@ -56,6 +75,12 @@ export async function getFromCloud(key) {
   return null;
 }
 
+/**
+ * Saves the script to IDB and Firebase.
+ *
+ * @param {Object} data Script object to save
+ * @returns {Promise<Object>}
+ */
 export async function save(data) {
   const key = data.key;
   data.lastSaved = Date.now();
@@ -64,6 +89,12 @@ export async function save(data) {
   return data;
 }
 
+/**
+ * Deletes a script from IDB and Firebase.
+ *
+ * @param {String} key Script key
+ * @returns {Promise<String>}
+ */
 export async function del(key) {
   const now = Date.now();
   await idbDel(key, now);
@@ -71,6 +102,11 @@ export async function del(key) {
   return key;
 }
 
+/**
+ * Gets the list of scripts available on the local device.
+ *
+ * @returns {Promise<Array>}
+ */
 export async function list() {
   const local = await idbList();
   if (local) {
@@ -78,19 +114,49 @@ export async function list() {
   }
 }
 
+/**
+ * Removes all cached local data.
+ *
+ * @returns {Promise<Boolean>} True on successful removal.
+ */
 export async function removeLocalData() {
   return idbClear();
 }
 
-export async function removeCloudData() {
+/**
+ * Removes all data from Firebase.
+ *
+ * @returns {Promise<Boolean>} True on successful removal.
+ */
+export async function removeFirebaseData() {
   return fbDeleteAllUserData();
 }
 
+/**
+ * Creates and saves a sample script object.
+ *
+ * @returns {Promise<Object>} Script object
+ */
+export async function createSampleScript() {
+  const data = await fbGetSampleScript();
+  data.key = 'sample';
+  const now = Date.now();
+  data.createdOn = now;
+  data.lastUpdated = now;
+  await save(data);
+  return data;
+}
+
+/**
+ * Syncs the IDB datastore with the remote Firebase datastore.
+ *
+ * @returns {Promise<Boolean>} True on successful sync.
+ */
 export async function sync() {
   const list = await fbList();
   if (!list) {
     console.warn('[DataLayer] Server unavailable.');
-    return;
+    return false;
   }
   // Compare FB store to local store...
   const keysInFB = Object.keys(list);
@@ -103,17 +169,16 @@ export async function sync() {
   for (const key of diff) {
     await _syncToFirebase(key);
   }
+  return true;
 }
 
-export async function createSampleScript() {
-  const data = await fbGetSampleScript();
-  data.key = 'sample';
-  const now = Date.now();
-  data.createdOn = now;
-  data.lastUpdated = now;
-  save(data);
-}
-
+/**
+ * Syncs an item from IDB to Firebase.
+ *
+ * @param {String} key Script key
+ * @param {Integer} [timeDeleted] Time the script was deleted
+ * @returns {Promise}
+ */
 async function _syncToFirebase(key, timeDeleted) {
   console.log('[compareAndSync]', key, 'syncToFirebase');
   if (timeDeleted) {
@@ -123,6 +188,13 @@ async function _syncToFirebase(key, timeDeleted) {
   fbSave(key, local);
 }
 
+/**
+ * Syncs an item from Firebase to IDB.
+ *
+ * @param {String} key Script key
+ * @param {Integer} [timeDeleted] Time the script was deleted
+ * @returns {Promise}
+ */
 async function _syncFromFirebase(key, timeDeleted) {
   console.log('[compareAndSync]', key, 'syncFromFirebase');
   if (timeDeleted) {
@@ -132,6 +204,13 @@ async function _syncFromFirebase(key, timeDeleted) {
   await idbSave(key, remote);
 }
 
+/**
+ * Compares a local script object to the remote metadata and syncs if required.
+ *
+ * @param {String} key Script key
+ * @param {Object} remoteMeta Metadata of script object from remote
+ * @returns {Promise}
+ */
 async function _compareAndSyncScript(key, remoteMeta) {
   const localMeta = await idbGetMetadata(key);
   if (!localMeta || localMeta.lastSaved < remoteMeta.lastSaved) {
