@@ -2,13 +2,32 @@ import { h, Component } from 'preact';
 import style from './style.css';
 
 import { auth } from '../../../firebase';
-import { removeLocalData } from '../../../data-layer';
+import { removeLocalData, removeCloudData } from '../../../data-layer';
 
 class ViewLoggedIn extends Component {
   state = {
     message: '',
     messageClass: '',
+    deleteMessage: '',
+    deleteMessageClass: '',
   };
+
+  deleteAccount = async (password) => {
+    try {
+      const email = this.props.email;
+      const uCred = await auth.signInWithEmailAndPassword(email, password);
+      const user = uCred.user;
+      await removeCloudData();
+      await removeLocalData();
+      await user.delete();
+    } catch (ex) {
+      console.warn('[ACCOUNT] Delete account failed.', ex);
+      this.setState({
+        deleteMessage: 'Unable to delete account. An error occured.',
+        deleteMessageClass: 'error',
+      });
+    }
+  }
 
   changePassword = async (passwordCurrent, passwordA, passwordB) => {
     if (passwordA !== passwordB) {
@@ -60,6 +79,14 @@ class ViewLoggedIn extends Component {
     return false;
   }
 
+  submitDeleteAccount = async (e) => {
+    e.preventDefault();
+    const form = e.srcElement;
+    const current = form.querySelector('#deletePassword');
+    await this.deleteAccount(current.value);
+    return false;
+  }
+
   render(props, state) {
     return (
       <div>
@@ -79,6 +106,19 @@ class ViewLoggedIn extends Component {
             Sign out
           </button>
         </div>
+        <form onSubmit={this.submitDeleteAccount}>
+          <h2>Delete my account</h2>
+          <div>
+            <label for="currentPassword">Confirm password</label>
+            <input type="password" id="deletePassword" required autoComplete="current-password" />
+          </div>
+          <div>
+            <input type="submit" name="Submit" value="Delete Account" />
+          </div>
+          <div class={state.deleteMessageClass}>
+            {state.deleteMessage}
+          </div>
+        </form>
         <form onSubmit={this.submitPasswordChange}>
           <h2>Change Password</h2>
           <div>

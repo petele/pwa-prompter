@@ -14,6 +14,7 @@ import {
   save as fbSave,
   del as fbDel,
   list as fbList,
+  deleteUser as fbDeleteUser,
 } from '../data-layer-fb';
 
 const _cachedScript = {
@@ -65,6 +66,10 @@ export async function list() {
 export async function removeLocalData() {
   _updateCachedScript(null);
   return idbClear();
+}
+
+export async function removeCloudData() {
+  return fbDeleteUser();
 }
 
 export async function sync() {

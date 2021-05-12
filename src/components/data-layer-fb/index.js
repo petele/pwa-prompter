@@ -58,6 +58,15 @@ export async function del(key, now) {
   database.ref(_getFBMetadataPath(key)).set(metadata);
 }
 
+export async function deleteUser() {
+  const userID = getUserID();
+  if (!userID) {
+    return;
+  }
+  const path = `userData/${userID}`;
+  await database.ref(path).remove();
+}
+
 function _getFBScriptPath(key) {
   const fbUserID = getUserID();
   if (fbUserID) {
