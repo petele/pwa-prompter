@@ -14,6 +14,7 @@ import {
   save as fbSave,
   del as fbDel,
   list as fbList,
+  getSampleScript as fbGetSampleScript,
   deleteAllUserData as fbDeleteAllUserData,
 } from '../data-layer-fb';
 
@@ -102,6 +103,15 @@ export async function sync() {
   for (const key of diff) {
     await _syncToFirebase(key);
   }
+}
+
+export async function createSampleScript() {
+  const data = await fbGetSampleScript();
+  data.key = 'sample';
+  const now = Date.now();
+  data.createdOn = now;
+  data.lastUpdated = now;
+  save(data);
 }
 
 async function _syncToFirebase(key, timeDeleted) {

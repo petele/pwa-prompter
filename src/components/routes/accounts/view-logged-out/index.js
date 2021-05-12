@@ -2,7 +2,7 @@ import { h, Component } from 'preact';
 import style from './style.css';
 
 import { signIn, createAccount, forgotPassword } from '../../../user-manager';
-import { syncWithFirebase } from '../../../script-manager';
+import { syncWithFirebase, setupSampleScript } from '../../../script-manager';
 
 class ViewLoggedOut extends Component {
   state = {
@@ -50,7 +50,7 @@ class ViewLoggedOut extends Component {
   doSignUp = async (email, displayName, password) => {
     const result = await createAccount(email, password, displayName);
     if (result.success) {
-      // TODO: Setup user account.
+      await setupSampleScript();
       return;
     }
     this.setState({

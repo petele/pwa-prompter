@@ -24,6 +24,14 @@ export async function get(key) {
   return;
 }
 
+export async function getSampleScript() {
+  const path = `defaultScript/`;
+  const snapshot = await database.ref(path).get();
+  if (snapshot.exists()) {
+    return snapshot.val();
+  }
+}
+
 export async function save(key, data) {
   const userID = getUserID();
   if (!userID) {

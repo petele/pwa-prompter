@@ -25,11 +25,6 @@ export async function getScript(key) {
   if (key === _cachedScript.key) {
     return _cachedScript.data;
   }
-  if (key === 'sample') {
-    const data = _getSampleScript();
-    _updateCachedScript(data);
-    return data;
-  }
   if (key === 'new') {
     const data = _createNewScript();
     _updateCachedScript(data);
@@ -108,9 +103,9 @@ function _createNewScript() {
   return data;
 }
 
-async function _getSampleScript() {
-  console.log('[script_manager] TODO: _getSampleScript');
-  return null;
+
+export async function setupSampleScript() {
+  return dataLayer.createSampleScript();
 }
 
 
