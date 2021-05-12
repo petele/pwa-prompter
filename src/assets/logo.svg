@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512px" height="512px">
+  <rect x="0" y="0" width="512" height="512" fill="black" />
+  <g transform="translate(-24,-8)">
+    <rect x="96" y="36" rx="8" ry="8" width="64" height="32" fill="#B0BEC5" />
+    <rect x="176" y="36" rx="8" ry="8" width="32" height="32" fill="#B0BEC5" />
+    <rect x="224" y="36" rx="8" ry="8" width="128" height="32" fill="#B0BEC5" />
+    <rect x="368" y="36" rx="8" ry="8" width="96" height="32" fill="#B0BEC5" />
+
+    <rect x="96" y="84" rx="8" ry="8" width="96" height="32" fill="#B0BEC5" />
+    <rect x="208" y="84" rx="8" ry="8" width="80" height="32" fill="#B0BEC5" />
+    <rect x="304" y="84" rx="8" ry="8" width="160" height="32" fill="#B0BEC5" />
+
+    <rect x="96" y="132" rx="8" ry="8" width="128" height="32" fill="#B0BEC5" />
+    <rect x="240" y="132" rx="8" ry="8" width="32" height="32" fill="#B0BEC5" />
+    <rect x="288" y="132" rx="8" ry="8" width="96" height="32" fill="#B0BEC5" />
+    <rect x="400" y="132" rx="8" ry="8" width="64" height="32" fill="#B0BEC5" />
+
+    <rect x="96" y="180" rx="8" ry="8" width="88" height="32" fill="#B0BEC5" />
+    <rect x="200" y="180" rx="8" ry="8" width="160" height="32" fill="#B0BEC5" />
+    <rect x="376" y="180" rx="8" ry="8" width="88" height="32" fill="#B0BEC5" />
+
+    <rect x="96" y="228" rx="8" ry="8" width="64" height="32" fill="#FFFFFF" />
+    <rect x="176" y="228" rx="8" ry="8" width="128" height="32" fill="#FFFFFF" />
+    <rect x="320" y="228" rx="8" ry="8" width="32" height="32" fill="#FFFFFF" />
+    <rect x="368" y="228" rx="8" ry="8" width="96" height="32" fill="#FFFFFF" />
+
+    <rect x="96" y="276" rx="8" ry="8" width="160" height="32" fill="#B0BEC5" />
+    <rect x="272" y="276" rx="8" ry="8" width="80" height="32" fill="#B0BEC5" />
+    <rect x="368" y="276" rx="8" ry="8" width="96" height="32" fill="#B0BEC5" />
+
+    <rect x="96" y="324" rx="8" ry="8" width="96" height="32" fill="#B0BEC5" />
+    <rect x="208" y="324" rx="8" ry="8" width="96" height="32" fill="#B0BEC5" />
+    <rect x="320" y="324" rx="8" ry="8" width="96" height="32" fill="#B0BEC5" />
+    <rect x="432" y="324" rx="8" ry="8" width="32" height="32" fill="#B0BEC5" />
+
+    <rect x="96" y="372" rx="8" ry="8" width="128" height="32" fill="#B0BEC5" />
+    <rect x="240" y="372" rx="8" ry="8" width="32" height="32" fill="#B0BEC5" />
+    <rect x="288" y="372" rx="8" ry="8" width="96" height="32" fill="#B0BEC5" />
+    <rect x="400" y="372" rx="8" ry="8" width="64" height="32" fill="#B0BEC5" />
+
+    <rect x="96" y="420" rx="8" ry="8" width="96" height="32" fill="#B0BEC5" />
+    <rect x="208" y="420" rx="8" ry="8" width="80" height="32" fill="#B0BEC5" />
+    <rect x="304" y="420" rx="8" ry="8" width="160" height="32" fill="#B0BEC5" />
+
+    <rect x="96" y="468" rx="8" ry="8" width="128" height="32" fill="#B0BEC5" />
+    <rect x="240" y="468" rx="8" ry="8" width="150" height="32" fill="#B0BEC5" />
+  </g>
+</svg>

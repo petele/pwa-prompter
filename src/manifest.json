@@ -1,20 +1,20 @@
 {
-  "name": "My PWA Prompter",
+  "name": "My Prompter",
   "short_name": "MyPrompter",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#fff",
-  "theme_color": "#673ab8",
+  "background_color": "#000",
+  "theme_color": "#212121",
   "icons": [
     {
-      "src": "/assets/icons/android-chrome-192x192.png",
+      "src": "/assets/icons/icon-192.png",
       "type": "image/png",
       "sizes": "192x192",
       "purpose": "any maskable"
     },
     {
-      "src": "/assets/icons/android-chrome-512x512.png",
+      "src": "/assets/icons/icon-512.png",
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "any maskable"
