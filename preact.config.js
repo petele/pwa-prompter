@@ -1,4 +1,6 @@
+import path from 'path';
 import { DefinePlugin } from 'webpack';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 
 const stringReplacementPlugin = new DefinePlugin({
   __BUILD_TYPE__: JSON.stringify(process.env.NODE_ENV),
@@ -13,4 +15,13 @@ export default (config) => {
     config.devtool = false;
   }
   config.plugins.push(stringReplacementPlugin);
+
+  // Copy static files.
+  const copyStaticFiles = new CopyWebpackPlugin({
+    patterns: [{
+      from: '*',
+      context: path.resolve(__dirname, 'src/static'),
+    }],
+  });
+  config.plugins.push(copyStaticFiles);
 }
