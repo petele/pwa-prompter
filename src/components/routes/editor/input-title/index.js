@@ -19,6 +19,7 @@ const InputTitle = ({title, readOnly = false, onChange}) => {
       disabled={readOnly}
       readonly={readOnly}
       class={style.title}
+      aria-label="Script title"
       onInput={titleChanged} />
   );
 }
