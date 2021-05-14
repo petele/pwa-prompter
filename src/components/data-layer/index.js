@@ -19,11 +19,52 @@ import {
 } from '../data-layer-fb';
 
 /**
+ * Script object
+ *
+ * @typedef {object} Script
+ * @property {string} key - Script identifier
+ * @property {number} createdOn - Date script was created (Unix epoch)
+ * @property {number} lastSaved - Date script was last saved to the datastore (Unix epoch)
+ * @property {number} lastUpdated - Date script was last changed (Unix epoch)
+ * @property {string} title - Title of script
+ * @property {Array} asQuill - Script text as Quill Delta
+ * @property {string} asHTML - Script text as HTML
+ * @property {string} snippet - Summary snippet of the script text
+ * @property {boolean} hasStar - User has marked script as favorite
+ * @property {boolean} [readOnly] - Script is read only
+ *
+ * The following properties are for the prompter view
+ * @property {boolean} [allCaps] - All caps
+ * @property {boolean} [autoHideFooter] - Hide footer when scrolling
+ * @property {number} [eyelineHeight] - Height of eyeline icon
+ * @property {boolean} [flipHorizontal] - Flip the script horizontally
+ * @property {boolean} [flipVertical] - Flip the script vertically
+ * @property {number} [fontSize] - Font size to use
+ * @property {number} [lineHeight] - Line height, as a percentage of normal.
+ * @property {number} [margin] - Left and right margin
+ * @property {number} [scrollSpeed] - Speed the prompter scrolls
+ */
+
+/**
+ * Script Metadata object
+ *
+ * @typedef {object} ScriptMeta
+ * @property {string} key - Script identifier
+ * @property {number} createdOn - Date script was created (Unix epoch)
+ * @property {number} lastSaved - Date script was last saved to the datastore (Unix epoch)
+ * @property {number} lastUpdated - Date script was last changed (Unix epoch)
+ * @property {string} title - Title of script
+ * @property {string} snippet - Summary snippet of the script text
+ * @property {boolean} hasStar - User has marked script as favorite
+ * @property {boolean} [readOnly] - Script is read only
+ */
+
+/**
  * Get's the specified script.
  *   Checks cache first, then idb, then cloud.
  *
- * @param {String} key script key
- * @returns {Promise<!Object>}
+ * @param {string} key script key
+ * @returns {Promise<!Script>}
  */
 export async function get(key) {
   if (!key) {
@@ -43,8 +84,8 @@ export async function get(key) {
 /**
  * Get's the specified script from IDB.
  *
- * @param {String} key Script key
- * @returns {Promise<!Object>}
+ * @param {string} key Script key
+ * @returns {Promise<!Script>}
  */
 export async function getFromLocal(key) {
   if (!key) {
@@ -60,8 +101,8 @@ export async function getFromLocal(key) {
 /**
  * Get's the specified script from the network.
  *
- * @param {String} key Script key
- * @returns {Promise<!Object>}
+ * @param {string} key Script key
+ * @returns {Promise<!Script>}
  */
 export async function getFromFirebase(key) {
   if (!key) {
@@ -78,8 +119,8 @@ export async function getFromFirebase(key) {
 /**
  * Saves the script to IDB and Firebase.
  *
- * @param {Object} data Script object to save
- * @returns {Promise<Object>}
+ * @param {Script} data Script object to save
+ * @returns {Promise<!Script>}
  */
 export async function save(data) {
   const key = data.key;
@@ -92,20 +133,19 @@ export async function save(data) {
 /**
  * Deletes a script from IDB and Firebase.
  *
- * @param {String} key Script key
- * @returns {Promise<String>}
+ * @param {string} key Script key
+ * @returns {Promise<undefined>}
  */
 export async function del(key) {
   const now = Date.now();
   await idbDel(key, now);
   await fbDel(key, now);
-  return key;
 }
 
 /**
  * Gets the list of scripts available on the local device.
  *
- * @returns {Promise<Array>}
+ * @returns {Promise<ScriptMeta[]>}
  */
 export async function list() {
   const local = await idbList();
@@ -117,7 +157,7 @@ export async function list() {
 /**
  * Removes all cached local data.
  *
- * @returns {Promise<Boolean>} True on successful removal.
+ * @returns {Promise<boolean>} True on successful removal.
  */
 export async function removeLocalData() {
   return idbClear();
@@ -126,7 +166,7 @@ export async function removeLocalData() {
 /**
  * Removes all data from Firebase.
  *
- * @returns {Promise<Boolean>} True on successful removal.
+ * @returns {Promise<boolean>} True on successful removal.
  */
 export async function removeFirebaseData() {
   return fbDeleteAllUserData();
@@ -135,7 +175,7 @@ export async function removeFirebaseData() {
 /**
  * Creates and saves a sample script object.
  *
- * @returns {Promise<Object>} Script object
+ * @returns {Promise<Script>} Script object
  */
 export async function createSampleScript() {
   const data = await fbGetSampleScript();
@@ -150,7 +190,7 @@ export async function createSampleScript() {
 /**
  * Syncs the IDB datastore with the remote Firebase datastore.
  *
- * @returns {Promise<Boolean>} True on successful sync.
+ * @returns {Promise<boolean>} True on successful sync.
  */
 export async function sync() {
   const list = await fbList();
@@ -175,9 +215,9 @@ export async function sync() {
 /**
  * Syncs an item from IDB to Firebase.
  *
- * @param {String} key Script key
- * @param {Integer} [timeDeleted] Time the script was deleted
- * @returns {Promise}
+ * @param {string} key Script key
+ * @param {number} [timeDeleted] Time the script was deleted
+ * @returns {Promise<undefined>}
  */
 async function _syncToFirebase(key, timeDeleted) {
   console.log('[compareAndSync]', key, 'syncToFirebase');
@@ -191,9 +231,9 @@ async function _syncToFirebase(key, timeDeleted) {
 /**
  * Syncs an item from Firebase to IDB.
  *
- * @param {String} key Script key
- * @param {Integer} [timeDeleted] Time the script was deleted
- * @returns {Promise}
+ * @param {string} key Script key
+ * @param {number} [timeDeleted] Time the script was deleted
+ * @returns {Promise<undefined>}
  */
 async function _syncFromFirebase(key, timeDeleted) {
   console.log('[compareAndSync]', key, 'syncFromFirebase');
@@ -207,9 +247,9 @@ async function _syncFromFirebase(key, timeDeleted) {
 /**
  * Compares a local script object to the remote metadata and syncs if required.
  *
- * @param {String} key Script key
- * @param {Object} remoteMeta Metadata of script object from remote
- * @returns {Promise}
+ * @param {string} key Script key
+ * @param {ScriptMeta} remoteMeta Metadata of script object from remote
+ * @returns {Promise<undefined>}
  */
 async function _compareAndSyncScript(key, remoteMeta) {
   const localMeta = await idbGetMetadata(key);

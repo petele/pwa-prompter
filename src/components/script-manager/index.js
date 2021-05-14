@@ -16,10 +16,11 @@ const _cachedScript = {
 };
 
 /**
- * Gets a script object from the data store
+ * Gets a script object from the data store.
  *
- * @param {String} key
- * @returns Object
+ * @param {string} key Script identifier.
+ * @param {boolean} forceNetwork Get the script from the network.
+ * @returns {Promise<!dataLayer.Script>}
  */
 export async function getScript(key, forceNetwork) {
   if (forceNetwork) {
@@ -50,9 +51,9 @@ export async function getScript(key, forceNetwork) {
 /**
  * Updates the specified properties of the script object.
  *
- * @param {String} key Script identifier
- * @param {Object} data Properties of the script to update
- * @returns Promise
+ * @param {string} key Script identifier.
+ * @param {object} data Properties of the script to update.
+ * @returns {Promise<!dataLayer.Script>} Updated script object.
  */
 export async function updateScript(key, data) {
   console.log('[script_manager] updateScript', key, data);
@@ -62,44 +63,57 @@ export async function updateScript(key, data) {
   }
   Object.assign(current, data);
   await dataLayer.save(current);
-  await _updateCachedScript(current);
+  _updateCachedScript(current);
   return current;
 }
 
 /**
  * Deletes the specified script.
  *
- * @param {String} key Script identifier
- * @param {Object} data Properties of the script to update
- * @returns Promise
+ * @param {string} key Script identifier.
+ * @returns {Promise<boolean>} Script was successfully deleted.
  */
 export async function deleteScript(key) {
   console.log('[script_manager] deleteScript', key);
-  await dataLayer.del(key);
+  const result = await dataLayer.del(key);
   if (key === _cachedScript.key) {
     _updateCachedScript(null);
   }
-  return true;
+  return result;
 }
 
 /**
  * Gets the list of scripts available.
  *
- * @returns Object
+ * @returns {Promise<Array>} List of scripts
  */
 export async function getScriptList() {
   return dataLayer.list();
 }
 
+/**
+ * Syncs the local and remote datastore.
+ *
+ * @returns {Promise<boolean>} True on successful sync.
+ */
 export async function syncWithFirebase() {
   return dataLayer.sync();
 }
 
+/**
+ * Removes all data from the local datastore.
+ *
+ * @returns {Promise<undefined>}
+ */
 export async function removeLocalData() {
   return dataLayer.removeLocalData();
 }
 
-
+/**
+ * Creates a new script with the default script options.
+ *
+ * @returns {dataLayer.Script}
+ */
 function _createNewScript() {
   const nanoid = customAlphabet(urlAlphabet, 21);
   const key = nanoid();
@@ -112,11 +126,21 @@ function _createNewScript() {
 }
 
 
+/**
+ * Creates a new script with sample data.
+ *
+ * @returns {Promise<dataLayer.Script>}
+ */
 export async function setupSampleScript() {
   return dataLayer.createSampleScript();
 }
 
-
+/**
+ * Updates the cached script with the provided script.
+ *
+ * @param {!dataLayer.Script} data Script object to cache.
+ * @returns {undefined}
+ */
 function _updateCachedScript(data) {
   _cachedScript.key = data?.key;
   _cachedScript.data = data;

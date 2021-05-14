@@ -14,7 +14,8 @@
     "production": "NODE_ENV=production preact build --no-prerender"
   },
   "eslintConfig": {
-    "extends": "preact",
+    "plugins": ["jsdoc"],
+    "extends": ["preact", "plugin:jsdoc/recommended"],
     "ignorePatterns": [
       "build/"
     ],
@@ -23,7 +24,15 @@
         "error",
         2
       ],
+      "jsdoc/require-returns-description": 0,
       "no-tabs": "error"
+    },
+    "settings": {
+      "jsdoc": {
+        "tagNamePreference": {
+          "returns": "returns"
+        }
+      }
     },
     "globals": {
       "__BUILD_DATE__": false,
@@ -39,6 +48,7 @@
     "enzyme-adapter-preact-pure": "^2.0.0",
     "eslint": "^6.8.0",
     "eslint-config-preact": "^1.1.0",
+    "eslint-plugin-jsdoc": "^34.2.2",
     "firebase": "^8.5.0",
     "firebase-tools": "^9.10.0",
     "idb-keyval": "^5.0.5",
