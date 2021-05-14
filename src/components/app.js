@@ -5,7 +5,6 @@ import Header from './header';
 
 // Code-splitting is automated for `routes` directory
 import Home from '../routes/home';
-import Profile from '../routes/profile';
 import Editor from '../routes/editor';
 import Prompter from '../routes/prompter';
 import About from '../routes/about';
@@ -48,7 +47,6 @@ class App extends Component {
         <Header selectedRoute={state.currentURL} uid={state.uid} scriptID={state.scriptID} />
         <Router onChange={this.handleRoute}>
           <Home path="/" uid={state.uid} />
-          <Profile path="/profile/:user" />
           <Editor path="/editor/:scriptID" />
           <RedirectToHome path="/editor/" />
           <Prompter path="/prompter/:scriptID" />
