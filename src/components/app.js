@@ -4,7 +4,8 @@ import { Router } from 'preact-router';
 import Header from './header';
 
 // Code-splitting is automated for `routes` directory
-import Home from '../routes/home';
+import Landing from '../routes/landing';
+import List from '../routes/list';
 import Editor from '../routes/editor';
 import Prompter from '../routes/prompter';
 import About from '../routes/about';
@@ -46,7 +47,8 @@ class App extends Component {
       <div id="app">
         <Header selectedRoute={state.currentURL} uid={state.uid} scriptID={state.scriptID} />
         <Router onChange={this.handleRoute}>
-          <Home path="/" uid={state.uid} />
+          <Landing path="/" />
+          <List path="/app" uid={state.uid} />
           <Editor path="/editor/:scriptID" />
           <RedirectToHome path="/editor/" />
           <Prompter path="/prompter/:scriptID" />

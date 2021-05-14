@@ -13,7 +13,7 @@ function isEditOrPrompt(selectedRoute) {
 }
 
 function isHome(selectedRoute) {
-  if (selectedRoute === '/') {
+  if (selectedRoute === '/app') {
     return true;
   }
   return false;
@@ -21,7 +21,7 @@ function isHome(selectedRoute) {
 
 export const Home = () => {
   return (
-    <Link activeClassName={style.active} href="/" label="Home" aria-label="Home">
+    <Link activeClassName={style.active} href="/app" label="Home" aria-label="Home">
       <h1>MyPrompter</h1>
     </Link>
   );

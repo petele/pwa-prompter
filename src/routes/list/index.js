@@ -1,8 +1,8 @@
 import { h, Component } from 'preact';
 import style from './style.css';
 
-import ScriptListItem from '../../components/routes/home/script-list-item';
-import DialogConfirmDelete from '../../components/routes/home/dialog-confirm-delete';
+import ScriptListItem from '../../components/routes/list/script-list-item';
+import DialogConfirmDelete from '../../components/routes/list/dialog-confirm-delete';
 import { getScriptList, updateScript, deleteScript, syncWithFirebase } from '../../components/script-manager';
 
 class Home extends Component {

@@ -1,0 +1,9 @@
+.landing {
+  margin-top: var(--header-height);
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.landing > :first-child {
+  margin-top: 0;
+}
