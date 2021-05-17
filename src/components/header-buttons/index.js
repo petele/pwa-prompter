@@ -21,8 +21,8 @@ function isHome(selectedRoute) {
 
 export const Home = () => {
   return (
-    <Link activeClassName={style.active} href="/app" label="Home" aria-label="Home">
-      <h1>MyPrompter</h1>
+    <Link class="navbar-brand" href="/app" label="Home" aria-label="Home">
+      MyPrompter
     </Link>
   );
 }

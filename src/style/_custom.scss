@@ -17,12 +17,16 @@
 @import "~bootstrap/scss/functions";
 
 
+
 // 2. Include any default variable overrides here
-$body-bg: #000;
+// $body-bg: #000;
+@import "theme";
 
 // 3. Include remainder of required Bootstrap stylesheets
 @import "~bootstrap/scss/variables";
 @import "~bootstrap/scss/mixins";
+@import "~bootstrap/scss/utilities";
+
 
 // 4. Include any optional Bootstrap components as you like
 @import "~bootstrap/scss/root";
@@ -31,6 +35,12 @@ $body-bg: #000;
 @import "~bootstrap/scss/images";
 @import "~bootstrap/scss/containers";
 @import "~bootstrap/scss/grid";
+
+
+
+@import "~bootstrap/scss/navbar";
+
+@import "~bootstrap/scss/helpers";
 
 // 5. Add additional custom code here
 
