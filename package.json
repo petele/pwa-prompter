@@ -46,6 +46,7 @@
   },
   "devDependencies": {
     "babel-plugin-transform-remove-console": "^6.9.4",
+    "bootstrap": "^5.0.1",
     "copy-webpack-plugin": "^6.4.1",
     "date-fns": "^2.21.1",
     "dialog-polyfill": "^0.5.6",
