@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import style from './style.css';
+import style from './style.scss';
 
 const PrompterScriptContainer = ({fontSize, margin, lineHeight, allCaps, flipHorizontal, flipVertical, asHTML}) => {
 

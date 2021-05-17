@@ -6,7 +6,7 @@ import 'dialog-polyfill/dist/dialog-polyfill.css';
 
 import PWAPSlider from '../../../pwap-slider';
 
-import style from './style.css';
+import style from './style.scss';
 
 import DefaultSettings from '../default-prompter-settings';
 

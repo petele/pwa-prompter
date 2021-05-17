@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { Link } from 'preact-router/match';
-import style from './style.css';
+import style from './style.scss';
 
 function isEditOrPrompt(selectedRoute) {
   if (selectedRoute?.startsWith('/editor/')) {

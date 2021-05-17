@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { Link } from 'preact-router/match';
-import style from './style.css';
+import style from './style.scss';
 
 export const Account = ({uid}) => {
   const className = uid ? style.loggedIn : '';
