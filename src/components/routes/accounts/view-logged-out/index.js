@@ -1,5 +1,5 @@
 import { h, Component } from 'preact';
-import style from './style.css';
+import style from './style.scss';
 
 import { signIn, createAccount, forgotPassword } from '../../../user-manager';
 import { syncWithFirebase, setupSampleScript } from '../../../script-manager';

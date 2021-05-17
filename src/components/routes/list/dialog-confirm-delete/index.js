@@ -4,7 +4,7 @@ import { h, Component, createRef } from 'preact';
 import dialogPolyfill from 'dialog-polyfill';
 import 'dialog-polyfill/dist/dialog-polyfill.css';
 
-import style from './style.css';
+import style from './style.scss';
 
 class ConfirmDeleteDialog extends Component {
   _dialogRef = createRef();

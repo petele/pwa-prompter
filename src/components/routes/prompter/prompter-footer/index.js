@@ -1,5 +1,5 @@
 import { h, Component } from 'preact';
-import style from './style.css';
+import style from './style.scss';
 
 import DefaultSettings from '../default-prompter-settings';
 import { getKeyCombination, getShortcut } from '../keyboard-shortcuts';

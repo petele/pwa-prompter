@@ -14,8 +14,13 @@
     "production": "NODE_ENV=production preact build --no-prerender"
   },
   "eslintConfig": {
-    "plugins": ["jsdoc"],
-    "extends": ["preact", "plugin:jsdoc/recommended"],
+    "plugins": [
+      "jsdoc"
+    ],
+    "extends": [
+      "preact",
+      "plugin:jsdoc/recommended"
+    ],
     "ignorePatterns": [
       "build/"
     ],
@@ -55,8 +60,10 @@
     "jest": "^24.9.0",
     "jest-preset-preact": "^1.0.0",
     "nanoid": "^3.1.22",
+    "node-sass": "^6.0.0",
     "preact-cli": "^3.0.0",
     "quill": "^1.3.7",
+    "sass-loader": "^10.2.0",
     "sirv-cli": "1.0.3",
     "tslib": "^2.2.0"
   },

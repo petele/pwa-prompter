@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
-import style from './style.css';
+import style from './style.scss';
 
 import { format, formatDistanceToNow } from 'date-fns';
 

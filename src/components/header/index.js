@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import style from './style.css';
+import style from './style.scss';
 
 import { Account } from '../header-account';
 import { Home, Edit, NewScript, Prompt } from '../header-buttons';

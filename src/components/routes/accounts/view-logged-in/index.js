@@ -1,5 +1,5 @@
 import { h, Component } from 'preact';
-import style from './style.css';
+import style from './style.scss';
 
 import { deleteAccount, changePassword, signOut } from '../../../user-manager';
 import { removeLocalData } from '../../../script-manager';

@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import style from './style.css';
+import style from './style.scss';
 
 const Eyeline = ({margin = 15, value = 40, flipHorizontal, onChange}) => {
 
