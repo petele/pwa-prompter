@@ -9,7 +9,7 @@ html {
 }
 
 main {
-  padding-top: 56px;
+  padding-top: calc(var(--bs-gutter-x, 0.75rem) + 52px);
 }
 
 // 6. Add overrides here.
