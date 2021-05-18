@@ -34,3 +34,19 @@ a.nav-link svg {
 a.nav-link.active svg {
   fill: $white;
 }
+
+.script-list-item button {
+  width: 36px;
+  height: 36px;
+}
+
+.script-list-item button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.script-list-item .btn-group {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
