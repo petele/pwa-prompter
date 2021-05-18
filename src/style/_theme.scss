@@ -25,9 +25,30 @@ $green:   #4caf50 !default;
 $teal:    #009688 !default;
 $cyan:    #00bcd4 !default;
 
-$light:         $gray-500 !default;
-$dark:          $gray-800 !default;
+$primary:    $blue !default;
+$secondary:  $gray-700 !default;
+$success:    $green !default;
+$info:       $cyan !default;
+$warning:    $yellow !default;
+$danger:     $red !default;
+$light:      $gray-500 !default;
+$dark:       $gray-800 !default;
 
 // Body
-$body-bg:                   $gray-900 !default;
-$body-color:                $white !default;
+$body-bg:    $gray-900 !default;
+$body-color: $white !default;
+
+:root {
+  --pwap-body: #{$body-color};
+  --pwap-bg: #{$body-bg};
+  --pwap-primary: #{$primary};
+  --pwap-secondary: #{$secondary};
+  --pwap-success: #{$success};
+  --pwap-info: #{$info};
+  --pwap-warning: #{$warning};
+  --pwap-danger: #{$danger};
+  --pwap-light: #{$light};
+  --pwap-dark: #{$dark};
+  --pwap-white: #{$white};
+  --pwap-black: #{$black};
+}

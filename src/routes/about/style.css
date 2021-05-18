@@ -1,16 +1,6 @@
-.about {
-  margin-top: var(--header-height);
-  overflow-y: auto;
-  padding: 20px;
-}
-
-.about > :first-child {
-  margin-top: 0;
-}
-
 .buildInfo {
   margin-top: 2em;
-  color: var(--black-800);
+  color: var(--pwap-secondary);
   font-size: smaller;
 }
 

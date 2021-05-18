@@ -1,11 +1,10 @@
 import { h, Component } from 'preact';
-import style from './style.css';
 
 import ScriptListItem from '../../components/routes/list/script-list-item';
 import DialogConfirmDelete from '../../components/routes/list/dialog-confirm-delete';
 import { getScriptList, updateScript, deleteScript, syncWithFirebase } from '../../components/script-manager';
 
-class Home extends Component {
+class List extends Component {
   state = {
     scripts: [],
   };
@@ -55,7 +54,7 @@ class Home extends Component {
 
   render(props, state) {
     return (
-      <div class={style.home}>
+      <div>
         <DialogConfirmDelete
           scriptDetails={state.scriptToDelete}
           onClose={this.onDeleteDialogClose}
@@ -69,4 +68,4 @@ class Home extends Component {
 
 }
 
-export default Home;
+export default List;

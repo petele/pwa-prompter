@@ -1,17 +1,18 @@
 import { h } from 'preact';
-// import { Link } from 'preact-router/match';
-import style from './style.css';
+import { Link } from 'preact-router/match';
 
 const Landing = () => {
 
   document.title = 'MyPrompter';
 
   return (
-    <div class={style.landing}>
+    <div>
       <h1>MyPrompter</h1>
       <h2>An easy to use teleprompter.</h2>
       <p>
-        Landing.
+        <Link href="/app" aria-label="Open MyPrompter">
+          Open MyPrompter
+        </Link>
       </p>
     </div>
   );

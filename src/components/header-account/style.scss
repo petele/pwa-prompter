@@ -1,9 +1,7 @@
-nav a.active {
-  background: var(--app-background-third);
-  color: var(--app-color-third);
+nav a.loggedIn {
+  background: var(--pwap-primary);
 }
 
-nav a.loggedIn {
-  background: var(--app-highlight-primary);
-  color: white;
+nav a.loggedIn svg {
+  fill: var(--pwap-white);
 }

@@ -46,7 +46,7 @@ class App extends Component {
     return (
       <div id="app">
         <Header selectedRoute={state.currentURL} uid={state.uid} scriptID={state.scriptID} />
-        <div class="container-fluid">
+        <main class="container-fluid">
           <Router onChange={this.handleRoute}>
             <Landing path="/" />
             <List path="/app" uid={state.uid} />
@@ -58,7 +58,7 @@ class App extends Component {
             <Account path="/account" uid={state.uid} email={state.email} displayName={state.displayName}  />
             <NotFound default />
           </Router>
-        </div>
+        </main>
       </div>
     );
   }
