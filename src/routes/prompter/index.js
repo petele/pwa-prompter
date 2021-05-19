@@ -12,7 +12,6 @@ import { getScript, updateScript } from '../../components/script-manager';
 import DefaultSettings from '../../components/routes/prompter/default-prompter-settings';
 
 class Prompter extends Component {
-  updatedSettings = {};
   state = Object.assign({
     scrollPercent: 0,
   }, DefaultSettings);
@@ -85,15 +84,16 @@ class Prompter extends Component {
   }
 
   onSettingsChange = (key, value) => {
-    this.updatedSettings[key] = value;
-    this.setState(this.updatedSettings);
+    const obj = {};
+    obj[key] = value;
+    this.setState(obj);
   }
 
-  onSettingsClose = async () => {
-    if (Object.keys(this.updatedSettings).length > 0) {
-      await updateScript(this.props.scriptID, this.updatedSettings);
-      this.updatedSettings = {};
+  onSettingsClose = async (settings) => {
+    if (!settings) {
+      return;
     }
+    await updateScript(this.props.scriptID, settings);
   }
 
   render(props, state) {

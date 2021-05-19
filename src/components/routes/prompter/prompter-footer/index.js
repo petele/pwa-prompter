@@ -1,6 +1,8 @@
 import { h, Component } from 'preact';
 import style from './style.scss';
 
+import { Modal } from 'bootstrap';
+
 import DefaultSettings from '../default-prompter-settings';
 import { getKeyCombination, getShortcut } from '../keyboard-shortcuts';
 import * as scrollController from  '../scroll-controller';
@@ -213,13 +215,23 @@ class PrompterFooter extends Component {
     document.documentElement.requestFullscreen();
   }
 
+  getSettingDialog = () => {
+    if (this._settingsDialog) {
+      return this._settingsDialog;
+    }
+    const options = {};
+    const dialog = document.querySelector('#dialogSettings');
+    this._settingsDialog = new Modal(dialog, options);
+    return this._settingsDialog;
+  }
+
   onClickSettings = () => {
     if (scrollController.isScrolling()) {
       this.scrollStop();
     }
-    const dialog = document.querySelector('#dialogSettings');
-    if (dialog) {
-      dialog.showModal();
+    const dlg = this.getSettingDialog();
+    if (dlg) {
+      dlg.show();
     }
   }
 
