@@ -4,7 +4,6 @@ import { route } from 'preact-router';
 import style from './style.scss';
 
 import PrompterFooter from '../../components/routes/prompter/prompter-footer';
-import ProgressBar from '../../components/routes/prompter/progress-bar';
 import PrompterScriptContainer from '../../components/routes/prompter/prompter-script-container';
 import Eyeline from '../../components/routes/prompter/eyeline';
 import PrompterSettingsDialog from '../../components/routes/prompter/dialog-settings';
@@ -17,6 +16,7 @@ class Prompter extends Component {
   state = Object.assign({
     scrollPercent: 0,
   }, DefaultSettings);
+  _progressBar;
 
   componentDidMount() {
     const scriptID = this.props.scriptID;
@@ -26,6 +26,18 @@ class Prompter extends Component {
 
   componentWillUnmount() {
     document.removeEventListener('scroll', this.onScroll);
+  }
+
+  getProgressBar() {
+    if (this._progressBar) {
+      return this._progressBar;
+    }
+    const pb = document.getElementById('headerProgress');
+    if (pb) {
+      this._progressBar = pb;
+      return pb;
+    }
+    return null;
   }
 
   async loadScript(scriptID) {
@@ -44,13 +56,20 @@ class Prompter extends Component {
   }
 
   onScroll = () => {
+    const pBar = this.getProgressBar();
+    if (!pBar) {
+      return;
+    }
     const currentY = window.scrollY;
     const scrollHeight = document.body.scrollHeight;
     const windowHeight = window.innerHeight;
     let percent = (currentY / (scrollHeight - windowHeight)) * 100;
     percent = Math.round(percent * 100) / 100;
     percent = Math.min(percent, 100);
-    this.setState({scrollPercent: percent});
+    if (this.state.flipVertical) {
+      percent = 100 - percent;
+    }
+    pBar.style = `width: ${percent}%;`;
   }
 
   onEyelineChange = (value) => {
@@ -80,9 +99,6 @@ class Prompter extends Component {
   render(props, state) {
     return (
       <div id="prompterContainer" class={style.prompterContainer}>
-        <ProgressBar
-          percent={state.scrollPercent}
-          flipVertical={state.flipVertical} />
         <PrompterSettingsDialog
           eyelineHeight={state.eyelineHeight}
           scrollSpeed={state.scrollSpeed}
