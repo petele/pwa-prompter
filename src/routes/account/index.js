@@ -9,7 +9,7 @@ const Account = ({uid, email, displayName}) => {
   return (
     <div class={style.account}>
       <h1>Account overview</h1>
-      <h2 class={style.warning}>WARNING</h2>
+      <h2 class="text-danger">WARNING</h2>
       <div>
         This app is an experiment! Data may be deleted at any time, the app
         may disappear. Use at your own risk.
