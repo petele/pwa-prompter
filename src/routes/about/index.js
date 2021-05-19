@@ -1,13 +1,12 @@
 import { h } from 'preact';
 import { Link } from 'preact-router/match';
-import style from './style.css';
 
 const About = () => {
 
   document.title = 'About - MyPrompter';
 
   return (
-    <div class={style.about}>
+    <div>
       <h1>MyPrompter</h1>
       <h2>An easy to use teleprompter.</h2>
       <p>
@@ -35,7 +34,8 @@ const About = () => {
       <table>
         <thead>
           <tr>
-            <td>Command</td><td>Key</td>
+            <td class="fw-bold">Command</td>
+            <td class="fw-bold">Key</td>
           </tr>
         </thead>
         <tbody>
@@ -68,12 +68,12 @@ const About = () => {
           </tr>
         </tbody>
       </table>
-      <div class={style.buildInfo}>
+      <div class="text-muted small mt-3">
         <div>
-          <span class={style.label}>Build Type:</span> <span>{__BUILD_TYPE__}</span>
+          <span class="fw-bold">Build Type:</span> <span>{__BUILD_TYPE__}</span>
         </div>
         <div>
-          <span class={style.label}>Build Date:</span> <span>{__BUILD_DATE__}</span>
+          <span class="fw-bold">Build Date:</span> <span>{__BUILD_DATE__}</span>
         </div>
       </div>
     </div>

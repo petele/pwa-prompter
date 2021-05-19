@@ -1,6 +1,5 @@
 import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
-import style from './style.scss';
 
 import { format, formatDistanceToNow } from 'date-fns';
 
@@ -35,7 +34,7 @@ const LastUpdated = ({lastUpdated, readOnly}) => {
   const readOnlyText = readOnly ? '(Read Only)' : '';
 
   return (
-    <div class={style.lastSaved}>
+    <div class="small text-muted">
       {ago} <b>{readOnlyText}</b>
     </div>
   );

@@ -1,5 +1,4 @@
 import { h, Component } from 'preact';
-import style from './style.scss';
 
 import { signIn, createAccount, forgotPassword } from '../../../user-manager';
 import { syncWithFirebase, setupSampleScript } from '../../../script-manager';
@@ -32,7 +31,7 @@ class ViewLoggedOut extends Component {
     }
     this.setState({
       message: result.message,
-      messageClass: style.error,
+      messageClass: 'text-danger',
     });
   }
 
@@ -55,7 +54,7 @@ class ViewLoggedOut extends Component {
     }
     this.setState({
       message: result.message,
-      messageClass: style.error,
+      messageClass: 'text-danger',
     });
   }
 
@@ -74,7 +73,7 @@ class ViewLoggedOut extends Component {
     const result = await forgotPassword(email);
     const newState = {
       message: result.message,
-      messageClass: result.success ? style.success : style.error,
+      messageClass: result.success ? 'text-success' : 'text-danger',
     }
     this.setState(newState);
     return false;
@@ -168,7 +167,7 @@ class ViewLoggedOut extends Component {
             </div>
           }
           <div>
-            <input type="submit" name="Submit" class="btn btn-primary" value={state.submitText} />
+            <input type="submit" name="Submit" class="btn btn-primary mb-3" value={state.submitText} />
           </div>
           <div class={state.messageClass}>
             {state.message}

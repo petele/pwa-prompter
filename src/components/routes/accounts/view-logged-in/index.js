@@ -1,9 +1,7 @@
 import { h, Component } from 'preact';
-import style from './style.scss';
 
+// eslint-disable-next-line no-unused-vars
 import { Tab } from 'bootstrap';
-
-
 import { deleteAccount, changePassword, signOut } from '../../../user-manager';
 import { removeLocalData } from '../../../script-manager';
 
@@ -22,7 +20,7 @@ class ViewLoggedIn extends Component {
       return;
     }
     this.setState({
-      messageClass: style.error,
+      messageClass: 'text-danger',
       deleteMessage: result.message,
       pwChangeMessage: '',
     });
@@ -32,7 +30,7 @@ class ViewLoggedIn extends Component {
     const email = this.props.email;
     const result = await changePassword(email, passwordCurrent, passwordA, passwordB);
     this.setState({
-      messageClass: result.success ? style.success : style.error,
+      messageClass: result.success ? 'text-success' : 'text-danger',
       deleteMessage: '',
       pwChangeMessage: result.message,
     });
@@ -124,7 +122,7 @@ class ViewLoggedIn extends Component {
                   <input class="form-control" type="password" id="newPasswordB" minlength="6" required autoComplete="new-password" />
                 </div>
               </div>
-              <input type="submit" class="btn btn-primary" name="Submit" value="Change" />
+              <input type="submit" class="btn btn-primary mb-3" name="Submit" value="Change" />
               <div class={state.messageClass}>
                 {state.pwChangeMessage}
               </div>
@@ -139,7 +137,7 @@ class ViewLoggedIn extends Component {
                   <input class="form-control" type="password" id="deletePassword" required autoComplete="current-password" />
                 </div>
               </div>
-              <input type="submit" name="Submit" class="btn btn-danger" value="Delete Account" />
+              <input type="submit" name="Submit" class="btn btn-danger mb-3" value="Delete Account" />
               <div class={state.messageClass}>
                 {state.deleteMessage}
               </div>

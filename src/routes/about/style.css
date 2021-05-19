@@ -1,9 +1,0 @@
-.buildInfo {
-  margin-top: 2em;
-  color: var(--pwap-secondary);
-  font-size: smaller;
-}
-
-.buildInfo .label {
-  font-weight: bold;
-}
