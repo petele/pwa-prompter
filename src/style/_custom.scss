@@ -18,6 +18,10 @@ main {
 
 // 6. Add overrides here.
 
+#headNav a.nav-link {
+  padding: 0.5rem 0.5rem;
+}
+
 #headNav a.nav-link.active {
   background-color: $light;
 }

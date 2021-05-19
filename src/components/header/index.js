@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import style from './style.scss';
 import { Account } from '../header-account';
-import { Home, Edit, NewScript, Prompt } from '../header-buttons';
+import { Home, Edit, NewScript, Prompt, About } from '../header-buttons';
 
 
 const Header = ({selectedRoute, scriptID, uid}) => {
@@ -16,6 +16,7 @@ const Header = ({selectedRoute, scriptID, uid}) => {
           <Edit selectedRoute={selectedRoute} scriptID={scriptID} />
           <Prompt selectedRoute={selectedRoute} scriptID={scriptID} />
           <NewScript selectedRoute={selectedRoute} />
+          <About selectedRoute={selectedRoute} />
           <Account uid={uid} />
         </div>
       </div>

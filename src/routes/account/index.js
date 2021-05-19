@@ -8,12 +8,15 @@ import ViewLoggedOut from '../../components/routes/accounts/view-logged-out';
 const Account = ({uid, email, displayName}) => {
   return (
     <div class={style.account}>
-      <h1>Account overview</h1>
-      <h2 class="text-danger">WARNING</h2>
-      <div>
-        This app is an experiment! Data may be deleted at any time, the app
-        may disappear. Use at your own risk.
+
+      <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Warning!</h4>
+        <div>
+          This app is an experiment! Data may be deleted at any time, the app
+          may disappear. Use at your own risk.
+        </div>
       </div>
+
       <p>
         About <Link href="/about">MyPrompter</Link>
       </p>
