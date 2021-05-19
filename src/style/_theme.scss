@@ -31,6 +31,7 @@ $success:    $green !default;
 $info:       $cyan !default;
 $warning:    $yellow !default;
 $danger:     $red !default;
+$very-light: $gray-200 !default;
 $light:      $gray-500 !default;
 $dark:       $gray-800 !default;
 
@@ -139,6 +140,7 @@ $pre-color:                         inherit !default;
   --pwap-info: #{$info};
   --pwap-warning: #{$warning};
   --pwap-danger: #{$danger};
+  --pwap-very-light: #{$very-light};
   --pwap-light: #{$light};
   --pwap-dark: #{$dark};
   --pwap-white: #{$white};
