@@ -11,6 +11,8 @@ const InputTitle = ({title, readOnly = false, onChange}) => {
 
   document.title = title ? `${title} - MyPrompter` : `MyPrompter`;
 
+  const classList = `${style.title} form-control form-control-lg`;
+
   return (
     <input
       tabindex="1"
@@ -18,7 +20,7 @@ const InputTitle = ({title, readOnly = false, onChange}) => {
       value={title}
       disabled={readOnly}
       readonly={readOnly}
-      class={style.title}
+      class={classList}
       aria-label="Script title"
       onInput={titleChanged} />
   );
