@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { Link } from 'preact-router/match';
-
+import style from './style.scss';
 import { format } from 'date-fns';
 
 const ScriptListItem = ({ scriptID, idx, title, snippet, lastUpdated, createdOn, hasStar, readOnly, onDelete, onStar }) => {
@@ -26,8 +26,10 @@ const ScriptListItem = ({ scriptID, idx, title, snippet, lastUpdated, createdOn,
     }
   }
 
+  const cardClassList = `${style.scriptCard} card text-white bg-dark mb-3`;
+
   return (
-    <div class="card text-white bg-dark mb-3 script-list-item">
+    <div class={cardClassList}>
       <div class="card-body">
         <Link class="text-decoration-none text-reset" href={editorURL}>
           <h5 class="card-title">{title}</h5>
@@ -44,7 +46,7 @@ const ScriptListItem = ({ scriptID, idx, title, snippet, lastUpdated, createdOn,
             </div>
           }
         </div>
-        <div class="btn-group" role="group">
+        <div class="btn-group position-absolute top-0 end-0" role="group">
           {hasStar
             ?
             <button type="button" class="btn btn-primary btn-sm" aria-label="Remove star" onClick={clickStar} title="Remove star">

@@ -1,7 +1,7 @@
 nav a.loggedIn {
-  background: var(--pwap-primary);
+  background: var(--pwap-primary) !important;
 }
 
 nav a.loggedIn svg {
-  fill: var(--pwap-white);
+  fill: var(--pwap-white) !important;
 }

@@ -5,7 +5,7 @@
 // 5. Add additional custom code here
 
 html {
-  // color-scheme: dark;
+  color-scheme: dark;
 }
 
 main {
@@ -18,39 +18,14 @@ main {
 
 // 6. Add overrides here.
 
-.navbar {
-  padding-top: 0;
-  padding-bottom: 0;
-}
-
-nav.navbar .container-fluid {
-  padding-right: 0;
-}
-
-a.nav-link.active {
+#headNav a.nav-link.active {
   background-color: $light;
 }
 
-a.nav-link svg {
+#headNav a.nav-link svg {
   fill: $light;
 }
 
-a.nav-link.active svg {
+#headNav a.nav-link.active svg {
   fill: $white;
-}
-
-.script-list-item button {
-  width: 36px;
-  height: 36px;
-}
-
-.script-list-item button svg {
-  width: 18px;
-  height: 18px;
-}
-
-.script-list-item .btn-group {
-  position: absolute;
-  right: 0;
-  top: 0;
 }

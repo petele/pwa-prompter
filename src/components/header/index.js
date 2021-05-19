@@ -9,8 +9,8 @@ const Header = ({selectedRoute, scriptID, uid}) => {
   const isPrompter = selectedRoute?.startsWith('/prompter/');
 
   return (
-    <nav class="navbar fixed-top navbar-dark bg-dark shadow">
-      <div class="container-fluid">
+    <nav id="headNav" class="navbar fixed-top navbar-dark bg-dark shadow pt-0 pb-0">
+      <div class="container-fluid pe-0">
         <Home />
         <div class="nav">
           <Edit selectedRoute={selectedRoute} scriptID={scriptID} />
