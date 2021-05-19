@@ -1,6 +1,8 @@
 import { h, Component } from 'preact';
 import { route } from 'preact-router';
 
+import style from './style.scss';
+
 import PrompterFooter from '../../components/routes/prompter/prompter-footer';
 import ProgressBar from '../../components/routes/prompter/progress-bar';
 import PrompterScriptContainer from '../../components/routes/prompter/prompter-script-container';
@@ -77,7 +79,7 @@ class Prompter extends Component {
 
   render(props, state) {
     return (
-      <div id="prompterContainer">
+      <div id="prompterContainer" class={style.prompterContainer}>
         <ProgressBar
           percent={state.scrollPercent}
           flipVertical={state.flipVertical} />
