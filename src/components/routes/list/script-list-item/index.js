@@ -36,7 +36,7 @@ const ScriptListItem = ({ scriptID, idx, title, snippet, lastUpdated, createdOn,
           <p class="card-text">{snippet}...</p>
         </Link>
       </div>
-      <div class="card-footer text-muted d-flex">
+      <div class="card-footer small text-muted d-flex">
         <div class="flex-fill">
           {lastUpdated > 0 && <div>Updated {formatDate(lastUpdated)}</div> }
           {createdOn > 0 && <div>Created {formatDate(createdOn)}</div> }

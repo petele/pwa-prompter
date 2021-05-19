@@ -12,11 +12,11 @@ main {
   padding-top: calc(var(--bs-gutter-x, 0.75rem) + 52px);
 }
 
-.btn {
-  color: white !important;
-}
-
 // 6. Add overrides here.
+
+.card.bg-dark .card-footer.text-muted {
+  color: $gray-400 !important;
+}
 
 #headNav a.nav-link {
   padding: 0.5rem 0.5rem;
