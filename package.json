@@ -45,6 +45,7 @@
     }
   },
   "devDependencies": {
+    "@popperjs/core": "^2.9.2",
     "babel-plugin-transform-remove-console": "^6.9.4",
     "bootstrap": "^5.0.1",
     "copy-webpack-plugin": "^6.4.1",
