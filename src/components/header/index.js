@@ -7,7 +7,7 @@ import { Home, Edit, NewScript, Prompt } from '../header-buttons';
 const Header = ({selectedRoute, scriptID, uid}) => {
 
   return (
-    <nav class="navbar fixed-top navbar-dark bg-dark">
+    <nav class="navbar fixed-top navbar-dark bg-dark shadow">
       <div class="container-fluid">
         <Home />
         <div class="nav">
