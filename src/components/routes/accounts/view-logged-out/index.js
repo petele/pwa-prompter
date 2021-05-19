@@ -131,21 +131,21 @@ class ViewLoggedOut extends Component {
           {state.mode === 'sign-up' &&
             <div class="row mb-2">
               <label for="signin-name" class="col-3 col-form-label">Name</label>
-              <div class="col-8">
+              <div class="col-9">
                 <input type="text" class="form-control" id="signin-name" required autoComplete="name" />
               </div>
             </div>
           }
           <div class="row mb-2">
             <label for="signin-email" class="col-3 col-form-label">Email</label>
-            <div class="col-8">
+            <div class="col-9">
               <input type="email" class="form-control" id="signin-email" required autoComplete="email" />
             </div>
           </div>
           {state.mode === 'sign-in' &&
             <div class="row mb-2">
               <label for="signin-password" class="col-3 col-form-label">Password</label>
-              <div class="col-8">
+              <div class="col-9">
                 <input type="password" class="form-control" id="signin-password" minlength="6" required autoComplete="current-password" />
               </div>
             </div>
@@ -153,7 +153,7 @@ class ViewLoggedOut extends Component {
           {state.mode === 'sign-up' &&
             <div class="row mb-2">
               <label for="signin-password" class="col-3 col-form-label">Password</label>
-              <div class="col-8">
+              <div class="col-9">
                 <input type="password" class="form-control" id="signin-password" minlength="6" required autoComplete="new-password" />
               </div>
             </div>
@@ -161,13 +161,13 @@ class ViewLoggedOut extends Component {
           {state.mode === 'sign-up' &&
             <div class="row mb-2">
               <label for="signin-confirm" class="col-3 col-form-label">Confirm</label>
-              <div class="col-8">
+              <div class="col-9">
                 <input type="password" class="form-control" id="signin-confirm" minlength="6" required autoComplete="new-password" />
               </div>
             </div>
           }
           <div>
-            <input type="submit" name="Submit" class="btn btn-primary mb-3" value={state.submitText} />
+            <input type="submit" name="Submit" class="btn btn-primary mb-3 float-end" value={state.submitText} />
           </div>
           <div class={state.messageClass}>
             {state.message}

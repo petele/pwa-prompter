@@ -1,8 +1,6 @@
 import { h, Component } from 'preact';
 import { route } from 'preact-router';
 
-import style from './style.scss';
-
 import PrompterFooter from '../../components/routes/prompter/prompter-footer';
 import PrompterScriptContainer from '../../components/routes/prompter/prompter-script-container';
 import Eyeline from '../../components/routes/prompter/eyeline';
@@ -98,7 +96,7 @@ class Prompter extends Component {
 
   render(props, state) {
     return (
-      <div id="prompterContainer" class={style.prompterContainer}>
+      <div id="prompterContainer" class="container-fluid">
         <PrompterSettingsDialog
           eyelineHeight={state.eyelineHeight}
           scrollSpeed={state.scrollSpeed}

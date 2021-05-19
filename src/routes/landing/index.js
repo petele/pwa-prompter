@@ -6,7 +6,7 @@ const Landing = () => {
   document.title = 'MyPrompter';
 
   return (
-    <div>
+    <div class="container">
       <h1>MyPrompter</h1>
       <h2>An easy to use teleprompter.</h2>
       <p>

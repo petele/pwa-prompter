@@ -71,32 +71,39 @@ class ViewLoggedIn extends Component {
 
         <ul class="nav nav-tabs" id="myTab" role="tablist">
           <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="tab-profile" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="true">Profile</button>
+            <button class="nav-link active" id="tab-profile" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="true">
+              Profile
+            </button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link" id="tab-password" data-bs-toggle="tab" data-bs-target="#password" type="button" role="tab" aria-controls="password" aria-selected="false">Password</button>
+            <button class="nav-link" id="tab-password" data-bs-toggle="tab" data-bs-target="#password" type="button" role="tab" aria-controls="password" aria-selected="false">
+              Change Password
+            </button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link" id="tab-delete" data-bs-toggle="tab" data-bs-target="#delete" type="button" role="tab" aria-controls="delete" aria-selected="false">Delete Account</button>
+            <button class="nav-link" id="tab-delete" data-bs-toggle="tab" data-bs-target="#delete" type="button" role="tab" aria-controls="delete" aria-selected="false">
+              Delete Account
+            </button>
           </li>
         </ul>
+
         <div class="tab-content mt-3" id="myTabContent">
 
           <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="tab-profile">
             <div class="row mb-2">
-              <label for="staticName" class="col-2 col-form-label">Name</label>
+              <label for="staticName" class="col-3 col-form-label">Name</label>
               <div class="col-9">
                 <input type="text" readonly class="form-control-plaintext" id="staticName" value={props.displayName} />
               </div>
             </div>
-            <div class="row mb-2">
-              <label for="staticEmail" class="col-2 col-form-label">Email</label>
+            <div class="row mb-3">
+              <label for="staticEmail" class="col-3 col-form-label">Email</label>
               <div class="col-9">
                 <input type="email" readonly class="form-control-plaintext" id="staticEmail" value={props.email} />
               </div>
             </div>
             <div>
-              <button class="btn btn-danger" type="button" onClick={this.doSignOut}>
+              <button class="btn btn-danger float-end" type="button" onClick={this.doSignOut}>
                 Sign out
               </button>
             </div>
@@ -105,24 +112,24 @@ class ViewLoggedIn extends Component {
           <div class="tab-pane fade" id="password" role="tabpanel" aria-labelledby="tab-password">
             <form onSubmit={this.submitPasswordChange}>
               <div class="row mb-2">
-                <label for="currentPassword" class="col-3 col-form-label">Current Password</label>
-                <div class="col-8">
+                <label for="currentPassword" class="col-3 col-form-label">Current</label>
+                <div class="col-9">
                   <input class="form-control" type="password" id="currentPassword" required autoComplete="current-password" />
                 </div>
               </div>
               <div class="row mb-2">
-                <label for="newPasswordA" class="col-3 col-form-label">New Password</label>
-                <div class="col-8">
+                <label for="newPasswordA" class="col-3 col-form-label">New</label>
+                <div class="col-9">
                   <input class="form-control" type="password" id="newPasswordA" minlength="6" required autoComplete="new-password" />
                 </div>
               </div>
-              <div class="row mb-2">
-                <label for="newPasswordB" class="col-3 col-form-label">Confirm Password</label>
-                <div class="col-8">
+              <div class="row mb-3">
+                <label for="newPasswordB" class="col-3 col-form-label">Confirm</label>
+                <div class="col-9">
                   <input class="form-control" type="password" id="newPasswordB" minlength="6" required autoComplete="new-password" />
                 </div>
               </div>
-              <input type="submit" class="btn btn-primary mb-3" name="Submit" value="Change" />
+              <input type="submit" class="btn btn-primary mb-3 float-end" name="Submit" value="Change" />
               <div class={state.messageClass}>
                 {state.pwChangeMessage}
               </div>
@@ -131,13 +138,13 @@ class ViewLoggedIn extends Component {
           </div>
           <div class="tab-pane fade" id="delete" role="tabpanel" aria-labelledby="tab-delete">
             <form onSubmit={this.submitDeleteAccount}>
-              <div class="row">
-                <label for="currentPassword" class="col-3 col-form-label">Confirm password</label>
-                <div class="col-8">
+              <div class="row mb-3">
+                <label for="currentPassword" class="col-3 col-form-label">Password</label>
+                <div class="col-9">
                   <input class="form-control" type="password" id="deletePassword" required autoComplete="current-password" />
                 </div>
               </div>
-              <input type="submit" name="Submit" class="btn btn-danger mb-3" value="Delete Account" />
+              <input type="submit" name="Submit" class="btn btn-danger mb-3 float-end" value="Delete Account" />
               <div class={state.messageClass}>
                 {state.deleteMessage}
               </div>

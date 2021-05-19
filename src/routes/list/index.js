@@ -58,7 +58,7 @@ class List extends Component {
 
   render(props, state) {
     return (
-      <div>
+      <div class="container-fluid">
         <DialogConfirmDelete
           scriptDetails={state.scriptToDelete}
           onClose={this.onDeleteDialogClose}

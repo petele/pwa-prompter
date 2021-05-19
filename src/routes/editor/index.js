@@ -1,8 +1,6 @@
 import { h, Component } from 'preact';
 import { route } from 'preact-router';
 
-import style from './style.css';
-
 import MyQuill from '../../components/routes/editor/my-quill';
 import InputTitle from '../../components/routes/editor/input-title';
 import LastUpdated from '../../components/routes/editor/last-updated';
@@ -56,7 +54,7 @@ class Editor extends Component {
 
   render(props, state) {
     return (
-      <div class={style.editor}>
+      <div class="container-fluid">
         <InputTitle title={state.title} readOnly={state.readOnly} onChange={this.onTitleChange} />
         <MyQuill asQuill={state.asQuill} lastUpdated={state.lastUpdated} readOnly={state.readOnly} onChange={this.onQuillChange} onResync={this.onResync} />
         <LastUpdated lastUpdated={state.lastUpdated} readOnly={state.readOnly} />

@@ -46,7 +46,7 @@ class App extends Component {
     return (
       <div id="app">
         <Header selectedRoute={state.currentURL} uid={state.uid} scriptID={state.scriptID} />
-        <main class="container-fluid">
+        <main>
           <Router onChange={this.handleRoute}>
             <Landing path="/" />
             <List path="/app" uid={state.uid} />
