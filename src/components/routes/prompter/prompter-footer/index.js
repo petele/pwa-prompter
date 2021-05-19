@@ -244,7 +244,7 @@ class PrompterFooter extends Component {
             &bull;&bull;&bull;
           </button>
         </div>
-        <nav class="navbar  navbar-dark bg-dark justify-content-center">
+        <nav class="navbar navbar-dark bg-dark justify-content-center pt-0 pb-0">
           <div class="nav">
             <div class="btn-group" role="group">
               <button onClick={this.resetScroller} type="button" class="btn btn-dark btn-sm">
