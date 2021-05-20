@@ -40,7 +40,7 @@ class Prompter extends Component {
   async loadScript(scriptID) {
     const script = await getScript(scriptID);
     if (!script) {
-      route('/', true);
+      route('/app', true);
       return;
     }
     document.title = script.title;
