@@ -14,14 +14,12 @@
   --quill-color-active: #{$white};
   --quill-color-dim: #{$light};
   --quill-background: #{$body-bg};
-
   --quill-color-border: #{$light};
   --quill-color-link: #{$primary};
 }
 
  .ql-container {
   box-sizing: border-box;
-  font-family: Helvetica, Arial, sans-serif;
   font-size: 16px;
   height: 100%;
   margin: 0px;
@@ -418,7 +416,8 @@
 }
 
 .ql-editor.ql-blank::before {
-  color: rgba(0,0,0,0.6);
+  // color: rgba(0,0,0,0.6);
+  color: var(--quill-color-active);
   content: attr(data-placeholder);
   font-style: italic;
   left: 15px;
