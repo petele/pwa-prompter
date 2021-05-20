@@ -1,7 +1,6 @@
 import { h, Component } from 'preact';
 
-// eslint-disable-next-line no-unused-vars
-import { Tab } from 'bootstrap';
+import Tab from 'bootstrap/js/dist/tab';
 import { deleteAccount, changePassword, signOut } from '../../../user-manager';
 import { removeLocalData } from '../../../script-manager';
 
@@ -11,6 +10,28 @@ class ViewLoggedIn extends Component {
     deleteMessage: '',
     pwChangeMessage: '',
   };
+  _tabs = [];
+  _tabContainer = null;
+
+  componentDidMount() {
+    const tabs = [];
+    const buttons = this._tabContainer.querySelectorAll('button');
+    buttons.forEach((triggerEl) => {
+      const tabTrigger = new Tab(triggerEl);
+      triggerEl.addEventListener('click', (event) => {
+        event.preventDefault();
+        tabTrigger.show();
+      });
+      tabs.push(tabTrigger);
+    })
+    this._tabs = tabs;
+  }
+
+  componentWillUnmount() {
+    this._tabs.forEach((tab) => {
+      tab.dispose();
+    });
+  }
 
   onDeleteAccount = async (password) => {
     const email = this.props.email;
@@ -69,19 +90,19 @@ class ViewLoggedIn extends Component {
     return (
       <div>
 
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <ul class="nav nav-tabs" id="myTab" role="tablist" ref={el => { this._tabContainer = el }}>
           <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="tab-profile" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="true">
+            <button class="nav-link active" id="tab-profile" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="true">
               Profile
             </button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link" id="tab-password" data-bs-toggle="tab" data-bs-target="#password" type="button" role="tab" aria-controls="password" aria-selected="false">
+            <button class="nav-link" id="tab-password" data-bs-target="#password" type="button" role="tab" aria-controls="password" aria-selected="false">
               Change Password
             </button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link" id="tab-delete" data-bs-toggle="tab" data-bs-target="#delete" type="button" role="tab" aria-controls="delete" aria-selected="false">
+            <button class="nav-link" id="tab-delete" data-bs-target="#delete" type="button" role="tab" aria-controls="delete" aria-selected="false">
               Delete Account
             </button>
           </li>

@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 
+import Tab from 'bootstrap/js/dist/tab';
 import { signIn, createAccount, forgotPassword } from '../../../user-manager';
 import { syncWithFirebase, setupSampleScript } from '../../../script-manager';
 
@@ -11,6 +12,28 @@ class ViewLoggedOut extends Component {
     message: '',
     messageClass: '',
   };
+  _tabs = [];
+  _tabContainer = null;
+
+  componentDidMount() {
+    const tabs = [];
+    const buttons = this._tabContainer.querySelectorAll('button');
+    buttons.forEach((triggerEl) => {
+      const tabTrigger = new Tab(triggerEl);
+      triggerEl.addEventListener('click', (event) => {
+        event.preventDefault();
+        tabTrigger.show();
+      });
+      tabs.push(tabTrigger);
+    })
+    this._tabs = tabs;
+  }
+
+  componentWillUnmount() {
+    this._tabs.forEach((tab) => {
+      tab.dispose();
+    });
+  }
 
   showSignIn = () => {
     const view = {
@@ -121,10 +144,10 @@ class ViewLoggedOut extends Component {
     return (
       <div>
         <nav>
-          <div class="nav nav-tabs" id="nav-tab" role="tablist">
-            <button class="nav-link active" onClick={this.showSignIn} id="nav-sign-in-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Sign In</button>
-            <button class="nav-link" onClick={this.showSignUp} id="nav-sign-up-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Sign Up</button>
-            <button class="nav-link" onClick={this.showForgotPwd} id="nav-forgot-pwa-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Forgot Password</button>
+          <div class="nav nav-tabs" id="nav-tab" role="tablist" ref={el => { this._tabContainer = el }}>
+            <button class="nav-link active" onClick={this.showSignIn} type="button" role="tab" aria-controls="nav-home" aria-selected="true">Sign In</button>
+            <button class="nav-link" onClick={this.showSignUp} type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Sign Up</button>
+            <button class="nav-link" onClick={this.showForgotPwd} type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Forgot Password</button>
           </div>
         </nav>
         <form class="mt-3" onSubmit={this.submitForm}>

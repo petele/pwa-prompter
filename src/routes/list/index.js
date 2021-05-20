@@ -4,13 +4,12 @@ import ScriptListItem from '../../components/routes/list/script-list-item';
 import DialogConfirmDelete from '../../components/routes/list/dialog-confirm-delete';
 import { getScriptList, updateScript, deleteScript, syncWithFirebase } from '../../components/script-manager';
 
-import { Modal } from 'bootstrap';
+import Modal from 'bootstrap/js/dist/modal';
 
 class List extends Component {
   state = {
     scripts: [],
   };
-  _deleteDialog = null;
 
   componentDidMount() {
     document.title = `MyPrompter`;
@@ -18,11 +17,6 @@ class List extends Component {
     syncWithFirebase().then(() => {
       this.refreshScriptList();
     });
-    if (!this._deleteDialog) {
-      const options = {};
-      const dialogDelete = document.querySelector('#dialogConfirmDelete');
-      this._deleteDialog = new Modal(dialogDelete, options);
-    }
   }
 
   refreshScriptList = async () => {
@@ -42,13 +36,14 @@ class List extends Component {
       return;
     }
     this.setState({scriptToDelete});
-    this._deleteDialog.show();
+    const elem = document.getElementById('dialogConfirmDelete');
+    const modal = Modal.getInstance(elem);
+    modal.show();
   }
 
   onDeleteDialogConfirmed = async (scriptID) => {
     await deleteScript(scriptID);
     this.refreshScriptList();
-    this._deleteDialog.hide();
   }
 
   clickSync = async () => {

@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 
-import { Modal } from 'bootstrap';
+import Modal from 'bootstrap/js/dist/modal';
 
 import PWAPSlider from '../../../pwap-slider';
 import DefaultSettings from '../default-prompter-settings';
@@ -11,18 +11,15 @@ class PrompterSettingsDialog extends Component {
   _propsChanged = {};
 
   componentDidMount() {
-    const options = {};
-    const elem = document.querySelector('#dialogSettings');
-    const modal = new Modal(elem, options);
-    elem.addEventListener('hidden.bs.modal', this.onHidden);
-    elem.addEventListener('show.bs.modal', this.onShow);
-    this._elem = elem;
-    this._modal = modal;
+    this._modal = new Modal(this._elem, {});
+    this._elem.addEventListener('hidden.bs.modal', this.onHidden);
+    this._elem.addEventListener('show.bs.modal', this.onShow);
   }
 
   componentWillUnmount() {
     this._elem.removeEventListener('hidden.bs.modal', this.onHidden);
     this._elem.removeEventListener('show.bs.modal', this.onShow);
+    this._modal.dispose();
   }
 
   onShow = () => {
@@ -103,7 +100,7 @@ class PrompterSettingsDialog extends Component {
 
   render(props) {
     return (
-      <div class="modal" id="dialogSettings" data-bs-backdrop="static" tabindex="-1">
+      <div class="modal" id="dialogSettings" tabindex="-1" ref={el => { this._elem = el }}>
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header">
