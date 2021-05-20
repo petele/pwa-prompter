@@ -136,7 +136,6 @@ class ViewLoggedOut extends Component {
       email.value = '';
       return false;
     }
-    console.log('submit', mode);
     return false;
   }
 
@@ -145,9 +144,9 @@ class ViewLoggedOut extends Component {
       <div>
         <nav>
           <div class="nav nav-tabs" id="nav-tab" role="tablist" ref={el => { this._tabContainer = el }}>
-            <button class="nav-link active" onClick={this.showSignIn} type="button" role="tab" aria-controls="nav-home" aria-selected="true">Sign In</button>
-            <button class="nav-link" onClick={this.showSignUp} type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Sign Up</button>
-            <button class="nav-link" onClick={this.showForgotPwd} type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Forgot Password</button>
+            <button class="nav-link active" onClick={this.showSignIn} type="button" role="tab" aria-selected="true">Sign In</button>
+            <button class="nav-link" onClick={this.showSignUp} type="button" role="tab" aria-selected="false">Sign Up</button>
+            <button class="nav-link" onClick={this.showForgotPwd} type="button" role="tab" aria-selected="false">Forgot Password</button>
           </div>
         </nav>
         <form class="mt-3" onSubmit={this.submitForm}>
@@ -190,8 +189,7 @@ class ViewLoggedOut extends Component {
             </div>
           }
           <div>
-            <input type="submit" name="Submit"
-              aria-label={state.submitText} aria-role="button"
+            <input type="submit" aria-label={state.submitText}
               class="btn btn-primary mb-3 float-end"
               value={state.submitText} />
           </div>
