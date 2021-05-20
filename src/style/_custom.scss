@@ -4,6 +4,11 @@
 
 // 5. Add additional custom code here
 
+:root {
+  /* Reset scroll behaviour, otherwise scrolling doesn't work */
+  scroll-behavior: initial !important;
+}
+
 html {
   color-scheme: dark;
 }
