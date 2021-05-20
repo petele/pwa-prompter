@@ -190,7 +190,10 @@ class ViewLoggedOut extends Component {
             </div>
           }
           <div>
-            <input type="submit" name="Submit" class="btn btn-primary mb-3 float-end" value={state.submitText} />
+            <input type="submit" name="Submit"
+              aria-label={state.submitText} aria-role="button"
+              class="btn btn-primary mb-3 float-end"
+              value={state.submitText} />
           </div>
           <div class={state.messageClass}>
             {state.message}
