@@ -8,16 +8,15 @@
  *
  */
 
-:root {
-  --quill-toolbar-button: var(--black-500);
-  --quill-toolbar-button-active: var(--app-color-secondary);
+@import "theme";
 
-  --quill-color-active: var(--app-color-secondary);
-  --quill-color-dim: var(--black-500);
-  --quill-color-border: var(--app-color-primary);
-  --quill-color-link: var(--app-highlight-primary);
-  --quill-color-text: var(--app-color-primary);
-  --quill-background: var(--app-background-primary);
+:root {
+  --quill-color-active: #{$white};
+  --quill-color-dim: #{$light};
+  --quill-background: #{$body-bg};
+
+  --quill-color-border: #{$light};
+  --quill-color-link: #{$primary};
 }
 
  .ql-container {
@@ -909,7 +908,7 @@
 }
 .ql-snow .ql-color-picker.ql-color .ql-picker-item {
   /* background-color: #000; */
-  background-color: var(--app-color-primary);
+  background-color: var(--quill-background);
 }
 .ql-toolbar.ql-snow {
   /* border: 1px solid #ccc; */

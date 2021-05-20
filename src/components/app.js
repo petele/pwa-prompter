@@ -46,17 +46,19 @@ class App extends Component {
     return (
       <div id="app">
         <Header selectedRoute={state.currentURL} uid={state.uid} scriptID={state.scriptID} />
-        <Router onChange={this.handleRoute}>
-          <Landing path="/" />
-          <List path="/app" uid={state.uid} />
-          <Editor path="/editor/:scriptID" />
-          <RedirectToHome path="/editor/" />
-          <Prompter path="/prompter/:scriptID" />
-          <RedirectToHome path="/prompter/" />
-          <About path="/about" />
-          <Account path="/account" uid={state.uid} email={state.email} displayName={state.displayName}  />
-          <NotFound default />
-        </Router>
+        <main>
+          <Router onChange={this.handleRoute}>
+            <Landing path="/" />
+            <List path="/app" uid={state.uid} />
+            <Editor path="/editor/:scriptID" />
+            <RedirectToHome path="/editor/" />
+            <Prompter path="/prompter/:scriptID" />
+            <RedirectToHome path="/prompter/" />
+            <About path="/about" />
+            <Account path="/account" uid={state.uid} email={state.email} displayName={state.displayName}  />
+            <NotFound default />
+          </Router>
+        </main>
       </div>
     );
   }

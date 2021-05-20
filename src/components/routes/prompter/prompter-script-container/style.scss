@@ -1,6 +1,5 @@
 .view {
   word-break: break-word;
-  /* hyphens: auto; */
   margin-bottom: 76px;
 }
 
@@ -16,8 +15,8 @@
 }
 
 .boundary {
-  background-color: var(--app-background-secondary);
-  color: var(--app-color-primary);
+  background-color: var(--pwap-dark);
+  color: var(--pwap-body);
   text-transform:uppercase;
   padding: 2em;
   text-align: center;

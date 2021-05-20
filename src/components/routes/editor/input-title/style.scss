@@ -1,9 +1,7 @@
 .title {
-  padding: 8px;
-  background-color: var(--app-background-secondary);
-  color: var(--app-color-secondary);
-  font-size: x-large;
-  width: 100%;
-  border: 1px solid var(--app-color-secondary);
+  background-color: var(--pwap-bg);
+  color: var(--pwap-body);
+  border: 1px solid var(--quill-color-border);
+  border-radius: 0;
   border-bottom: none;
 }

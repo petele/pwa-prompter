@@ -1,7 +1,7 @@
 import { route } from 'preact-router';
 
 const RedirectToHome = () => {
-  route('/', true);
+  route('/app', true);
 
   return null;
 }

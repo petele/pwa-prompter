@@ -22,6 +22,7 @@ const Eyeline = ({margin = 15, value = 40, flipHorizontal, onChange}) => {
 
   return (
     <input type="range" min="0" max="100"
+      aria-label="eyeline marker"
       value={value}
       class={classList.join(' ')}
       style={`margin-left: ${margin}%;`}

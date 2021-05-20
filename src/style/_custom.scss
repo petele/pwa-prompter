@@ -1,0 +1,45 @@
+@import "~bootstrap/scss/helpers";
+
+@import "~bootstrap/scss/utilities/api";
+
+// 5. Add additional custom code here
+
+:root {
+  /* Reset scroll behaviour, otherwise scrolling doesn't work */
+  scroll-behavior: initial !important;
+}
+
+html {
+  color-scheme: dark;
+}
+
+main {
+  padding-top: calc(var(--bs-gutter-x, 0.75rem) + 52px);
+}
+
+#prompterContainer {
+  background-color: black;
+  margin-top: -20px;
+}
+
+// 6. Add overrides here.
+
+.card.bg-dark .card-footer.text-muted {
+  color: $gray-400 !important;
+}
+
+#headNav a.nav-link {
+  padding: 0.5rem 0.5rem;
+}
+
+#headNav a.nav-link.active {
+  background-color: $light;
+}
+
+#headNav a.nav-link svg {
+  fill: $light;
+}
+
+#headNav a.nav-link.active svg {
+  fill: $white;
+}

@@ -1,9 +1,7 @@
 import { h, Component } from 'preact';
 import { route } from 'preact-router';
-import style from './style.css';
 
 import PrompterFooter from '../../components/routes/prompter/prompter-footer';
-import ProgressBar from '../../components/routes/prompter/progress-bar';
 import PrompterScriptContainer from '../../components/routes/prompter/prompter-script-container';
 import Eyeline from '../../components/routes/prompter/eyeline';
 import PrompterSettingsDialog from '../../components/routes/prompter/dialog-settings';
@@ -12,11 +10,10 @@ import { getScript, updateScript } from '../../components/script-manager';
 import DefaultSettings from '../../components/routes/prompter/default-prompter-settings';
 
 class Prompter extends Component {
-  updatedSettings = {};
   state = Object.assign({
-    class: style.prompter,
     scrollPercent: 0,
   }, DefaultSettings);
+  _progressBar;
 
   componentDidMount() {
     const scriptID = this.props.scriptID;
@@ -28,10 +25,22 @@ class Prompter extends Component {
     document.removeEventListener('scroll', this.onScroll);
   }
 
+  getProgressBar() {
+    if (this._progressBar) {
+      return this._progressBar;
+    }
+    const pb = document.getElementById('headerProgress');
+    if (pb) {
+      this._progressBar = pb;
+      return pb;
+    }
+    return null;
+  }
+
   async loadScript(scriptID) {
     const script = await getScript(scriptID);
     if (!script) {
-      route('/', true);
+      route('/app', true);
       return;
     }
     document.title = script.title;
@@ -44,13 +53,20 @@ class Prompter extends Component {
   }
 
   onScroll = () => {
+    const pBar = this.getProgressBar();
+    if (!pBar) {
+      return;
+    }
     const currentY = window.scrollY;
     const scrollHeight = document.body.scrollHeight;
     const windowHeight = window.innerHeight;
     let percent = (currentY / (scrollHeight - windowHeight)) * 100;
     percent = Math.round(percent * 100) / 100;
     percent = Math.min(percent, 100);
-    this.setState({scrollPercent: percent});
+    if (this.state.flipVertical) {
+      percent = 100 - percent;
+    }
+    pBar.style = `width: ${percent}%;`;
   }
 
   onEyelineChange = (value) => {
@@ -66,23 +82,21 @@ class Prompter extends Component {
   }
 
   onSettingsChange = (key, value) => {
-    this.updatedSettings[key] = value;
-    this.setState(this.updatedSettings);
+    const obj = {};
+    obj[key] = value;
+    this.setState(obj);
   }
 
-  onSettingsClose = async () => {
-    if (Object.keys(this.updatedSettings).length > 0) {
-      await updateScript(this.props.scriptID, this.updatedSettings);
-      this.updatedSettings = {};
+  onSettingsClose = async (settings) => {
+    if (!settings) {
+      return;
     }
+    await updateScript(this.props.scriptID, settings);
   }
 
   render(props, state) {
     return (
-      <div id="prompterContainer" class={style.prompter}>
-        <ProgressBar
-          percent={state.scrollPercent}
-          flipVertical={state.flipVertical} />
+      <div id="prompterContainer" class="container-fluid">
         <PrompterSettingsDialog
           eyelineHeight={state.eyelineHeight}
           scrollSpeed={state.scrollSpeed}

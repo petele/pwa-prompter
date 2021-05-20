@@ -1,11 +1,12 @@
 import { h, Component } from 'preact';
-import style from './style.css';
 
 import ScriptListItem from '../../components/routes/list/script-list-item';
 import DialogConfirmDelete from '../../components/routes/list/dialog-confirm-delete';
 import { getScriptList, updateScript, deleteScript, syncWithFirebase } from '../../components/script-manager';
 
-class Home extends Component {
+import Modal from 'bootstrap/js/dist/modal';
+
+class List extends Component {
   state = {
     scripts: [],
   };
@@ -35,17 +36,14 @@ class Home extends Component {
       return;
     }
     this.setState({scriptToDelete});
-    const dialogDelete = document.querySelector('#dialogConfirmDelete');
-    dialogDelete.showModal();
+    const elem = document.getElementById('dialogConfirmDelete');
+    const modal = Modal.getInstance(elem);
+    modal.show();
   }
 
   onDeleteDialogConfirmed = async (scriptID) => {
     await deleteScript(scriptID);
     this.refreshScriptList();
-  }
-
-  onDeleteDialogClose = () => {
-    this.setState({scriptToDelete: null});
   }
 
   clickSync = async () => {
@@ -55,7 +53,7 @@ class Home extends Component {
 
   render(props, state) {
     return (
-      <div class={style.home}>
+      <div class="container-fluid">
         <DialogConfirmDelete
           scriptDetails={state.scriptToDelete}
           onClose={this.onDeleteDialogClose}
@@ -63,10 +61,10 @@ class Home extends Component {
         {state.scripts.map((script, idx) =>
           <ScriptListItem key={idx} scriptID={script.key} idx={idx} onDelete={this.clickDelete} onStar={this.clickStar} {...script}  />
         )}
-        {props.uid && <button onClick={this.clickSync}>Sync</button>}
+        {props.uid && <button type="button" class="btn btn-primary" onClick={this.clickSync}>Sync</button>}
       </div>);
   }
 
 }
 
-export default Home;
+export default List;

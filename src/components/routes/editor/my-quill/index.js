@@ -2,7 +2,7 @@
 import { h, Component } from 'preact';
 
 import Quill from 'quill';
-import '/style/quill.css';
+import '/style/quill.scss';
 import style from './style.scss';
 const Delta = Quill.import('delta');
 const BlockEmbed = Quill.import('blots/block/embed');

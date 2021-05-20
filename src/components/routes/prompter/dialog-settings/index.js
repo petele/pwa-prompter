@@ -1,47 +1,42 @@
-import { h, Component, createRef } from 'preact';
+import { h, Component } from 'preact';
 
-/* https://github.com/GoogleChrome/dialog-polyfill */
-import dialogPolyfill from 'dialog-polyfill';
-import 'dialog-polyfill/dist/dialog-polyfill.css';
+import Modal from 'bootstrap/js/dist/modal';
 
 import PWAPSlider from '../../../pwap-slider';
-
-import style from './style.scss';
-
 import DefaultSettings from '../default-prompter-settings';
 
 class PrompterSettingsDialog extends Component {
-  _settingsDialogRef = createRef();
+  _elem = null;
+  _modal = null;
+  _propsChanged = {};
 
   componentDidMount() {
-    if (this._settingsDialogRef.current) {
-      const dialog = this._settingsDialogRef.current;
-      dialogPolyfill.registerDialog(dialog);
-      dialog.addEventListener('close', this.onClose);
-    }
+    this._modal = new Modal(this._elem, {});
+    this._elem.addEventListener('hidden.bs.modal', this.onHidden);
+    this._elem.addEventListener('show.bs.modal', this.onShow);
   }
 
   componentWillUnmount() {
-    if (this._settingsDialogRef.current) {
-      const dialog = this._settingsDialogRef.current;
-      dialog.removeEventListener('close', this.onClose);
-    }
+    this._elem.removeEventListener('hidden.bs.modal', this.onHidden);
+    this._elem.removeEventListener('show.bs.modal', this.onShow);
+    this._modal.dispose();
   }
 
-  onClose = (e) => {
+  onShow = () => {
+    this._propsChanged = {};
+  }
+
+  onHidden = () => {
     if (this.props?.onClose) {
-      this.props.onClose(e);
-    }
-  }
-
-  closeDialog = () => {
-    if (this._settingsDialogRef.current) {
-      this._settingsDialogRef.current.close();
+      const anythingChanged = Object.keys(this._propsChanged).length > 0;
+      const result = anythingChanged ? this._propsChanged : null;
+      this.props.onClose(result);
     }
   }
 
   onInputSpeed = (e) => {
     const value = parseInt(e.target.value, 10);
+    this._propsChanged.scrollSpeed = value;
     if (this.props?.onChange) {
       this.props.onChange('scrollSpeed', value);
     }
@@ -49,6 +44,7 @@ class PrompterSettingsDialog extends Component {
 
   onInputFontSize = (e) => {
     const value = parseFloat(e.target.value);
+    this._propsChanged.fontSize = value;
     if (this.props?.onChange) {
       this.props.onChange('fontSize', value);
     }
@@ -56,6 +52,7 @@ class PrompterSettingsDialog extends Component {
 
   onInputMargin = (e) => {
     const value = parseInt(e.target.value, 10);
+    this._propsChanged.margin = value;
     if (this.props?.onChange) {
       this.props.onChange('margin', value);
     }
@@ -63,6 +60,7 @@ class PrompterSettingsDialog extends Component {
 
   onInputLineHeight = (e) => {
     const value = parseInt(e.target.value, 10);
+    this._propsChanged.lineHeight = value;
     if (this.props?.onChange) {
       this.props.onChange('lineHeight', value);
     }
@@ -70,6 +68,7 @@ class PrompterSettingsDialog extends Component {
 
   onChangeAllCaps = (e) => {
     const value = e.target.checked;
+    this._propsChanged.allCaps = value;
     if (this.props?.onChange) {
       this.props.onChange('allCaps', value);
     }
@@ -77,6 +76,7 @@ class PrompterSettingsDialog extends Component {
 
   onChangeHideFooter = (e) => {
     const value = e.target.checked;
+    this._propsChanged.autoHideFooter = value;
     if (this.props?.onChange) {
       this.props.onChange('autoHideFooter', value);
     }
@@ -84,6 +84,7 @@ class PrompterSettingsDialog extends Component {
 
   onChangeFlipH = (e) => {
     const value = e.target.checked;
+    this._propsChanged.flipHorizontal = value;
     if (this.props?.onChange) {
       this.props.onChange('flipHorizontal', value);
     }
@@ -91,6 +92,7 @@ class PrompterSettingsDialog extends Component {
 
   onChangeFlipV = (e) => {
     const value = e.target.checked;
+    this._propsChanged.flipVertical = value;
     if (this.props?.onChange) {
       this.props.onChange('flipVertical', value);
     }
@@ -98,45 +100,48 @@ class PrompterSettingsDialog extends Component {
 
   render(props) {
     return (
-      <dialog id="dialogSettings" class={style.settingsDialog} ref={this._settingsDialogRef}>
-        <header>
-          <h2>Settings</h2>
-        </header>
-        <form method="dialog">
-          <PWAPSlider id="optScrollSpeed" label="Scroll Speed" value={props.scrollSpeed} min="1" max="400" onInput={this.onInputSpeed} />
-          <PWAPSlider id="optFontSize" label="Font Size" value={props.fontSize} min="1" max="16" onInput={this.onInputFontSize} />
-          <PWAPSlider id="optMargin" label="Margin" suffix="%" value={props.margin} min="0" max="40" onInput={this.onInputMargin} />
-          <PWAPSlider id="optLineHeight" label="Line Height" suffix="%" value={props.lineHeight} min="80" max="200" onInput={this.onInputLineHeight} />
-          <div class={style.flex}>
-            <input id="allCaps" type="checkbox" onInput={this.onChangeAllCaps} checked={props.allCaps} />
-            <label for="allCaps">
-              All Caps
-            </label>
-          </div>
-          <div class={style.flex}>
-            <input id="autoHideFooter" type="checkbox" onInput={this.onChangeHideFooter} checked={props.autoHideFooter} />
-            <label for="autoHideFooter">Hide Footer on Scroll</label>
-          </div>
-          <div>
-            <div class={style.label}>Flip</div>
-            <div class={style.flip}>
-              <div class={style.flex}>
-                <input id="flipH" type="checkbox" onInput={this.onChangeFlipH} checked={props.flipHorizontal} />
-                <label for="flipH">Horizontal</label>
+      <div class="modal" id="dialogSettings" tabindex="-1" ref={el => { this._elem = el }}>
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Settings</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+            </div>
+            <div class="modal-body">
+              <PWAPSlider id="optScrollSpeed" label="Scroll Speed" value={props.scrollSpeed} min="1" max="400" onInput={this.onInputSpeed} />
+              <PWAPSlider id="optFontSize" label="Font Size" value={props.fontSize} min="1" max="16" onInput={this.onInputFontSize} />
+              <PWAPSlider id="optMargin" label="Margin" suffix="%" value={props.margin} min="0" max="40" onInput={this.onInputMargin} />
+              <PWAPSlider id="optLineHeight" label="Line Height" suffix="%" value={props.lineHeight} min="80" max="200" onInput={this.onInputLineHeight} />
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" onInput={this.onChangeAllCaps} checked={props.allCaps} id="allCaps" />
+                <label class="form-check-label" for="allCaps">
+                  All Caps
+                </label>
               </div>
-              <div class={style.flex}>
-                <input id="flipV" type="checkbox" onInput={this.onChangeFlipV} checked={props.flipVertical} />
-                <label for="flipV">Vertical</label>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" onInput={this.onChangeHideFooter} checked={props.autoHideFooter} id="autoHideFooter" />
+                <label class="form-check-label" for="autoHideFooter">
+                  Hide footer on scroll
+                </label>
+              </div>
+              <label class="form-check-label d-block">
+                Flip
+              </label>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="inlineCheckbox1" onInput={this.onChangeFlipH} checked={props.flipHorizontal} />
+                <label class="form-check-label" for="inlineCheckbox1">Horizontal</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="inlineCheckbox2" onInput={this.onChangeFlipV} checked={props.flipVertical} />
+                <label class="form-check-label" for="inlineCheckbox2">Vertical</label>
               </div>
             </div>
+            <div class="modal-footer">
+              <button type="button" data-bs-dismiss="modal" class="btn btn-primary">Close</button>
+            </div>
           </div>
-          <footer>
-            <button onClick={this.closeDialog} type="button">
-              Close
-            </button>
-          </footer>
-        </form>
-      </dialog>
+        </div>
+      </div>
     );
   }
 }

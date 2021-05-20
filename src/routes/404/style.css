@@ -1,9 +1,0 @@
-.notFound {
-  margin-top: var(--header-height);
-  overflow-y: auto;
-  padding: 20px;
-}
-
-.notFound > :first-child {
-  margin-top: 0;
-}

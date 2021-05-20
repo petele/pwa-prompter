@@ -3,7 +3,7 @@ import { Link } from 'preact-router/match';
 import style from './style.scss';
 
 export const Account = ({uid}) => {
-  const className = uid ? style.loggedIn : '';
+  const className = `${uid ? style.loggedIn : ''} nav-link`;
   const label = uid ? 'Profile' : 'Sign in';
   return (
     <Link class={className} href="/account" aria-label={label} title={label}>

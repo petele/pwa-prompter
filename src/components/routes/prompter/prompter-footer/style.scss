@@ -1,76 +1,45 @@
-.footer {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  /* height: 76px; */
-  padding: 0;
-  background: var(--app-background-secondary);
-  color: var(--app-color-secondary);
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-  z-index: 50;
-  flex-wrap: nowrap;
-  transition: transform 0.3s ease-in-out;
+.hidden {
+  display: none !important;
 }
 
-.footer.minimized {
-  transform: translateY(56px);
+.footer {
+  z-index: 50;
+  flex-wrap: nowrap;
+  transition: transform 0.25s ease-in-out;
 }
 
 .footer .toggle {
   height: 20px;
-  background-color: var(--app-background-third);
-  color: var(--app-color-third);
 }
 
 .footer .toggle button {
   width: 100%;
-  background-color: var(--app-background-third);
-  color: var(--app-color-third);
+  background-color: var(--pwap-secondary);
+  color: var(--pwap-light);
   border: none;
+  padding: 0;
+  height: 20px;
+  font-size: 20px;
+  line-height: 20px;
 }
 
-.footer .settingsContainer {
-  display: none;
-}
-
-.footer nav {
-  display: flex;
-  justify-content: center;
+.footer.minimized {
+  transform: translateY(53px);
 }
 
 .footer nav button {
-  border-left: 1px solid var(--app-background-third);
-  border-right: 1px solid var(--app-background-third);
-  border-top: none;
-  border-bottom: none;
-  height: 56px;
-  padding: 0 8px;
-  min-width: 64px;
-  text-align: center;
-  background: var(--app-background-primary);
-  color: var(--app-color-primary);
-  text-decoration: none;
   will-change: background-color;
+  width: 60px;
+}
+
+.footer nav button div {
+  color: var(--pwap-very-light);
   font-size: x-small;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 }
 
 .footer nav button svg {
-  display: block;
   width: 24px;
   height: 24px;
   margin-bottom: 4px;
-  fill: var(--app-color-primary);
-}
-
-.footer nav button.enabled {
-  background: var(--app-background-third);
-}
-
-.hidden {
-  display: none !important;
+  fill: var(--pwap-very-light);
 }
